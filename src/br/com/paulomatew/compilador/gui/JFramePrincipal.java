@@ -5,7 +5,10 @@
  */
 package br.com.paulomatew.compilador.gui;
 
-import br.com.paulomatew.compilador.entities.LexicalObject;
+import br.com.paulomatew.compilador.analyzer.LexicalObject;
+import static br.com.paulomatew.compilador.entities.OSValidator.isMac;
+import static br.com.paulomatew.compilador.entities.OSValidator.isUnix;
+import static br.com.paulomatew.compilador.entities.OSValidator.isWindows;
 import br.com.paulomatew.compilador.main.Compilador;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -16,6 +19,7 @@ import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.JTextField;
 import javax.swing.JTextPane;
 import javax.swing.Timer;
 import javax.swing.text.AttributeSet;
@@ -48,11 +52,21 @@ public class JFramePrincipal extends javax.swing.JFrame {
     public ImageIcon iconExecute, iconList;
 
     private String consoleText = "";
+    private Font fontBasica = null;
 
     /**
      * Creates new form JFramePrincipal
      */
     public JFramePrincipal() {
+        if (isWindows() || isMac()) {
+            //System.out.println("This is Windows|Mac");
+            fontBasica = new java.awt.Font("Courier New", 0, 13);
+        } else if (isUnix()) {
+            JTextField t = new JTextField();
+            fontBasica = new java.awt.Font(t.getFont().getName(), 0, 13);
+            //System.out.println("This is Unix or Linux");
+        }
+
         compiler = new Compilador();
 
         iconExecute = new ImageIcon("./images/execute.png");
@@ -83,7 +97,7 @@ public class JFramePrincipal extends javax.swing.JFrame {
 
         doc = new DefaultStyledDocument() {
             public void insertString(int offset, String str, AttributeSet a) throws BadLocationException {
-                str = str.replaceAll("\t", "        ");//tab size
+                str = str.replaceAll("\t", "    ");//tab size
                 super.insertString(offset, str, a);
 
                 String text = getText(0, getLength());
@@ -222,7 +236,7 @@ public class JFramePrincipal extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jTextPane1.setFont(new java.awt.Font("SansSerif", 0, 12)); // NOI18N
+        jTextPane1.setFont(fontBasica);
         jTextPane1.setText("main)(){\n\tint function somar(int a1, int a2){\n\t\treturn a1 + a2;\n\t}\n\n\tint inteiro1;\n\tboolean boo1;\n\tint inteiro2;\n\tboolean boo2;\n\t\n\tinteiro2 = 20;\n\tinteiro1 = inteiro2 + 2;\n\t\n\tboo1 = false;\n\tboo2 = boo1 && true;\n\t\n\tif(boo1==true){\n\t} else {\n\t}\n\t\n\tsomar(inteiro1, inteiro2);\n\t\n\tprint(20);\n}");
         jScrollPane1.setViewportView(jTextPane1);
 
@@ -297,13 +311,8 @@ public class JFramePrincipal extends javax.swing.JFrame {
         if (compiler.analizadorLexico.tokenArray == null) {
             JOptionPane.showMessageDialog(this, "Nenhum código fonte compilado.", "Error", JOptionPane.ERROR_MESSAGE);
         } else {
-            //JTextPane pan = new JTextPane();
-            //pan.setText(compiler.analizadorLexico.getTokenListAsTable());
-
-            Font font1 = new Font("SansSerif", Font.PLAIN, 12);
-
             JTextArea textArea = new JTextArea(compiler.analizadorLexico.getTokenListAsTable());
-            textArea.setFont(font1);
+            textArea.setFont(fontBasica);
             JScrollPane scrollPane = new JScrollPane(textArea);
 
             textArea.setLineWrap(true);
@@ -352,7 +361,7 @@ public class JFramePrincipal extends javax.swing.JFrame {
          */
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
+                if ("Windows".equals(info.getName())) {
                     javax.swing.UIManager.setLookAndFeel(info.getClassName());
                     break;
                 }

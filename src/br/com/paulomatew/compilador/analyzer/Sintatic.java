@@ -5,7 +5,6 @@
  */
 package br.com.paulomatew.compilador.analyzer;
 
-import br.com.paulomatew.compilador.entities.LexicalObject;
 import br.com.paulomatew.compilador.exceptions.SintaticException;
 import br.com.paulomatew.compilador.main.Compilador;
 import java.util.ArrayList;

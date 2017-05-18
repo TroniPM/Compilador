@@ -6,7 +6,6 @@
 package br.com.paulomatew.compilador.analyzer;
 
 import br.com.paulomatew.compilador.exceptions.LexicalException;
-import br.com.paulomatew.compilador.entities.LexicalObject;
 import br.com.paulomatew.compilador.main.Compilador;
 import dnl.utils.text.table.TextTable;
 import java.io.PrintWriter;
@@ -65,16 +64,18 @@ public class Lexical {
 
         return null;*/
 
-        Table t = new Table(4);
+        Table t = new Table(5);
         t.addCell("POS");
-        t.addCell("Token");
-        t.addCell("Lexema");
-        t.addCell("Descrição");
+        t.addCell("TOKEN");
+        t.addCell("LEXEMA");
+        t.addCell("LINHA");
+        t.addCell("DESCRIÇÃO");
         for (int i = 0; i < tokenArray.size(); i++) {
             LexicalObject in = tokenArray.get(i);
             t.addCell("" + String.valueOf(i + 1));
             t.addCell(Compilador.getToken(in.type));
             t.addCell(in.lexeme);
+            t.addCell(String.valueOf(in.linha));
             t.addCell(in.description);
         }
 

@@ -8,7 +8,7 @@ package br.com.paulomatew.compilador.main;
 import br.com.paulomatew.compilador.analyzer.Lexical;
 import br.com.paulomatew.compilador.analyzer.Semantic;
 import br.com.paulomatew.compilador.analyzer.Sintatic;
-import br.com.paulomatew.compilador.entities.LexicalObject;
+import br.com.paulomatew.compilador.analyzer.LexicalObject;
 import br.com.paulomatew.compilador.exceptions.LexicalException;
 import br.com.paulomatew.compilador.exceptions.SintaticException;
 import java.io.PrintWriter;

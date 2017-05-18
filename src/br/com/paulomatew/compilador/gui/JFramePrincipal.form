@@ -73,8 +73,8 @@
       <SubComponents>
         <Component class="javax.swing.JTextPane" name="jTextPane1">
           <Properties>
-            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-              <Font name="SansSerif" size="12" style="0"/>
+            <Property name="font" type="java.awt.Font" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+              <Connection code="fontBasica" type="code"/>
             </Property>
             <Property name="text" type="java.lang.String" value="main)(){&#xa;&#x9;int function somar(int a1, int a2){&#xa;&#x9;&#x9;return a1 + a2;&#xa;&#x9;}&#xa;&#xa;&#x9;int inteiro1;&#xa;&#x9;boolean boo1;&#xa;&#x9;int inteiro2;&#xa;&#x9;boolean boo2;&#xa;&#x9;&#xa;&#x9;inteiro2 = 20;&#xa;&#x9;inteiro1 = inteiro2 + 2;&#xa;&#x9;&#xa;&#x9;boo1 = false;&#xa;&#x9;boo2 = boo1 &amp;&amp; true;&#xa;&#x9;&#xa;&#x9;if(boo1==true){&#xa;&#x9;} else {&#xa;&#x9;}&#xa;&#x9;&#xa;&#x9;somar(inteiro1, inteiro2);&#xa;&#x9;&#xa;&#x9;print(20);&#xa;}"/>
           </Properties>
