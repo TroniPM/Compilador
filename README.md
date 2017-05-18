@@ -15,7 +15,7 @@ main(){
 	}
 
 	void function somar21(boolean a1, boolean a2){
-		return a1 || a2;
+		int x = 1 + 2;
 	}
 
 	boolean function somar3(){
