@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package br.com.paulomatew.compilador.analyzer;
+package br.com.paulomatew.compilador.analyzer.lexical;
 
 import br.com.paulomatew.compilador.exceptions.LexicalException;
 import br.com.paulomatew.compilador.main.Compilador;
@@ -23,7 +23,7 @@ import org.nocrala.tools.texttablefmt.Table;
 public class Lexical {
 
     private String sourceCode = null;
-    public ArrayList<LexicalObject> tokenArray = null;
+    public ArrayList<LexicalToken> tokenArray = null;
 
     public void init(String sourceCode) throws LexicalException {
         if (sourceCode == null || sourceCode.isEmpty()) {
@@ -36,34 +36,6 @@ public class Lexical {
     }
 
     public String getTokenListAsTable() {
-        /*String[] columnNames = {
-            "Token",
-            "Lexema",
-            "Descrição"};
-
-        Object[][] data = new Object[tokenArray.size()][3];
-        for (int i = 0; i < tokenArray.size(); i++) {
-
-            LexicalObject in = tokenArray.get(i);
-
-            data[i][0] = Compilador.getToken(in.type);
-            data[i][1] = in.lexeme;
-            data[i][2] = in.description;
-
-        }
-
-        TextTable tt = new TextTable(columnNames, data);
-        // this adds the numbering on the left
-        tt.setAddRowNumbering(true);
-        // sort by the first column
-        //tt.setSort(0);
-        tt.printTable();
-
-        StringWriter errors = new StringWriter();
-        tt.printTable();//new PrintWriter(errors), 0);
-
-        return null;*/
-
         Table t = new Table(5);
         t.addCell("POS");
         t.addCell("TOKEN");
@@ -71,11 +43,11 @@ public class Lexical {
         t.addCell("LINHA");
         t.addCell("DESCRIÇÃO");
         for (int i = 0; i < tokenArray.size(); i++) {
-            LexicalObject in = tokenArray.get(i);
+            LexicalToken in = tokenArray.get(i);
             t.addCell("" + String.valueOf(i + 1));
             t.addCell(Compilador.getToken(in.type));
             t.addCell(in.lexeme);
-            t.addCell(String.valueOf(in.linha));
+            t.addCell(String.valueOf(in.line));
             t.addCell(in.description);
         }
 
@@ -154,8 +126,8 @@ public class Lexical {
         //return msg.trim().replaceAll(" +", " ");
     }
 
-    private ArrayList<LexicalObject> parser() {
-        ArrayList<LexicalObject> arr = new ArrayList<>();
+    private ArrayList<LexicalToken> parser() {
+        ArrayList<LexicalToken> arr = new ArrayList<>();
 
         String[] sourcePorLinha = sourceCode.split("\n");
         for (int j1 = 0; j1 < sourcePorLinha.length; j1++) {
@@ -171,10 +143,10 @@ public class Lexical {
                 for (int i = 0; i < Compilador.RESERVED_WORDS_AND_OPERATORS.size(); i++) {
                     if (s.equals(Compilador.RESERVED_WORDS_AND_OPERATORS.get(i))) {
 
-                        LexicalObject l = new LexicalObject();
+                        LexicalToken l = new LexicalToken();
                         l.type = i + 3;//correção de indice para ocultar os 3 primeiros
                         l.lexeme = s;
-                        l.linha = j1 + 1;
+                        l.line = j1 + 1;
                         arr.add(l);
 
                         ctrl = true;
@@ -185,19 +157,19 @@ public class Lexical {
                 }
 
                 if (Character.isUpperCase(s.charAt(0))) {
-                    LexicalObject l = new LexicalObject();
+                    LexicalToken l = new LexicalToken();
                     l.type = 2;// "token desconhecido";
                     l.lexeme = s;
-                    l.linha = j1 + 1;
+                    l.line = j1 + 1;
                     arr.add(l);
                     continue;
                 }
 
                 if (Character.isLowerCase(s.charAt(0))) {
-                    LexicalObject l = new LexicalObject();
+                    LexicalToken l = new LexicalToken();
                     l.type = 1;//"identificador";
                     l.lexeme = s;
-                    l.linha = j1 + 1;
+                    l.line = j1 + 1;
                     arr.add(l);
                     continue;
                 }
@@ -206,18 +178,18 @@ public class Lexical {
                     /*TODO: Começa com digito mas tem LETRA (fazer forma de reconhecer
                     com notação 1.5E12) */
                     if (s.matches(".*[a-zA-Z]+.*")) {
-                        LexicalObject l = new LexicalObject();
+                        LexicalToken l = new LexicalToken();
                         l.type = 2;//"token desconhecido";
                         l.lexeme = s;
-                        l.linha = j1 + 1;
+                        l.line = j1 + 1;
                         arr.add(l);
                         continue;
                     } else {
 
-                        LexicalObject l = new LexicalObject();
+                        LexicalToken l = new LexicalToken();
                         l.type = 0;//"constante";
                         l.lexeme = s;
-                        l.linha = j1 + 1;
+                        l.line = j1 + 1;
                         arr.add(l);
                         continue;
                     }

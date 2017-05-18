@@ -5,7 +5,7 @@
  */
 package br.com.paulomatew.compilador.gui;
 
-import br.com.paulomatew.compilador.analyzer.LexicalObject;
+import br.com.paulomatew.compilador.analyzer.lexical.LexicalToken;
 import static br.com.paulomatew.compilador.entities.OSValidator.isMac;
 import static br.com.paulomatew.compilador.entities.OSValidator.isUnix;
 import static br.com.paulomatew.compilador.entities.OSValidator.isWindows;

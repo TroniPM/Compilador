@@ -5,10 +5,10 @@
  */
 package br.com.paulomatew.compilador.main;
 
-import br.com.paulomatew.compilador.analyzer.Lexical;
-import br.com.paulomatew.compilador.analyzer.Semantic;
-import br.com.paulomatew.compilador.analyzer.Sintatic;
-import br.com.paulomatew.compilador.analyzer.LexicalObject;
+import br.com.paulomatew.compilador.analyzer.lexical.Lexical;
+import br.com.paulomatew.compilador.analyzer.semantic.Semantic;
+import br.com.paulomatew.compilador.analyzer.sintatic.Sintatic;
+import br.com.paulomatew.compilador.analyzer.lexical.LexicalToken;
 import br.com.paulomatew.compilador.exceptions.LexicalException;
 import br.com.paulomatew.compilador.exceptions.SintaticException;
 import java.io.PrintWriter;
@@ -134,12 +134,27 @@ public class Compilador {
                 + "	\n"
                 + "	print(20);\n"
                 + "}";
-        Compilador c = new Compilador();
-        c.init(palavra);
 
-        //System.out.println(c.analizadorLexico.getTokenListAsTable());
-        /*for (LexicalObject in : c.analizadorLexico.tokenArray) {
+        try {
+            System.out.println(teste(false));
+
+            //Compilador c = new Compilador();
+            //c.init(palavra);
+            //System.out.println(c.analizadorLexico.getTokenListAsTable());
+            /*for (LexicalObject in : c.analizadorLexico.tokenArray) {
             in.print();
-        }*/
+            }*/
+        } catch (Exception ex) {
+            Logger.getLogger(Compilador.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+    }
+
+    public static boolean teste(boolean t) throws Exception {
+        if (t) {
+            return true;
+        } else {
+            throw new Exception("Unexpected token after");
+        }
     }
 }
