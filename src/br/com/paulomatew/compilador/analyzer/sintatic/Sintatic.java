@@ -44,19 +44,68 @@ public class Sintatic {
         }
         for (int i = 0; i < tokenListFromLexical.size(); i++) {
             LexicalToken current = tokenListFromLexical.get(i), next = null;
-            if (tokenListFromLexical.get(i + 1) != null) {
-                next = tokenListFromLexical.get(i + 1);
+            try {
+                if (tokenListFromLexical.get(i + 1) != null) {
+                    next = tokenListFromLexical.get(i + 1);
+                }
+            } catch (Exception ex) {
             }
 
+            /**
+             * Falta inserir BREAK/CONTINUE/RETURN
+             */
             switch (current.type) {
                 //constante
                 case 0:
-                    break;
+                    if (next != null
+                            && (next.type == 5/* ) */
+                            || next.type == 8/* ; */
+                            || next.type == 9/* , */
+                            || next.type == 11/* + */
+                            || next.type == 12/* - */
+                            || next.type == 13/* * */
+                            || next.type == 14/* / */
+                            || next.type == 28/* < */
+                            || next.type == 29/* > */
+                            || next.type == 30/* <= */
+                            || next.type == 31/* >= */
+                            || next.type == 32/* == */
+                            || next.type == 33/* != */
+                            || next.type == 34/* && */
+                            || next.type == 35/* || */)) {
+                        //TODO: do stuff here
+                        continue;
+                    } else {
+                        throw new SintaticException("Unexpected token after '" + current.lexeme + "' line " + current.line);
+                    }
                 // identificador
                 case 1:
-                    break;
+                    if (next != null
+                            && (next.type == 4/* ( */
+                            || next.type == 5/* ) */
+                            || next.type == 8/* ; */
+                            || next.type == 9/* , */
+                            || next.type == 10/* = */
+                            || next.type == 11/* + */
+                            || next.type == 12/* - */
+                            || next.type == 13/* * */
+                            || next.type == 14/* / */
+                            || next.type == 27/*print*/
+                            || next.type == 28/* < */
+                            || next.type == 29/* > */
+                            || next.type == 30/* <= */
+                            || next.type == 31/* >= */
+                            || next.type == 32/* == */
+                            || next.type == 33/* != */
+                            || next.type == 34/* && */
+                            || next.type == 35/* || */)) {
+                        //TODO: do stuff here
+                        continue;
+                    } else {
+                        throw new SintaticException("Unexpected token after '" + current.lexeme + "' line " + current.line);
+                    }
                 // token desconhecido
-                case 2:
+                case 2://TODO: token desconhecido deve chegar a este ponto??
                     break;
                 // main
                 case 3:
@@ -69,10 +118,13 @@ public class Sintatic {
                 // (
                 case 4:
                     if (next != null
-                            && (next.type == 1/*identi*/
-                            && next.type == 5/*fecha_p*/
-                            && next.type == 16/*int*/
-                            && next.type == 17/*boolean*/)) {
+                            && (next.type == 0/*constante*/
+                            || next.type == 1/*identificador*/
+                            || next.type == 5/*fecha_p*/
+                            || next.type == 16/*int*/
+                            || next.type == 17/*boolean*/
+                            || next.type == 25/*true*/
+                            || next.type == 26/*false*/)) {
                         //TODO: do stuff here
                         continue;
                     } else {
@@ -82,11 +134,11 @@ public class Sintatic {
                 case 5:
                     if (next != null
                             && (next.type == 6/*{*/
-                            && next.type == 8/*;*/
-                            && next.type == 11/* + */
-                            && next.type == 12/* - */
-                            && next.type == 13/* * */
-                            && next.type == 14/* / */)) {
+                            || next.type == 8/*;*/
+                            || next.type == 11/* + */
+                            || next.type == 12/* - */
+                            || next.type == 13/* * */
+                            || next.type == 14/* / */)) {
                         //TODO: do stuff here
                         continue;
                     } else {
@@ -94,88 +146,344 @@ public class Sintatic {
                     }
                 // {
                 case 6:
-                    break;
+                    if (next != null//Não entra FUNCTION pq antes do function vem o tipo de retorno void/int/boolean
+                            && (next.type == 1/*identificador*/
+                            || next.type == 7/* } */
+                            || next.type == 15/*void*/
+                            || next.type == 16/*int*/
+                            || next.type == 17/*boolean*/
+                            || next.type == 18/*break*/
+                            || next.type == 19/*continue*/
+                            || next.type == 20/*return*/
+                            || next.type == 21/*if*/
+                            || next.type == 23/*while*/
+                            || next.type == 27/*print*/)) {
+                        //TODO: do stuff here
+                        continue;
+                    } else {
+                        throw new SintaticException("Unexpected token after '" + current.lexeme + "' line " + current.line);
+                    }
                 // }
                 case 7:
-                    break;
+                    if (next == null//next==null significa q é EOF
+                            || (next.type == 1/*identificador*/
+                            || next.type == 7/* } */
+                            || next.type == 15/*void*/
+                            || next.type == 16/*int*/
+                            || next.type == 17/*boolean*/
+                            || next.type == 20/*return*/
+                            || next.type == 21/*if*/
+                            || next.type == 22/*else*/
+                            || next.type == 23/*while*/
+                            || next.type == 27/*print*/)) {
+                        //TODO: do stuff here
+                        continue;
+                    } else {
+                        throw new SintaticException("Unexpected token after '" + current.lexeme + "' line " + current.line);
+                    }
                 // ;
                 case 8:
-                    break;
+                    if (next != null
+                            && (next.type == 1/*identificador*/
+                            || next.type == 7/* } */
+                            || next.type == 8/* ; FAZER COM Q ;; SEJA POSSÍVEL*/
+                            || next.type == 15/*void*/
+                            || next.type == 16/*int*/
+                            || next.type == 17/*boolean*/
+                            || next.type == 21/*if*/
+                            || next.type == 23/*while*/
+                            || next.type == 27/*print*/)) {
+                        //TODO: do stuff here
+                        continue;
+                    } else {
+                        throw new SintaticException("Unexpected token after '" + current.lexeme + "' line " + current.line);
+                    }
                 // ,
                 case 9:
-                    break;
+                    if (next != null
+                            && (next.type == 1/*identificador*/
+                            || next.type == 16/*int*/
+                            || next.type == 17/*boolean*/)) {
+                        //TODO: do stuff here
+                        continue;
+                    } else {
+                        throw new SintaticException("Unexpected token after '" + current.lexeme + "' line " + current.line);
+                    }
                 // =
                 case 10:
-                    break;
+                    if (next != null
+                            && (next.type == 0/*constante*/
+                            || next.type == 1/*identificador*/
+                            || next.type == 4/*abre_p*/
+                            || next.type == 25/*true*/
+                            || next.type == 26/*false*/)) {
+                        //TODO: do stuff here
+                        continue;
+                    } else {
+                        throw new SintaticException("Unexpected token after '" + current.lexeme + "' line " + current.line);
+                    }
                 // +
                 case 11:
-                    break;
+                    if (next != null
+                            && (next.type == 0/*constante*/
+                            || next.type == 1/*identificador*/
+                            || next.type == 4/*abre_p*/)) {
+                        //TODO: do stuff here
+                        continue;
+                    } else {
+                        throw new SintaticException("Unexpected token after '" + current.lexeme + "' line " + current.line);
+                    }
                 // -
                 case 12:
-                    break;
+                    if (next != null
+                            && (next.type == 0/*constante*/
+                            || next.type == 1/*identificador*/
+                            || next.type == 4/*abre_p*/)) {
+                        //TODO: do stuff here
+                        continue;
+                    } else {
+                        throw new SintaticException("Unexpected token after '" + current.lexeme + "' line " + current.line);
+                    }
                 // *
                 case 13:
-                    break;
+                    if (next != null
+                            && (next.type == 0/*constante*/
+                            || next.type == 1/*identificador*/
+                            || next.type == 4/*abre_p*/)) {
+                        //TODO: do stuff here
+                        continue;
+                    } else {
+                        throw new SintaticException("Unexpected token after '" + current.lexeme + "' line " + current.line);
+                    }
                 // /
                 case 14:
-                    break;
+                    if (next != null
+                            && (next.type == 0/*constante*/
+                            || next.type == 1/*identificador*/
+                            || next.type == 4/*abre_p*/)) {
+                        //TODO: do stuff here
+                        continue;
+                    } else {
+                        throw new SintaticException("Unexpected token after '" + current.lexeme + "' line " + current.line);
+                    }
                 // void
                 case 15:
-                    break;
+                    if (next != null && next.type == 24/*function*/) {
+                        //TODO: do stuff here
+                        continue;
+                    } else {
+                        throw new SintaticException("Unexpected token after '" + current.lexeme + "' line " + current.line);
+                    }
                 // int
                 case 16:
-                    break;
+                    if (next != null
+                            && (next.type == 1/*identificador*/
+                            || next.type == 24/*function*/)) {
+                        //TODO: do stuff here
+                        continue;
+                    } else {
+                        throw new SintaticException("Unexpected token after '" + current.lexeme + "' line " + current.line);
+                    }
                 // boolean
                 case 17:
-                    break;
+                    if (next != null
+                            && (next.type == 1/*identificador*/
+                            || next.type == 24/*function*/)) {
+                        //TODO: do stuff here
+                        continue;
+                    } else {
+                        throw new SintaticException("Unexpected token after '" + current.lexeme + "' line " + current.line);
+                    }
                 // break
                 case 18:
-                    break;
+                    if (next != null && next.type == 8/* , */) {
+                        //TODO: do stuff here
+                        continue;
+                    } else {
+                        throw new SintaticException("Unexpected token after '" + current.lexeme + "' line " + current.line);
+                    }
                 // continue
                 case 19:
-                    break;
+                    if (next != null && next.type == 8/* , */) {
+                        //TODO: do stuff here
+                        continue;
+                    } else {
+                        throw new SintaticException("Unexpected token after '" + current.lexeme + "' line " + current.line);
+                    }
                 // return
                 case 20:
-                    break;
+                    if (next != null
+                            && (next.type == 1/*identificador*/
+                            || next.type == 4/*abre_p*/
+                            || next.type == 25/*true*/
+                            || next.type == 26/*false*/)) {
+                        //TODO: do stuff here
+                        continue;
+                    } else {
+                        throw new SintaticException("Unexpected token after '" + current.lexeme + "' line " + current.line);
+                    }
                 // if
                 case 21:
-                    break;
+                    if (next != null && next.type == 4/*abre_p*/) {
+                        //TODO: do stuff here
+                        continue;
+                    } else {
+                        throw new SintaticException("Unexpected token after '" + current.lexeme + "' line " + current.line);
+                    }
                 // else
                 case 22:
-                    break;
+                    if (next != null && next.type == 6/*abre_c*/) {
+                        //TODO: do stuff here
+                        continue;
+                    } else {
+                        throw new SintaticException("Unexpected token after '" + current.lexeme + "' line " + current.line);
+                    }
                 // while
                 case 23:
-                    break;
+                    if (next != null && next.type == 4/*abre_p*/) {
+                        //TODO: do stuff here
+                        continue;
+                    } else {
+                        throw new SintaticException("Unexpected token after '" + current.lexeme + "' line " + current.line);
+                    }
                 // function
                 case 24:
-                    break;
+                    if (next != null && next.type == 1/*identificador*/) {
+                        //TODO: do stuff here
+                        continue;
+                    } else {
+                        throw new SintaticException("Unexpected token after '" + current.lexeme + "' line " + current.line);
+                    }
                 // true
                 case 25:
-                    break;
+                    if (next != null
+                            && (next.type == 5/* ) */
+                            || next.type == 8/* ; */
+                            || next.type == 9/* , */
+                            || next.type == 34/* && */
+                            || next.type == 35/* || */)) {
+                        //TODO: do stuff here
+                        continue;
+                    } else {
+                        throw new SintaticException("Unexpected token after '" + current.lexeme + "' line " + current.line);
+                    }
                 // false
                 case 26:
-                    break;
+                    if (next != null
+                            && (next.type == 5/* ) */
+                            || next.type == 8/* ; */
+                            || next.type == 9/* , */
+                            || next.type == 34/* && */
+                            || next.type == 35/* || */)) {
+                        //TODO: do stuff here
+                        continue;
+                    } else {
+                        throw new SintaticException("Unexpected token after '" + current.lexeme + "' line " + current.line);
+                    }
                 // print
                 case 27:
-                    break;
+                    if (next != null && next.type == 4/*abre_p*/) {
+                        //TODO: do stuff here
+                        continue;
+                    } else {
+                        throw new SintaticException("Unexpected token after '" + current.lexeme + "' line " + current.line);
+                    }
                 // <
                 case 28:
-                    break;
+                    if (next != null
+                            && (next.type == 0/*constante*/
+                            || next.type == 1/*identificador*/
+                            || next.type == 4/*abre_p*/)) {
+                        //TODO: do stuff here
+                        continue;
+                    } else {
+                        throw new SintaticException("Unexpected token after '" + current.lexeme + "' line " + current.line);
+                    }
                 // >
                 case 29:
-                    break;
+                    if (next != null
+                            && (next.type == 0/*constante*/
+                            || next.type == 1/*identificador*/
+                            || next.type == 4/*abre_p*/)) {
+                        //TODO: do stuff here
+                        continue;
+                    } else {
+                        throw new SintaticException("Unexpected token after '" + current.lexeme + "' line " + current.line);
+                    }
                 // <=
                 case 30:
-                    break;
+                    if (next != null
+                            && (next.type == 0/*constante*/
+                            || next.type == 1/*identificador*/
+                            || next.type == 4/*abre_p*/)) {
+                        //TODO: do stuff here
+                        continue;
+                    } else {
+                        throw new SintaticException("Unexpected token after '" + current.lexeme + "' line " + current.line);
+                    }
                 // >=
                 case 31:
-                    break;
+                    if (next != null
+                            && (next.type == 0/*constante*/
+                            || next.type == 1/*identificador*/
+                            || next.type == 4/*abre_p*/)) {
+                        //TODO: do stuff here
+                        continue;
+                    } else {
+                        throw new SintaticException("Unexpected token after '" + current.lexeme + "' line " + current.line);
+                    }
                 // ==
                 case 32:
-                    break;
+                    if (next != null
+                            && (next.type == 0/*constante*/
+                            || next.type == 1/*identificador*/
+                            || next.type == 4/*abre_p*/
+                            || next.type == 25/*true*/
+                            || next.type == 26/*false*/)) {
+                        //TODO: do stuff here
+                        continue;
+                    } else {
+                        throw new SintaticException("Unexpected token after '" + current.lexeme + "' line " + current.line);
+                    }
                 // !=
                 case 33:
-                    break;
+                    if (next != null
+                            && (next.type == 0/*constante*/
+                            || next.type == 1/*identificador*/
+                            || next.type == 4/*abre_p*/
+                            || next.type == 25/*true*/
+                            || next.type == 26/*false*/)) {
+                        //TODO: do stuff here
+                        continue;
+                    } else {
+                        throw new SintaticException("Unexpected token after '" + current.lexeme + "' line " + current.line);
+                    }
+                // &&
+                case 34:
+                    if (next != null
+                            && (next.type == 0/*constante*/
+                            || next.type == 1/*identificador*/
+                            || next.type == 4/*abre_p*/
+                            || next.type == 25/*true*/
+                            || next.type == 26/*false*/)) {
+                        //TODO: do stuff here
+                        continue;
+                    } else {
+                        throw new SintaticException("Unexpected token after '" + current.lexeme + "' line " + current.line);
+                    }
+                // ||
+                case 35:
+                    if (next != null
+                            && (next.type == 0/*constante*/
+                            || next.type == 1/*identificador*/
+                            || next.type == 4/*abre_p*/
+                            || next.type == 25/*true*/
+                            || next.type == 26/*false*/)) {
+                        //TODO: do stuff here
+                        continue;
+                    } else {
+                        throw new SintaticException("Unexpected token after '" + current.lexeme + "' line " + current.line);
+                    }
                 default:
                     break;
             }

@@ -41,14 +41,14 @@ public class Lexical {
         t.addCell("TOKEN");
         t.addCell("LEXEMA");
         t.addCell("LINHA");
-        t.addCell("DESCRIÇÃO");
+        t.addCell("TIPO");
         for (int i = 0; i < tokenArray.size(); i++) {
             LexicalToken in = tokenArray.get(i);
             t.addCell("" + String.valueOf(i + 1));
             t.addCell(Compilador.getToken(in.type));
             t.addCell(in.lexeme);
             t.addCell(String.valueOf(in.line));
-            t.addCell(in.description);
+            t.addCell(String.valueOf(in.type));
         }
 
         return t.render();
