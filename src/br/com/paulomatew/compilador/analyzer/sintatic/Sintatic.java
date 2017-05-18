@@ -120,6 +120,7 @@ public class Sintatic {
                     if (next != null
                             && (next.type == 0/*constante*/
                             || next.type == 1/*identificador*/
+                            || next.type == 4/*abre_p*/
                             || next.type == 5/*fecha_p*/
                             || next.type == 16/*int*/
                             || next.type == 17/*boolean*/
@@ -133,12 +134,21 @@ public class Sintatic {
                 // )
                 case 5:
                     if (next != null
-                            && (next.type == 6/*{*/
-                            || next.type == 8/*;*/
+                            && (next.type == 5/* ) */
+                            || next.type == 6/* { */
+                            || next.type == 8/* ; */
                             || next.type == 11/* + */
                             || next.type == 12/* - */
                             || next.type == 13/* * */
-                            || next.type == 14/* / */)) {
+                            || next.type == 14/* / */
+                            || next.type == 28/* < */
+                            || next.type == 29/* > */
+                            || next.type == 30/* <= */
+                            || next.type == 31/* >= */
+                            || next.type == 32/* == */
+                            || next.type == 33/* != */
+                            || next.type == 34/* && */
+                            || next.type == 35/* || */)) {
                         //TODO: do stuff here
                         continue;
                     } else {
@@ -360,6 +370,8 @@ public class Sintatic {
                             && (next.type == 5/* ) */
                             || next.type == 8/* ; */
                             || next.type == 9/* , */
+                            || next.type == 32/* == */
+                            || next.type == 33/* != */
                             || next.type == 34/* && */
                             || next.type == 35/* || */)) {
                         //TODO: do stuff here
@@ -373,6 +385,8 @@ public class Sintatic {
                             && (next.type == 5/* ) */
                             || next.type == 8/* ; */
                             || next.type == 9/* , */
+                            || next.type == 32/* == */
+                            || next.type == 33/* != */
                             || next.type == 34/* && */
                             || next.type == 35/* || */)) {
                         //TODO: do stuff here
