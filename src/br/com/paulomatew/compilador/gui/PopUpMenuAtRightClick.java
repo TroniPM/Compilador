@@ -34,7 +34,12 @@ public class PopUpMenuAtRightClick extends JPopupMenu {
         this.component = component;
 
         for (JMenuItem in : menu) {
-            add(in);
+            if (in != null) {
+                add(in);
+            } else {
+                add(new JPopupMenu.Separator());
+            }
+
         }
     }
 }

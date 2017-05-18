@@ -137,26 +137,12 @@ public class Compilador {
                 + "	print(20);\n"
                 + "}";
 
-        try {
-            System.out.println(teste(false));
-
-            //Compilador c = new Compilador();
-            //c.init(palavra);
-            //System.out.println(c.analizadorLexico.getTokenListAsTable());
-            /*for (LexicalObject in : c.analizadorLexico.tokenArray) {
+        Compilador c = new Compilador();
+        c.init(palavra);
+        //System.out.println(c.analizadorLexico.getTokenListAsTable());
+        /*for (LexicalObject in : c.analizadorLexico.tokenArray) {
             in.print();
             }*/
-        } catch (Exception ex) {
-            Logger.getLogger(Compilador.class.getName()).log(Level.SEVERE, null, ex);
-        }
 
-    }
-
-    public static boolean teste(boolean t) throws Exception {
-        if (t) {
-            return true;
-        } else {
-            throw new Exception("Unexpected token after");
-        }
     }
 }

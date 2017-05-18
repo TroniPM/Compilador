@@ -23,14 +23,28 @@ import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
+import javax.swing.AbstractAction;
+import javax.swing.ActionMap;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
+import javax.swing.InputMap;
+import javax.swing.JComponent;
 import javax.swing.JMenuItem;
+import javax.swing.JPopupMenu;
+import javax.swing.JSeparator;
 import javax.swing.JTextPane;
+import javax.swing.JToolBar;
+import javax.swing.KeyStroke;
+import javax.swing.event.UndoableEditEvent;
+import javax.swing.event.UndoableEditListener;
+import javax.swing.text.Document;
 import javax.swing.text.JTextComponent;
+import javax.swing.undo.CannotUndoException;
+import javax.swing.undo.UndoManager;
 
 /**
  *
@@ -38,8 +52,9 @@ import javax.swing.text.JTextComponent;
  */
 public class PopUpMenuAtRightClickMainEditorListener extends MouseAdapter {
 
+    private UndoManager undoManager;
     private JTextComponent component;
-    public ImageIcon iconCopy, iconPaste, iconCut, iconDelete, iconSelect;
+    public ImageIcon iconCopy, iconPaste, iconCut, iconDelete, iconSelect, iconUndo, iconRedo;
 
     PopUpMenuAtRightClickMainEditorListener(JTextPane jTextPane1) {
         this.component = jTextPane1;
@@ -49,6 +64,10 @@ public class PopUpMenuAtRightClickMainEditorListener extends MouseAdapter {
         iconCut = new ImageIcon("./images/cut.png");
         iconDelete = new ImageIcon("./images/delete.png");
         iconSelect = new ImageIcon("./images/select.png");
+        iconUndo = new ImageIcon("./images/undo.png");
+        iconRedo = new ImageIcon("./images/redo.png");
+
+        initRedoUndoScheme();
     }
 
     @Override
@@ -73,12 +92,35 @@ public class PopUpMenuAtRightClickMainEditorListener extends MouseAdapter {
 
     private void doPop(MouseEvent e) {
         JMenuItem[] aux = new JMenuItem[]{
-            new JMenuItemWithTag("Clear", iconDelete, new ActionListener() {
+            new JMenuItemWithTag("Undo", iconUndo, new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    component.setText("");
+                    try {
+                        if (undoManager.canUndo()) {
+                            undoManager.undo();
+                            if (undoManager.canUndo()) {
+                                undoManager.undo();
+                            }
+                        }
+                    } catch (CannotUndoException exp) {
+                        //exp.printStackTrace();
+                    }
                 }
-            }),
+            }), new JMenuItemWithTag("Redo", iconRedo, new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    try {
+                        if (undoManager.canRedo()) {
+                            undoManager.redo();
+                            if (undoManager.canRedo()) {
+                                undoManager.redo();
+                            }
+                        }
+                    } catch (CannotUndoException exp) {
+                        //exp.printStackTrace();
+                    }
+                }
+            }), null,
             new JMenuItemWithTag("Copy", iconCopy, new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
@@ -87,6 +129,19 @@ public class PopUpMenuAtRightClickMainEditorListener extends MouseAdapter {
                         regex = "";
                     }
                     copyToClipboard(regex);
+                }
+            }),
+            new JMenuItemWithTag("Cut", iconCut, new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    String txtRegex = component.getSelectedText();
+                    if (txtRegex == null) {
+                        txtRegex = "";
+                    }
+                    String allTxt = component.getText();
+                    component.setText(allTxt.replace(txtRegex, ""));
+
+                    copyToClipboard(txtRegex);
                 }
             }),
             new JMenuItemWithTag("Paste", iconPaste, new ActionListener() {
@@ -109,18 +164,10 @@ public class PopUpMenuAtRightClickMainEditorListener extends MouseAdapter {
                         component.replaceSelection(clipbString);
                     }
                 }
-            }),
-            new JMenuItemWithTag("Cut", iconCut, new ActionListener() {
+            }), null, new JMenuItemWithTag("Clear", iconDelete, new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    String txtRegex = component.getSelectedText();
-                    if (txtRegex == null) {
-                        txtRegex = "";
-                    }
-                    String allTxt = component.getText();
-                    component.setText(allTxt.replace(txtRegex, ""));
-
-                    copyToClipboard(txtRegex);
+                    component.setText("");
                 }
             }),
             new JMenuItemWithTag("Select all", iconSelect, new ActionListener() {
@@ -171,4 +218,51 @@ public class PopUpMenuAtRightClickMainEditorListener extends MouseAdapter {
 
         return (result);
     }
+
+    private void initRedoUndoScheme() {
+        //Adicionando listner pro ctrl+z do textarea de inserção
+        undoManager = new UndoManager();
+        Document doc = component.getDocument();
+        doc.addUndoableEditListener(new UndoableEditListener() {
+            @Override
+            public void undoableEditHappened(UndoableEditEvent e) {
+                undoManager.addEdit(e.getEdit());
+            }
+        });
+        InputMap im = component.getInputMap(JComponent.WHEN_FOCUSED);
+        ActionMap am = component.getActionMap();
+        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_Z, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()), "Undo");
+        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_Y, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()), "Redo");
+        am.put("Undo", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    if (undoManager.canUndo()) {
+                        undoManager.undo();
+                        if (undoManager.canUndo()) {
+                            undoManager.undo();
+                        }
+                    }
+                } catch (CannotUndoException exp) {
+                    //exp.printStackTrace();
+                }
+            }
+        });
+        am.put("Redo", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    if (undoManager.canRedo()) {
+                        undoManager.redo();
+                        if (undoManager.canRedo()) {
+                            undoManager.redo();
+                        }
+                    }
+                } catch (CannotUndoException exp) {
+                    //exp.printStackTrace();
+                }
+            }
+        });
+    }
+
 }
