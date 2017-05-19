@@ -505,56 +505,57 @@ public class Sintatic {
             }
         }
         //numero de () e {} devem ser iguais entre si
-        int esqP = 0, dirP = 0, esqC = 0, dirC = 0;
+        int abrP = 0, fecP = 0, abrC = 0, fecC = 0;
 
-        List<Integer> esqPi = new ArrayList<>();
-        List<Integer> dirPi = new ArrayList<>();
-        List<Integer> esqCi = new ArrayList<>();
-        List<Integer> dirCi = new ArrayList<>();
+        List<Integer> abrPi = new ArrayList<>();
+        List<Integer> fecPi = new ArrayList<>();
+        List<Integer> abrCi = new ArrayList<>();
+        List<Integer> fecCi = new ArrayList<>();
 
         for (int x = 0; x < tokenListFromLexical.size(); x++) {
             switch (tokenListFromLexical.get(x).type) {
                 case 4:
-                    esqP++;
-                    esqPi.add(x);
+                    abrP++;
+                    abrPi.add(x);
                     break;
                 case 5:
-                    dirP++;
-                    dirPi.add(x);
+                    fecP++;
+                    fecPi.add(x);
                     break;
                 case 6:
-                    esqC++;
-                    esqCi.add(x);
+                    abrC++;
+                    abrCi.add(x);
                     break;
                 case 7:
-                    dirC++;
-                    dirCi.add(x);
+                    fecC++;
+                    fecCi.add(x);
                     break;
                 default:
                     break;
             }
         }
-        if (esqP > dirP) {
-            int a = esqP - dirP;
+
+        if (abrP > fecP) {
+            int a = abrPi.get(abrPi.size() - fecPi.size() - 1);
             throw new SintaticException("Missing rigth parenthesis of '"
-                    + tokenListFromLexical.get((a == 1) ? 0 : esqPi.get(esqPi.size() - a - 1)).lexeme
-                    + "' line " + tokenListFromLexical.get((a == 1) ? 0 : esqPi.get(esqPi.size() - a - 1)).line);
-        } else if (esqP < dirP) {
-            int a = dirP - esqP;
+                    + tokenListFromLexical.get(a).lexeme
+                    + "' line " + tokenListFromLexical.get(a).line);
+        } else if (abrP < fecP) {
+            int a = fecPi.get(fecPi.size() - abrPi.size() - 1);
             throw new SintaticException("Missing left parenthesis of '"
-                    + tokenListFromLexical.get((a == 1) ? 0 : dirPi.get(dirPi.size() - a - 1)).lexeme
-                    + "' line " + tokenListFromLexical.get((a == 1) ? 0 : dirPi.get(dirPi.size() - a - 1)).line);
+                    + tokenListFromLexical.get(a).lexeme
+                    + "' line " + tokenListFromLexical.get(a).line);
         }
-        if (esqC > dirC) {
-            int a = esqC - dirC;
+        if (abrC > fecC) {
+            int a = abrCi.get(abrCi.size() - fecCi.size() - 1);
             throw new SintaticException("Missing rigth braces of '"
-                    + tokenListFromLexical.get((a == 1) ? 0 : esqCi.get(esqCi.size() - a - 1)).lexeme
-                    + "' line " + tokenListFromLexical.get((a == 1) ? 0 : esqCi.get(esqCi.size() - a - 1)).line);
-        } else if (esqC < dirC) {
-            int a = dirC - esqC;
+                    + tokenListFromLexical.get(a).lexeme
+                    + "' line " + tokenListFromLexical.get(a).line);
+        } else if (abrC < fecC) {
+            int a = fecCi.get(fecCi.size() - abrCi.size() - 1);
             throw new SintaticException("Missing left braces of '"
-                    + tokenListFromLexical.get((a == 1) ? 0 : dirCi.get(dirCi.size() - a - 1)).lexeme
-                    + "' line " + tokenListFromLexical.get((a == 1) ? 0 : dirCi.get(dirCi.size() - a - 1)).line);
+                    + tokenListFromLexical.get(a).lexeme
+                    + "' line " + tokenListFromLexical.get(a).line);
         }
     }
 }
