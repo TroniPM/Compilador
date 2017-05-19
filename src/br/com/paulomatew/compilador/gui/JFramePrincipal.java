@@ -70,12 +70,11 @@ public class JFramePrincipal extends javax.swing.JFrame {
      * Creates new form JFramePrincipal
      */
     public JFramePrincipal() {
-        if (isWindows() || isMac()) {
+        if (!isUnix()) {
             //System.out.println("This is Windows|Mac");
             fontBasica = new java.awt.Font("Courier New", 0, 13);
-        } else if (isUnix()) {
-            JTextField t = new JTextField();
-            fontBasica = new java.awt.Font(t.getFont().getName(), 0, 13);
+        } else {
+            fontBasica = new java.awt.Font("DejaVu Sans Mono", 0, 13);
             //System.out.println("This is Unix or Linux");
         }
 
