@@ -7,13 +7,8 @@ package br.com.paulomatew.compilador.analyzer.lexical;
 
 import br.com.paulomatew.compilador.exceptions.LexicalException;
 import br.com.paulomatew.compilador.main.Compilador;
-import dnl.utils.text.table.TextTable;
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.StringTokenizer;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.nocrala.tools.texttablefmt.Table;
 
 /**
