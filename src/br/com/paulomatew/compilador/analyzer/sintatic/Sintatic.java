@@ -127,7 +127,8 @@ public class Sintatic {
                             || next.type == 16/*int*/
                             || next.type == 17/*boolean*/
                             || next.type == 25/*true*/
-                            || next.type == 26/*false*/)) {
+                            || next.type == 26/*false*/
+                            || next.type == 36/*chamar função*/)) {
                         //TODO: do stuff here
                         continue;
                     } else {
@@ -169,7 +170,8 @@ public class Sintatic {
                             || next.type == 20/*return*/
                             || next.type == 21/*if*/
                             || next.type == 23/*while*/
-                            || next.type == 27/*print*/)) {
+                            || next.type == 27/*print*/
+                            || next.type == 36/*chamar função*/)) {
                         //TODO: do stuff here
                         continue;
                     } else {
@@ -187,7 +189,8 @@ public class Sintatic {
                             || next.type == 21/*if*/
                             || next.type == 22/*else*/
                             || next.type == 23/*while*/
-                            || next.type == 27/*print*/)) {
+                            || next.type == 27/*print*/
+                            || next.type == 36/*chamar função*/)) {
                         //TODO: do stuff here
                         continue;
                     } else {
@@ -204,7 +207,8 @@ public class Sintatic {
                             || next.type == 17/*boolean*/
                             || next.type == 21/*if*/
                             || next.type == 23/*while*/
-                            || next.type == 27/*print*/)) {
+                            || next.type == 27/*print*/
+                            || next.type == 36/*chamar função*/)) {
                         //TODO: do stuff here
                         continue;
                     } else {
@@ -215,7 +219,8 @@ public class Sintatic {
                     if (next != null
                             && (next.type == 1/*identificador*/
                             || next.type == 16/*int*/
-                            || next.type == 17/*boolean*/)) {
+                            || next.type == 17/*boolean*/
+                            || next.type == 36/*chamar função*/)) {
                         //TODO: do stuff here
                         continue;
                     } else {
@@ -228,7 +233,8 @@ public class Sintatic {
                             || next.type == 1/*identificador*/
                             || next.type == 4/*abre_p*/
                             || next.type == 25/*true*/
-                            || next.type == 26/*false*/)) {
+                            || next.type == 26/*false*/
+                            || next.type == 36/*chamar função*/)) {
                         //TODO: do stuff here
                         continue;
                     } else {
@@ -239,7 +245,8 @@ public class Sintatic {
                     if (next != null
                             && (next.type == 0/*constante*/
                             || next.type == 1/*identificador*/
-                            || next.type == 4/*abre_p*/)) {
+                            || next.type == 4/*abre_p*/
+                            || next.type == 36/*chamar função*/)) {
                         //TODO: do stuff here
                         continue;
                     } else {
@@ -250,7 +257,8 @@ public class Sintatic {
                     if (next != null
                             && (next.type == 0/*constante*/
                             || next.type == 1/*identificador*/
-                            || next.type == 4/*abre_p*/)) {
+                            || next.type == 4/*abre_p*/
+                            || next.type == 36/*chamar função*/)) {
                         //TODO: do stuff here
                         continue;
                     } else {
@@ -261,7 +269,8 @@ public class Sintatic {
                     if (next != null
                             && (next.type == 0/*constante*/
                             || next.type == 1/*identificador*/
-                            || next.type == 4/*abre_p*/)) {
+                            || next.type == 4/*abre_p*/
+                            || next.type == 36/*chamar função*/)) {
                         //TODO: do stuff here
                         continue;
                     } else {
@@ -272,7 +281,8 @@ public class Sintatic {
                     if (next != null
                             && (next.type == 0/*constante*/
                             || next.type == 1/*identificador*/
-                            || next.type == 4/*abre_p*/)) {
+                            || next.type == 4/*abre_p*/
+                            || next.type == 36/*chamar função*/)) {
                         //TODO: do stuff here
                         continue;
                     } else {
@@ -328,7 +338,8 @@ public class Sintatic {
                             && (next.type == 1/*identificador*/
                             || next.type == 4/*abre_p*/
                             || next.type == 25/*true*/
-                            || next.type == 26/*false*/)) {
+                            || next.type == 26/*false*/
+                            || next.type == 36/*chamar função*/)) {
                         //TODO: do stuff here
                         continue;
                     } else {
@@ -409,7 +420,8 @@ public class Sintatic {
                     if (next != null
                             && (next.type == 0/*constante*/
                             || next.type == 1/*identificador*/
-                            || next.type == 4/*abre_p*/)) {
+                            || next.type == 4/*abre_p*/
+                            || next.type == 36/*chamar função*/)) {
                         //TODO: do stuff here
                         continue;
                     } else {
@@ -420,7 +432,8 @@ public class Sintatic {
                     if (next != null
                             && (next.type == 0/*constante*/
                             || next.type == 1/*identificador*/
-                            || next.type == 4/*abre_p*/)) {
+                            || next.type == 4/*abre_p*/
+                            || next.type == 36/*chamar função*/)) {
                         //TODO: do stuff here
                         continue;
                     } else {
@@ -431,7 +444,8 @@ public class Sintatic {
                     if (next != null
                             && (next.type == 0/*constante*/
                             || next.type == 1/*identificador*/
-                            || next.type == 4/*abre_p*/)) {
+                            || next.type == 4/*abre_p*/
+                            || next.type == 36/*chamar função*/)) {
                         //TODO: do stuff here
                         continue;
                     } else {
@@ -442,7 +456,8 @@ public class Sintatic {
                     if (next != null
                             && (next.type == 0/*constante*/
                             || next.type == 1/*identificador*/
-                            || next.type == 4/*abre_p*/)) {
+                            || next.type == 4/*abre_p*/
+                            || next.type == 36/*chamar função*/)) {
                         //TODO: do stuff here
                         continue;
                     } else {
@@ -455,7 +470,8 @@ public class Sintatic {
                             || next.type == 1/*identificador*/
                             || next.type == 4/*abre_p*/
                             || next.type == 25/*true*/
-                            || next.type == 26/*false*/)) {
+                            || next.type == 26/*false*/
+                            || next.type == 36/*chamar função*/)) {
                         //TODO: do stuff here
                         continue;
                     } else {
@@ -468,7 +484,8 @@ public class Sintatic {
                             || next.type == 1/*identificador*/
                             || next.type == 4/*abre_p*/
                             || next.type == 25/*true*/
-                            || next.type == 26/*false*/)) {
+                            || next.type == 26/*false*/
+                            || next.type == 36/*chamar função*/)) {
                         //TODO: do stuff here
                         continue;
                     } else {
@@ -481,7 +498,8 @@ public class Sintatic {
                             || next.type == 1/*identificador*/
                             || next.type == 4/*abre_p*/
                             || next.type == 25/*true*/
-                            || next.type == 26/*false*/)) {
+                            || next.type == 26/*false*/
+                            || next.type == 36/*chamar função*/)) {
                         //TODO: do stuff here
                         continue;
                     } else {
@@ -494,7 +512,17 @@ public class Sintatic {
                             || next.type == 1/*identificador*/
                             || next.type == 4/*abre_p*/
                             || next.type == 25/*true*/
-                            || next.type == 26/*false*/)) {
+                            || next.type == 26/*false*/
+                            || next.type == 36/*chamar função*/)) {
+                        //TODO: do stuff here
+                        continue;
+                    } else {
+                        throw new SintaticException("Unexpected token after '" + current.lexeme + "' line " + current.line);
+                    }
+                // int
+                case 36:
+                    if (next != null
+                            && (next.type == 1/*identificador*/)) {
                         //TODO: do stuff here
                         continue;
                     } else {

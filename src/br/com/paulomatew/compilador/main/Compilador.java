@@ -42,15 +42,15 @@ public class Compilador {
         analizadorSintatico = new Sintatic();
         analizadorSemantico = new Semantic();
 
-        String[] t1 = new String[]{"main", "(", ")", "{", "}", ";", ",", "=", "+", "-"/*10*/, "*", "/", "void", "int", "boolean", "break", "continue", "return", "if", "else"/*20*/, "while", "function", "true", "false", "print", "<", ">", "<=", ">=", "=="/*30*/, "!=", "&&", "||"};
+        String[] t1 = new String[]{"main", "(", ")", "{", "}", ";", ",", "=", "+", "-"/*10*/, "*", "/", "void", "int", "boolean", "break", "continue", "return", "if", "else"/*20*/, "while", "function", "true", "false", "print", "<", ">", "<=", ">=", "=="/*30*/, "!=", "&&", "||", "call"};
         RESERVED_WORDS_AND_OPERATORS = new ArrayList(Arrays.asList(t1));
 
         //utilizar esses indices para o LexicalObject type no array do analisador lexico
-        String[] t2 = new String[]{"constante", "identificador", "token desconhecido", "principal", "ABRE_P", "FECHA_P", "ABRE_C", "FECHA_C", "END_COMMAND", "comando vírgula", "comando de atribuição", "operador adição", "operador subtração", "operador multiplicação", "operador divisão", "declaração de void", "declaração de variável int", "declaração de variável bool", "desvio incondicional", "desvio incondicional", "desvio incondicional", "desvio condicional", "desvio condicional", "desvio loop", "declaração de função", "comando true", "comando false", "função print", "relação MENOR", "relação MAIOR", "relação MENOR IGUAL", "relação MAIOR IGUAL", "relação IGUAL", "relação DIFERENTE", "relação AND", "relação OR"};
+        String[] t2 = new String[]{"constante", "identificador", "token desconhecido", "principal", "ABRE_P", "FECHA_P", "ABRE_C", "FECHA_C", "END_COMMAND", "comando vírgula", "comando de atribuição", "operador adição", "operador subtração", "operador multiplicação", "operador divisão", "declaração de void", "declaração de variável int", "declaração de variável bool", "desvio incondicional", "desvio incondicional", "desvio incondicional", "desvio condicional", "desvio condicional", "desvio loop", "declaração de função", "comando true", "comando false", "função print", "relação MENOR", "relação MAIOR", "relação MENOR IGUAL", "relação MAIOR IGUAL", "relação IGUAL", "relação DIFERENTE", "relação AND", "relação OR", "chamada de  função"};
         RESERVED_WORDS_TOKEN = new ArrayList(Arrays.asList(t2));
 
         //Usado para mudar a cor das palavras na gui
-        String[] t3 = new String[]{"main", "void", "int", "boolean", "break", "continue", "return", "if", "else", "while", "function", "true", "false", "print"};
+        String[] t3 = new String[]{"main", "void", "int", "boolean", "break", "continue", "return", "if", "else", "while", "function", "true", "false", "print", "call"};
         RESERVED_WORDS = new ArrayList(Arrays.asList(t3));
     }
 
