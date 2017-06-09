@@ -3,13 +3,13 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package br.com.paulomatew.compilador.analyzer.lexical;
+package br.com.paulomatew.compilador.entities;
 
 /**
  *
  * @author matt
  */
-public class LexicalToken {
+public class LexicalToken extends Objeto{
 
     public int type = -99;
     public String lexeme = null;

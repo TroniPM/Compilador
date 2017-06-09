@@ -8,7 +8,7 @@ package br.com.paulomatew.compilador.main;
 import br.com.paulomatew.compilador.analyzer.lexical.Lexical;
 import br.com.paulomatew.compilador.analyzer.semantic.Semantic;
 import br.com.paulomatew.compilador.analyzer.sintatic.Sintatic;
-import br.com.paulomatew.compilador.analyzer.lexical.LexicalToken;
+import br.com.paulomatew.compilador.entities.LexicalToken;
 import br.com.paulomatew.compilador.exceptions.LexicalException;
 import br.com.paulomatew.compilador.exceptions.SintaticException;
 import java.io.PrintWriter;
@@ -36,6 +36,19 @@ public class Compilador {
     public String sourceCode = null;
 
     public String errorConsole = "";
+
+    public static void main(String[] args) {
+        Compilador c = new Compilador();
+        c.creating();
+
+        for (int i = 0; i < c.RESERVED_WORDS_TOKEN.size(); i++) {
+            System.out.print(i + "\t" + c.RESERVED_WORDS_TOKEN.get(i));
+            if (i >= 3) {
+                System.out.print(" ( " + c.RESERVED_WORDS_AND_OPERATORS.get(i - 3) + " )");
+            }
+            System.out.println("");
+        }
+    }
 
     private void creating() {
         analizadorLexico = new Lexical();
@@ -106,43 +119,4 @@ public class Compilador {
         }
     }
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String[] args) {
-
-        String palavra
-                = "mainn(){\n"
-                + "	int function somar(int a1,int a2){\n"
-                + "		return a1+a2;\n"
-                + "	}\n"
-                + "\n"
-                + "	int inteiro1;\n"
-                + "	boolean boo1;\n"
-                + "	int inteiro2;\n"
-                + "	boolean boo2;\n"
-                + "	\n"
-                + "	inteiro2=20;\n"
-                + "	inteiro1 = inteiro2+2;\n"
-                + "	\n"
-                + "	boo1=false;\n"
-                + "	boo2 = boo1&&true;\n"
-                + "	\n"
-                + "	if(boo1==true&&1<=2&&1>=2||1!=2||1>2&&1<2){\n"
-                + "	} else {\n"
-                + "	}\n"
-                + "	\n"
-                + "	somar(inteiro1,inteiro2);\n"
-                + "	\n"
-                + "	print(20);\n"
-                + "}";
-
-        Compilador c = new Compilador();
-        c.init(palavra);
-        //System.out.println(c.analizadorLexico.getTokenListAsTable());
-        /*for (LexicalObject in : c.analizadorLexico.tokenArray) {
-            in.print();
-            }*/
-
-    }
 }

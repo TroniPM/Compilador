@@ -5,6 +5,7 @@
  */
 package br.com.paulomatew.compilador.analyzer.lexical;
 
+import br.com.paulomatew.compilador.entities.LexicalToken;
 import br.com.paulomatew.compilador.exceptions.LexicalException;
 import br.com.paulomatew.compilador.main.Compilador;
 import java.util.ArrayList;
@@ -121,7 +122,7 @@ public class Lexical {
         //return msg.trim().replaceAll(" +", " ");
     }
 
-    private ArrayList<LexicalToken> parser() {
+    private ArrayList<LexicalToken> parser() throws LexicalException {
         ArrayList<LexicalToken> arr = new ArrayList<>();
 
         String[] sourcePorLinha = sourceCode.split("\n");
@@ -157,7 +158,9 @@ public class Lexical {
                     l.lexeme = s;
                     l.line = j1 + 1;
                     arr.add(l);
-                    continue;
+
+                    throw new LexicalException("Unknow token '" + l.lexeme + "' at line " + l.line);
+                    //continue;
                 }
 
                 if (Character.isLowerCase(s.charAt(0))) {
@@ -178,7 +181,10 @@ public class Lexical {
                         l.lexeme = s;
                         l.line = j1 + 1;
                         arr.add(l);
-                        continue;
+                        
+                        throw new LexicalException("Unknow token '" + l.lexeme + "' at line " + l.line);
+                        
+                        //continue;
                     } else {
 
                         LexicalToken l = new LexicalToken();

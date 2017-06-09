@@ -5,7 +5,9 @@
  */
 package br.com.paulomatew.compilador.analyzer.sintatic;
 
-import br.com.paulomatew.compilador.analyzer.lexical.LexicalToken;
+import br.com.paulomatew.compilador.entities.RegraProducao;
+import br.com.paulomatew.compilador.entities.LexicalToken;
+import br.com.paulomatew.compilador.entities.Objeto;
 import br.com.paulomatew.compilador.exceptions.SintaticException;
 import br.com.paulomatew.compilador.main.Compilador;
 import java.util.ArrayList;
@@ -20,6 +22,7 @@ import java.util.logging.Logger;
 public class Sintatic {
 
     public ArrayList<LexicalToken> tokenListFromLexical = null;
+    private ArrayList<Objeto> pilha = null;
 
     public void init(ArrayList<LexicalToken> arr) throws SintaticException {
         if (arr == null || arr.isEmpty()) {
@@ -28,586 +31,37 @@ public class Sintatic {
 
         this.tokenListFromLexical = arr;
 
-        //parserOld();
         parserNew();
     }
 
-    private void parserOld() throws SintaticException {
-        //programa deve iniciar com main
-        if (tokenListFromLexical.get(0).type != 3) {
-            throw new SintaticException(
-                    "Program starts with unexpected token '" + tokenListFromLexical.get(0).lexeme
-                    + "' line " + tokenListFromLexical.get(0).line);
-        }
-        //ultimo token deve ser fecha_aspas
-        if (tokenListFromLexical.get(tokenListFromLexical.size() - 1).type != 7) {
-            throw new SintaticException("Unexpected EOF after '" + tokenListFromLexical.get(tokenListFromLexical.size() - 1).lexeme
-                    + "' line " + tokenListFromLexical.get(tokenListFromLexical.size() - 1).line);
-        }
-
-        for (int i = 0; i < tokenListFromLexical.size(); i++) {
-            LexicalToken current = tokenListFromLexical.get(i), next = null;
-            try {
-                if (tokenListFromLexical.get(i + 1) != null) {
-                    next = tokenListFromLexical.get(i + 1);
-                }
-            } catch (Exception ex) {
+    private void printPilha() {
+        for (int i = pilha.size() - 1; i >= 0; i--) {
+            Objeto o = pilha.get(i);
+            if (o instanceof LexicalToken) {
+                System.out.println(((LexicalToken) o).lexeme);
+            } else if (o instanceof RegraProducao) {
+                System.out.println(((RegraProducao) o).method);
             }
-
-            /**
-             * Falta inserir BREAK/CONTINUE/RETURN
-             */
-            switch (current.type) {
-                //constante
-                case 0:
-                    if (next != null
-                            && (next.type == 5/* ) */
-                            || next.type == 8/* ; */
-                            || next.type == 9/* , */
-                            || next.type == 11/* + */
-                            || next.type == 12/* - */
-                            || next.type == 13/* * */
-                            || next.type == 14/* / */
-                            || next.type == 28/* < */
-                            || next.type == 29/* > */
-                            || next.type == 30/* <= */
-                            || next.type == 31/* >= */
-                            || next.type == 32/* == */
-                            || next.type == 33/* != */
-                            || next.type == 34/* && */
-                            || next.type == 35/* || */)) {
-                        //TODO: do stuff here
-                        continue;
-                    } else {
-                        throw new SintaticException("Unexpected token after '" + current.lexeme + "' line " + current.line);
-                    }
-                // identificador
-                case 1:
-                    if (next != null
-                            && (next.type == 4/* ( */
-                            || next.type == 5/* ) */
-                            || next.type == 8/* ; */
-                            || next.type == 9/* , */
-                            || next.type == 10/* = */
-                            || next.type == 11/* + */
-                            || next.type == 12/* - */
-                            || next.type == 13/* * */
-                            || next.type == 14/* / */
-                            || next.type == 27/*print*/
-                            || next.type == 28/* < */
-                            || next.type == 29/* > */
-                            || next.type == 30/* <= */
-                            || next.type == 31/* >= */
-                            || next.type == 32/* == */
-                            || next.type == 33/* != */
-                            || next.type == 34/* && */
-                            || next.type == 35/* || */)) {
-                        //TODO: do stuff here
-                        continue;
-                    } else {
-                        throw new SintaticException("Unexpected token after '" + current.lexeme + "' line " + current.line);
-                    }
-                // token desconhecido
-                case 2://TODO: token desconhecido deve chegar a este ponto??
-                    break;
-                // main
-                case 3:
-                    if (next != null && next.type == 4) {
-                        //TODO: do stuff here
-                        continue;
-                    } else {
-                        throw new SintaticException("Unexpected token after '" + current.lexeme + "' line " + current.line);
-                    }
-                // (
-                case 4:
-                    if (next != null
-                            && (next.type == 0/*constante*/
-                            || next.type == 1/*identificador*/
-                            || next.type == 4/*abre_p*/
-                            || next.type == 5/*fecha_p*/
-                            || next.type == 16/*int*/
-                            || next.type == 17/*boolean*/
-                            || next.type == 25/*true*/
-                            || next.type == 26/*false*/
-                            || next.type == 36/*chamar função*/)) {
-                        //TODO: do stuff here
-                        continue;
-                    } else {
-                        throw new SintaticException("Unexpected token after '" + current.lexeme + "' line " + current.line);
-                    }
-                // )
-                case 5:
-                    if (next != null
-                            && (next.type == 5/* ) */
-                            || next.type == 6/* { */
-                            || next.type == 8/* ; */
-                            || next.type == 11/* + */
-                            || next.type == 12/* - */
-                            || next.type == 13/* * */
-                            || next.type == 14/* / */
-                            || next.type == 28/* < */
-                            || next.type == 29/* > */
-                            || next.type == 30/* <= */
-                            || next.type == 31/* >= */
-                            || next.type == 32/* == */
-                            || next.type == 33/* != */
-                            || next.type == 34/* && */
-                            || next.type == 35/* || */)) {
-                        //TODO: do stuff here
-                        continue;
-                    } else {
-                        throw new SintaticException("Unexpected token after '" + current.lexeme + "' line " + current.line);
-                    }
-                // {
-                case 6:
-                    if (next != null//Não entra FUNCTION pq antes do function vem o tipo de retorno void/int/boolean
-                            && (next.type == 1/*identificador*/
-                            || next.type == 7/* } */
-                            || next.type == 15/*void*/
-                            || next.type == 16/*int*/
-                            || next.type == 17/*boolean*/
-                            || next.type == 18/*break*/
-                            || next.type == 19/*continue*/
-                            || next.type == 20/*return*/
-                            || next.type == 21/*if*/
-                            || next.type == 23/*while*/
-                            || next.type == 27/*print*/
-                            || next.type == 36/*chamar função*/)) {
-                        //TODO: do stuff here
-                        continue;
-                    } else {
-                        throw new SintaticException("Unexpected token after '" + current.lexeme + "' line " + current.line);
-                    }
-                // }
-                case 7:
-                    if (next == null//next==null significa q é EOF
-                            || (next.type == 1/*identificador*/
-                            || next.type == 7/* } */
-                            || next.type == 15/*void*/
-                            || next.type == 16/*int*/
-                            || next.type == 17/*boolean*/
-                            || next.type == 20/*return*/
-                            || next.type == 21/*if*/
-                            || next.type == 22/*else*/
-                            || next.type == 23/*while*/
-                            || next.type == 27/*print*/
-                            || next.type == 36/*chamar função*/)) {
-                        //TODO: do stuff here
-                        continue;
-                    } else {
-                        throw new SintaticException("Unexpected token after '" + current.lexeme + "' line " + current.line);
-                    }
-                // ;
-                case 8:
-                    if (next != null
-                            && (next.type == 1/*identificador*/
-                            || next.type == 7/* } */
-                            || next.type == 8/* ; FAZER COM Q ;; SEJA POSSÍVEL*/
-                            || next.type == 15/*void*/
-                            || next.type == 16/*int*/
-                            || next.type == 17/*boolean*/
-                            || next.type == 21/*if*/
-                            || next.type == 23/*while*/
-                            || next.type == 27/*print*/
-                            || next.type == 36/*chamar função*/)) {
-                        //TODO: do stuff here
-                        continue;
-                    } else {
-                        throw new SintaticException("Unexpected token after '" + current.lexeme + "' line " + current.line);
-                    }
-                // ,
-                case 9:
-                    if (next != null
-                            && (next.type == 1/*identificador*/
-                            || next.type == 16/*int*/
-                            || next.type == 17/*boolean*/
-                            || next.type == 36/*chamar função*/)) {
-                        //TODO: do stuff here
-                        continue;
-                    } else {
-                        throw new SintaticException("Unexpected token after '" + current.lexeme + "' line " + current.line);
-                    }
-                // =
-                case 10:
-                    if (next != null
-                            && (next.type == 0/*constante*/
-                            || next.type == 1/*identificador*/
-                            || next.type == 4/*abre_p*/
-                            || next.type == 25/*true*/
-                            || next.type == 26/*false*/
-                            || next.type == 36/*chamar função*/)) {
-                        //TODO: do stuff here
-                        continue;
-                    } else {
-                        throw new SintaticException("Unexpected token after '" + current.lexeme + "' line " + current.line);
-                    }
-                // +
-                case 11:
-                    if (next != null
-                            && (next.type == 0/*constante*/
-                            || next.type == 1/*identificador*/
-                            || next.type == 4/*abre_p*/
-                            || next.type == 36/*chamar função*/)) {
-                        //TODO: do stuff here
-                        continue;
-                    } else {
-                        throw new SintaticException("Unexpected token after '" + current.lexeme + "' line " + current.line);
-                    }
-                // -
-                case 12:
-                    if (next != null
-                            && (next.type == 0/*constante*/
-                            || next.type == 1/*identificador*/
-                            || next.type == 4/*abre_p*/
-                            || next.type == 36/*chamar função*/)) {
-                        //TODO: do stuff here
-                        continue;
-                    } else {
-                        throw new SintaticException("Unexpected token after '" + current.lexeme + "' line " + current.line);
-                    }
-                // *
-                case 13:
-                    if (next != null
-                            && (next.type == 0/*constante*/
-                            || next.type == 1/*identificador*/
-                            || next.type == 4/*abre_p*/
-                            || next.type == 36/*chamar função*/)) {
-                        //TODO: do stuff here
-                        continue;
-                    } else {
-                        throw new SintaticException("Unexpected token after '" + current.lexeme + "' line " + current.line);
-                    }
-                // /
-                case 14:
-                    if (next != null
-                            && (next.type == 0/*constante*/
-                            || next.type == 1/*identificador*/
-                            || next.type == 4/*abre_p*/
-                            || next.type == 36/*chamar função*/)) {
-                        //TODO: do stuff here
-                        continue;
-                    } else {
-                        throw new SintaticException("Unexpected token after '" + current.lexeme + "' line " + current.line);
-                    }
-                // void
-                case 15:
-                    if (next != null && next.type == 24/*function*/) {
-                        //TODO: do stuff here
-                        continue;
-                    } else {
-                        throw new SintaticException("Unexpected token after '" + current.lexeme + "' line " + current.line);
-                    }
-                // int
-                case 16:
-                    if (next != null
-                            && (next.type == 1/*identificador*/
-                            || next.type == 24/*function*/)) {
-                        //TODO: do stuff here
-                        continue;
-                    } else {
-                        throw new SintaticException("Unexpected token after '" + current.lexeme + "' line " + current.line);
-                    }
-                // boolean
-                case 17:
-                    if (next != null
-                            && (next.type == 1/*identificador*/
-                            || next.type == 24/*function*/)) {
-                        //TODO: do stuff here
-                        continue;
-                    } else {
-                        throw new SintaticException("Unexpected token after '" + current.lexeme + "' line " + current.line);
-                    }
-                // break
-                case 18:
-                    if (next != null && next.type == 8/* , */) {
-                        //TODO: do stuff here
-                        continue;
-                    } else {
-                        throw new SintaticException("Unexpected token after '" + current.lexeme + "' line " + current.line);
-                    }
-                // continue
-                case 19:
-                    if (next != null && next.type == 8/* , */) {
-                        //TODO: do stuff here
-                        continue;
-                    } else {
-                        throw new SintaticException("Unexpected token after '" + current.lexeme + "' line " + current.line);
-                    }
-                // return
-                case 20:
-                    if (next != null
-                            && (next.type == 1/*identificador*/
-                            || next.type == 4/*abre_p*/
-                            || next.type == 25/*true*/
-                            || next.type == 26/*false*/
-                            || next.type == 36/*chamar função*/)) {
-                        //TODO: do stuff here
-                        continue;
-                    } else {
-                        throw new SintaticException("Unexpected token after '" + current.lexeme + "' line " + current.line);
-                    }
-                // if
-                case 21:
-                    if (next != null && next.type == 4/*abre_p*/) {
-                        //TODO: do stuff here
-                        continue;
-                    } else {
-                        throw new SintaticException("Unexpected token after '" + current.lexeme + "' line " + current.line);
-                    }
-                // else
-                case 22:
-                    if (next != null && next.type == 6/*abre_c*/) {
-                        //TODO: do stuff here
-                        continue;
-                    } else {
-                        throw new SintaticException("Unexpected token after '" + current.lexeme + "' line " + current.line);
-                    }
-                // while
-                case 23:
-                    if (next != null && next.type == 4/*abre_p*/) {
-                        //TODO: do stuff here
-                        continue;
-                    } else {
-                        throw new SintaticException("Unexpected token after '" + current.lexeme + "' line " + current.line);
-                    }
-                // function
-                case 24:
-                    if (next != null && next.type == 1/*identificador*/) {
-                        //TODO: do stuff here
-                        continue;
-                    } else {
-                        throw new SintaticException("Unexpected token after '" + current.lexeme + "' line " + current.line);
-                    }
-                // true
-                case 25:
-                    if (next != null
-                            && (next.type == 5/* ) */
-                            || next.type == 8/* ; */
-                            || next.type == 9/* , */
-                            || next.type == 32/* == */
-                            || next.type == 33/* != */
-                            || next.type == 34/* && */
-                            || next.type == 35/* || */)) {
-                        //TODO: do stuff here
-                        continue;
-                    } else {
-                        throw new SintaticException("Unexpected token after '" + current.lexeme + "' line " + current.line);
-                    }
-                // false
-                case 26:
-                    if (next != null
-                            && (next.type == 5/* ) */
-                            || next.type == 8/* ; */
-                            || next.type == 9/* , */
-                            || next.type == 32/* == */
-                            || next.type == 33/* != */
-                            || next.type == 34/* && */
-                            || next.type == 35/* || */)) {
-                        //TODO: do stuff here
-                        continue;
-                    } else {
-                        throw new SintaticException("Unexpected token after '" + current.lexeme + "' line " + current.line);
-                    }
-                // print
-                case 27:
-                    if (next != null && next.type == 4/*abre_p*/) {
-                        //TODO: do stuff here
-                        continue;
-                    } else {
-                        throw new SintaticException("Unexpected token after '" + current.lexeme + "' line " + current.line);
-                    }
-                // <
-                case 28:
-                    if (next != null
-                            && (next.type == 0/*constante*/
-                            || next.type == 1/*identificador*/
-                            || next.type == 4/*abre_p*/
-                            || next.type == 36/*chamar função*/)) {
-                        //TODO: do stuff here
-                        continue;
-                    } else {
-                        throw new SintaticException("Unexpected token after '" + current.lexeme + "' line " + current.line);
-                    }
-                // >
-                case 29:
-                    if (next != null
-                            && (next.type == 0/*constante*/
-                            || next.type == 1/*identificador*/
-                            || next.type == 4/*abre_p*/
-                            || next.type == 36/*chamar função*/)) {
-                        //TODO: do stuff here
-                        continue;
-                    } else {
-                        throw new SintaticException("Unexpected token after '" + current.lexeme + "' line " + current.line);
-                    }
-                // <=
-                case 30:
-                    if (next != null
-                            && (next.type == 0/*constante*/
-                            || next.type == 1/*identificador*/
-                            || next.type == 4/*abre_p*/
-                            || next.type == 36/*chamar função*/)) {
-                        //TODO: do stuff here
-                        continue;
-                    } else {
-                        throw new SintaticException("Unexpected token after '" + current.lexeme + "' line " + current.line);
-                    }
-                // >=
-                case 31:
-                    if (next != null
-                            && (next.type == 0/*constante*/
-                            || next.type == 1/*identificador*/
-                            || next.type == 4/*abre_p*/
-                            || next.type == 36/*chamar função*/)) {
-                        //TODO: do stuff here
-                        continue;
-                    } else {
-                        throw new SintaticException("Unexpected token after '" + current.lexeme + "' line " + current.line);
-                    }
-                // ==
-                case 32:
-                    if (next != null
-                            && (next.type == 0/*constante*/
-                            || next.type == 1/*identificador*/
-                            || next.type == 4/*abre_p*/
-                            || next.type == 25/*true*/
-                            || next.type == 26/*false*/
-                            || next.type == 36/*chamar função*/)) {
-                        //TODO: do stuff here
-                        continue;
-                    } else {
-                        throw new SintaticException("Unexpected token after '" + current.lexeme + "' line " + current.line);
-                    }
-                // !=
-                case 33:
-                    if (next != null
-                            && (next.type == 0/*constante*/
-                            || next.type == 1/*identificador*/
-                            || next.type == 4/*abre_p*/
-                            || next.type == 25/*true*/
-                            || next.type == 26/*false*/
-                            || next.type == 36/*chamar função*/)) {
-                        //TODO: do stuff here
-                        continue;
-                    } else {
-                        throw new SintaticException("Unexpected token after '" + current.lexeme + "' line " + current.line);
-                    }
-                // &&
-                case 34:
-                    if (next != null
-                            && (next.type == 0/*constante*/
-                            || next.type == 1/*identificador*/
-                            || next.type == 4/*abre_p*/
-                            || next.type == 25/*true*/
-                            || next.type == 26/*false*/
-                            || next.type == 36/*chamar função*/)) {
-                        //TODO: do stuff here
-                        continue;
-                    } else {
-                        throw new SintaticException("Unexpected token after '" + current.lexeme + "' line " + current.line);
-                    }
-                // ||
-                case 35:
-                    if (next != null
-                            && (next.type == 0/*constante*/
-                            || next.type == 1/*identificador*/
-                            || next.type == 4/*abre_p*/
-                            || next.type == 25/*true*/
-                            || next.type == 26/*false*/
-                            || next.type == 36/*chamar função*/)) {
-                        //TODO: do stuff here
-                        continue;
-                    } else {
-                        throw new SintaticException("Unexpected token after '" + current.lexeme + "' line " + current.line);
-                    }
-                // int
-                case 36:
-                    if (next != null
-                            && (next.type == 1/*identificador*/)) {
-                        //TODO: do stuff here
-                        continue;
-                    } else {
-                        throw new SintaticException("Unexpected token after '" + current.lexeme + "' line " + current.line);
-                    }
-                default:
-                    break;
-            }
-        }
-        //numero de () e {} devem ser iguais entre si
-        int abrP = 0, fecP = 0, abrC = 0, fecC = 0;
-
-        List<Integer> abrPi = new ArrayList<>();
-        List<Integer> fecPi = new ArrayList<>();
-        List<Integer> abrCi = new ArrayList<>();
-        List<Integer> fecCi = new ArrayList<>();
-
-        for (int x = 0; x < tokenListFromLexical.size(); x++) {
-            switch (tokenListFromLexical.get(x).type) {
-                case 4:
-                    abrP++;
-                    abrPi.add(x);
-                    break;
-                case 5:
-                    fecP++;
-                    fecPi.add(x);
-                    break;
-                case 6:
-                    abrC++;
-                    abrCi.add(x);
-                    break;
-                case 7:
-                    fecC++;
-                    fecCi.add(x);
-                    break;
-                default:
-                    break;
-            }
-        }
-
-        if (abrP > fecP) {
-            int a = abrPi.get(abrPi.size() - fecPi.size() - 1);
-            throw new SintaticException("Missing rigth parenthesis of '"
-                    + tokenListFromLexical.get(a).lexeme
-                    + "' line " + tokenListFromLexical.get(a).line);
-        } else if (abrP < fecP) {
-            int a = fecPi.get(fecPi.size() - abrPi.size() - 1);
-            throw new SintaticException("Missing left parenthesis of '"
-                    + tokenListFromLexical.get(a).lexeme
-                    + "' line " + tokenListFromLexical.get(a).line);
-        }
-        if (abrC > fecC) {
-            int a = abrCi.get(abrCi.size() - fecCi.size() - 1);
-            throw new SintaticException("Missing rigth braces of '"
-                    + tokenListFromLexical.get(a).lexeme
-                    + "' line " + tokenListFromLexical.get(a).line);
-        } else if (abrC < fecC) {
-            int a = fecCi.get(fecCi.size() - abrCi.size() - 1);
-            throw new SintaticException("Missing left braces of '"
-                    + tokenListFromLexical.get(a).lexeme
-                    + "' line " + tokenListFromLexical.get(a).line);
         }
     }
 
     private void parserNew() throws SintaticException {
         ArrayList<LexicalToken> arr = this.tokenListFromLexical;
 
-        ArrayList<LexicalToken> pilha = new ArrayList<>();
+        pilha = new ArrayList<>();
 
         for (int i = 0; i < arr.size(); i++) {
-            if (pilha.size() > 0) {
-                if (arr.get(i).type != pilha.get(0).type) {
-                    throw new SintaticException("Unexpected token '" + (arr.get(i).lexeme)
-                            + "' at line " + arr.get(i).line + " (expected: '" + pilha.get(0).description + "').");
-                } else {
-                    pilha.remove(0);
-                }
-            }
-
+            //printPilha();
+            //caso inicial
             if (i == 0) {
                 if (programa(arr.get(i))) {
-                    pilha.add(new LexicalToken(4, "(", "("));
-                    pilha.add(new LexicalToken(5, ")", ")"));
-                    pilha.add(new LexicalToken(6, "{", "{"));
+                    addNaPilha(new RegraProducao("declarar_func"));
+                    addNaPilha(new LexicalToken(7, "}", "}"));
+                    addNaPilha(new RegraProducao("escopo"));
+                    addNaPilha(new LexicalToken(6, "{", "{"));
+                    addNaPilha(new LexicalToken(5, ")", ")"));
+                    addNaPilha(new LexicalToken(4, "(", "("));
+
                     continue;
                 } else {
                     throw new SintaticException("Unexpected token '" + (arr.get(i).lexeme)
@@ -615,26 +69,373 @@ public class Sintatic {
                 }
             }
 
+            //NORMAL
+            if (pilha.size() > 0 && i != arr.size()) {
+                Objeto o = getNaPilha();
+                if (o instanceof LexicalToken) {
+                    LexicalToken o1 = (LexicalToken) o;
+
+                    if (arr.get(i).type != o1.type) {
+                        o1.print();
+                        arr.get(i).print();
+                        throw new SintaticException("Unexpected token '" + (arr.get(i).lexeme)
+                                + "' at line " + arr.get(i).line + " (expected: '" + o1.description + "').");
+                    }
+                    /*else {
+                        System.out.println("Match: " + o1.lexeme);
+                    }*/
+                } else {
+                    RegraProducao o1 = (RegraProducao) o;
+
+                    if (o1.method.equals("programa")) {
+                        throw new SintaticException("CHAMOU PROGRAMA. NÃO DEVERIA");
+                    } else if (o1.method.equals("escopo")) {
+                        String spe = "int, boolean, identificador, print, call, if, while, break, continue";
+                        if (escopo(arr.get(i))) {
+                            //<escopo> sempre tem q ser a primeira chamada (pra ser a ultima na pila)
+                            if (arr.get(i).type == 16) {//DECLARAÇÃO INT
+                                addNaPilha(new RegraProducao("escopo"));
+                                addNaPilha(new LexicalToken(8, ";", ";"));
+                                addNaPilha(new LexicalToken(1, "<identificador>", "identificador"));
+                                addNaPilha(new LexicalToken(16, "int", spe));
+                            } else if (arr.get(i).type == 17) {//DECLARAÇÃO BOOLEAN
+                                addNaPilha(new RegraProducao("escopo"));
+                                addNaPilha(new LexicalToken(8, ";", ";"));
+                                addNaPilha(new LexicalToken(1, "<identificador>", "identificador"));
+                                addNaPilha(new LexicalToken(17, "boolean", spe));
+                            } else if (arr.get(i).type == 1) {//Atribuição
+                                addNaPilha(new RegraProducao("escopo"));
+                                addNaPilha(new LexicalToken(8, ";", ";"));
+                                addNaPilha(new RegraProducao("atrib"));
+                                addNaPilha(new LexicalToken(10, "=", "="));
+                                addNaPilha(new LexicalToken(1, "<identificador>", spe));
+
+                                throw new SintaticException("FAZER REGRAS DE <atrib>");
+                            } else if (arr.get(i).type == 27) {//Print
+                                addNaPilha(new RegraProducao("escopo"));
+                                addNaPilha(new LexicalToken(8, ";", ";"));
+                                addNaPilha(new LexicalToken(5, ")", "false, true, identificador, constante, )"));
+                                addNaPilha(new RegraProducao("printar_sec"));
+                                addNaPilha(new LexicalToken(4, "(", "("));
+                                addNaPilha(new LexicalToken(27, "print", spe));
+                            } else if (arr.get(i).type == 21) {//IF
+                                addNaPilha(new RegraProducao("escopo"));
+                                addNaPilha(new RegraProducao("bloco_else"));
+                                addNaPilha(new LexicalToken(7, "}", "}"));
+                                addNaPilha(new RegraProducao("escopo"));
+                                addNaPilha(new LexicalToken(6, "{", "{"));
+                                addNaPilha(new LexicalToken(5, ")", ")"));
+                                addNaPilha(new RegraProducao("condicao"));
+                                addNaPilha(new LexicalToken(4, "(", "("));
+                                addNaPilha(new LexicalToken(21, "if", spe));
+                            } else if (arr.get(i).type == 23) {//WHILE
+                                addNaPilha(new RegraProducao("escopo"));
+                                addNaPilha(new LexicalToken(7, "}", "}"));
+                                addNaPilha(new RegraProducao("escopo"));
+                                addNaPilha(new LexicalToken(6, "{", "{"));
+                                addNaPilha(new LexicalToken(5, ")", ")"));
+                                addNaPilha(new RegraProducao("condicao"));
+                                addNaPilha(new LexicalToken(4, "(", "("));
+                                addNaPilha(new LexicalToken(23, "while", spe));
+                            } else if (arr.get(i).type == 36) {//CALL
+                                addNaPilha(new RegraProducao("escopo"));
+                                addNaPilha(new LexicalToken(8, ";", ";"));
+                                addNaPilha(new LexicalToken(5, ")", ")"));
+                                addNaPilha(new RegraProducao("lista_arg"));
+                                addNaPilha(new LexicalToken(4, "(", "("));
+                                addNaPilha(new LexicalToken(1, "<identificador>", "identificador"));
+                                addNaPilha(new LexicalToken(36, "call", spe));
+                            } else if (arr.get(i).type == 18) {//BREAK
+                                addNaPilha(new RegraProducao("escopo"));
+                                addNaPilha(new LexicalToken(8, ";", ";"));
+                                addNaPilha(new LexicalToken(18, "break", spe));
+                            } else if (arr.get(i).type == 19) {//CONTINUE
+                                addNaPilha(new RegraProducao("escopo"));
+                                addNaPilha(new LexicalToken(8, ";", ";"));
+                                addNaPilha(new LexicalToken(19, "continue", spe));
+                            }
+
+                        } else {
+                            //throw new SintaticException("NÃO É <escopo>");
+
+                            throw new SintaticException("Unexpected token '" + arr.get(i).lexeme
+                                    + "' at line " + arr.get(i).line + ". Expected: " + spe);
+                        }
+                    } else if (o1.method.equals("atrib")) {
+
+                        if (atrib(arr.get(i))) {
+                        } else {
+                            throw new SintaticException("NÃO É <atrib>");
+                        }
+                    } else if (o1.method.equals("printar_sec")) {
+                        //PODE GERAR VAZIO
+                        if (printar_sec(arr.get(i))) {
+                            String esp = "false, true, identificador, constante";
+                            if (arr.get(i).type == 1) {//IDENTIFICADOR
+                                addNaPilha(new LexicalToken(1, "<identificador>", esp));
+                            } else if (arr.get(i).type == 0) {//CONSTANTE
+                                addNaPilha(new LexicalToken(0, "<numero>", esp));
+                            } else if (arr.get(i).type == 25) {//TRUE
+                                addNaPilha(new LexicalToken(25, "true", esp));
+                            } else if (arr.get(i).type == 26) {//FALSE
+                                addNaPilha(new LexicalToken(26, "false", esp));
+                            }
+                        }
+                        /*QUANDO PALAVRA GERA VAZIO NÃO PODE GERAR EXCEPTION 
+                        (PQ VAI CHAMAR O PRÓXIMO DA PILHA*/
+
+                    } else if (o1.method.equals("bloco_else")) {
+                        //PODE GERAR VAZIO
+                        if (bloco_else(arr.get(i))) {
+                            addNaPilha(new LexicalToken(21, "{", "{"));
+                            addNaPilha(new RegraProducao("escopo"));
+                            addNaPilha(new LexicalToken(21, "}", "}"));
+
+                        }
+                        /*QUANDO PALAVRA GERA VAZIO NÃO PODE GERAR EXCEPTION 
+                        (PQ VAI CHAMAR O PRÓXIMO DA PILHA*/
+                    } else if (o1.method.equals("lista_arg")) {
+                        //PODE GERAR VAZIO
+                        if (lista_arg(arr.get(i))) {
+                            if (arr.get(i).type == 0) {//CONSTANTE
+                                addNaPilha(new RegraProducao("lista_arg_sec"));
+                                addNaPilha(new LexicalToken(0, "<numero>", "constante"));
+                            } else if (arr.get(i).type == 1) {//IDENTIFICADOR
+                                addNaPilha(new RegraProducao("lista_arg_sec"));
+                                addNaPilha(new LexicalToken(1, "<identificador>", "identificador"));
+                            } else if (arr.get(i).type == 25) {//TRUE
+                                addNaPilha(new RegraProducao("lista_arg_sec"));
+                                addNaPilha(new LexicalToken(25, "true", "true"));
+                            } else if (arr.get(i).type == 26) {//FALSE
+                                addNaPilha(new RegraProducao("lista_arg_sec"));
+                                addNaPilha(new LexicalToken(26, "false", "false"));
+                            }
+                        }
+                        /*QUANDO PALAVRA GERA VAZIO NÃO PODE GERAR EXCEPTION 
+                        (PQ VAI CHAMAR O PRÓXIMO DA PILHA*/
+                    } else if (o1.method.equals("lista_arg_sec")) {
+                        if (lista_arg_sec(arr.get(i))) {
+                            if (arr.get(i).type == 9) {//VIRGULA
+                                addNaPilha(new RegraProducao("lista_arg_sec"));
+                                addNaPilha(new RegraProducao("lista_arg_ter"));
+                                addNaPilha(new LexicalToken(9, ",", ","));
+                            }
+                        }
+                        /*QUANDO PALAVRA GERA VAZIO NÃO PODE GERAR EXCEPTION 
+                        (PQ VAI CHAMAR O PRÓXIMO DA PILHA*/
+                    } else if (o1.method.equals("lista_arg_ter")) {
+                        String esp = "false, true, identificador, constante";
+                        if (lista_arg_ter(arr.get(i))) {
+                            if (arr.get(i).type == 0) {//CONSTANTE
+                                addNaPilha(new LexicalToken(0, "<numero>", esp));
+                            } else if (arr.get(i).type == 1) {//IDENTIFICADOR
+                                addNaPilha(new LexicalToken(1, "<identificador>", esp));
+                            } else if (arr.get(i).type == 25) {//TRUE
+                                addNaPilha(new LexicalToken(25, "true", esp));
+                            } else if (arr.get(i).type == 26) {//FALSE
+                                addNaPilha(new LexicalToken(26, "false", esp));
+                            }
+                        } else {
+                            throw new SintaticException("Unexpected token '" + arr.get(i).lexeme
+                                    + "' at line " + arr.get(i).line + ". Expected: " + esp);
+                        }
+                    } else if (o1.method.equals("condicao")) {
+                        if (condicao(arr.get(i))) {
+
+                        } else {
+                            throw new SintaticException("NÃO É <condicao>");
+                        }
+
+                    } else if (o1.method.equals("declarar_func")) {
+                        //PODE GERAR VAZIO
+                        if (declarar_func(arr.get(i))) {
+                            addNaPilha(new RegraProducao("declarar_func"));
+                            addNaPilha(new LexicalToken(21, "}", "}"));
+                            addNaPilha(new RegraProducao("retorno_func"));
+                            addNaPilha(new RegraProducao("escopo"));
+                            addNaPilha(new LexicalToken(21, "{", "{"));
+                            addNaPilha(new LexicalToken(5, ")", ")"));
+                            addNaPilha(new RegraProducao("lista_param"));
+                            addNaPilha(new LexicalToken(4, "(", "("));
+                            addNaPilha(new LexicalToken(1, "<identificador>", "identificador"));
+                            addNaPilha(new RegraProducao("func_tipo"));
+                            addNaPilha(new LexicalToken(24, "function", "function"));
+
+                        }
+                        /*QUANDO PALAVRA GERA VAZIO NÃO PODE GERAR EXCEPTION 
+                        (PQ VAI CHAMAR O PRÓXIMO DA PILHA*/
+                    } else if (o1.method.equals("func_tipo")) {
+                        String esp = "void, int, boolean";
+                        if (func_tipo(arr.get(i))) {
+                            if (arr.get(i).type == 15) {//VOID
+                                addNaPilha(new LexicalToken(15, "void", esp));
+                            } else if (arr.get(i).type == 16) {//INT
+                                addNaPilha(new LexicalToken(16, "int", esp));
+                            } else if (arr.get(i).type == 17) {//BOOELAN
+                                addNaPilha(new LexicalToken(17, "boolean", esp));
+                            }
+                        } else {
+                            throw new SintaticException("Unexpected token '" + arr.get(i).lexeme
+                                    + "' at line " + arr.get(i).line + ". Expected: " + esp);
+                        }
+                    } else if (o1.method.equals("lista_param")) {
+                        //PODE GERAR VAZIO
+                        String esp = "int, boolean";
+                        if (lista_param(arr.get(i))) {
+                            if (arr.get(i).type == 16) {//INT
+                                addNaPilha(new RegraProducao("lista_param_sec"));
+                                addNaPilha(new LexicalToken(1, "<identificador>", "identificador"));
+                                addNaPilha(new LexicalToken(16, "int", esp));
+                            } else if (arr.get(i).type == 17) {//BOOELAN
+                                addNaPilha(new RegraProducao("lista_param_sec"));
+                                addNaPilha(new LexicalToken(1, "<identificador>", "identificador"));
+                                addNaPilha(new LexicalToken(17, "boolean", esp));
+                            }
+                        }
+                        /*QUANDO PALAVRA GERA VAZIO NÃO PODE GERAR EXCEPTION 
+                        (PQ VAI CHAMAR O PRÓXIMO DA PILHA*/
+                    } else if (o1.method.equals("lista_param_sec")) {
+                        //PODE GERAR VAZIO
+                        if (lista_param_sec(arr.get(i))) {
+                            addNaPilha(new RegraProducao("lista_param_sec"));
+                            addNaPilha(new LexicalToken(1, "<identificador>", "identificador"));
+                            if (arr.get(i).type == 16) {//INT
+                                addNaPilha(new LexicalToken(16, "int", "int, boolean"));
+                            } else if (arr.get(i).type == 17) {//BOOELAN
+                                addNaPilha(new LexicalToken(17, "boolean", "int, boolean"));
+                            }
+                            addNaPilha(new LexicalToken(9, ",", ","));
+
+                        }
+                        /*QUANDO PALAVRA GERA VAZIO NÃO PODE GERAR EXCEPTION 
+                        (PQ VAI CHAMAR O PRÓXIMO DA PILHA*/
+                    } else if (o1.method.equals("retorno_func")) {
+                        //PODE GERAR VAZIO
+                        if (retorno_func(arr.get(i))) {
+                            addNaPilha(new LexicalToken(8, ";", ";"));
+                            addNaPilha(new RegraProducao("retorno_func_sec"));
+                            addNaPilha(new LexicalToken(20, "return", "return"));
+                        }
+                        /*QUANDO PALAVRA GERA VAZIO NÃO PODE GERAR EXCEPTION 
+                        (PQ VAI CHAMAR O PRÓXIMO DA PILHA*/
+                    } else if (o1.method.equals("retorno_func_sec")) {
+                        if (retorno_func_sec(arr.get(i))) {
+
+                        } else {
+                            throw new SintaticException("NÃO É <retorno_func_sec>");
+                        }
+                    }
+                    i--;
+                }
+            }
         }
     }
 
-    /*private boolean abre_parent(LexicalToken token) {
+    private void addNaPilha(Objeto token) {
+        pilha.add(token);
+    }
+
+    private Objeto getNaPilha() {
+        Objeto t = pilha.get(pilha.size() - 1);
+
+        pilha.remove(t);
+        return t;
+    }
+
+    /**
+     * TODO
+     *
+     * @param token
+     * @return
+     */
+    private boolean retorno_func_sec(LexicalToken token) {
+        return true;
+    }
+
+    /**
+     * TODO
+     *
+     * @param token
+     * @return
+     */
+    private boolean condicao(LexicalToken token) {
+        return true;
 
     }
 
-    private boolean fecha_parent(LexicalToken token) {
+    /**
+     * TODO
+     *
+     * @param token
+     * @return
+     */
+    private boolean atrib(LexicalToken token) {
+        return token.type == 1 || token.type == 0
+                || token.type == 25 || token.type == 26
+                || token.type == 36
+                /*CONDICAO*/
+                || token.type == 4
+                || token.type == 1
+                || token.type == 0 /*EXP_ARIT*/ /*ja tem ABRE_P*/ /*ja tem IDENTIFICADOR*/ /*ja tem NUMERO*/;
+    }
+
+    private boolean retorno_func(LexicalToken token) {
+        return token.type == 20;
 
     }
 
-    private boolean abre_chaves(LexicalToken token) {
+    private boolean lista_param_sec(LexicalToken token) {
+        return token.type == 9;
+    }
 
-    }*/
+    private boolean lista_param(LexicalToken token) {
+        return token.type == 16 || token.type == 17;
+    }
+
+    private boolean func_tipo(LexicalToken token) {
+        return token.type == 15 || token.type == 16 || token.type == 17;
+    }
+
+    private boolean declarar_func(LexicalToken token) {
+        return token.type == 24;
+    }
+
+    private boolean lista_arg_ter(LexicalToken token) {
+        return token.type == 1 || token.type == 0
+                || token.type == 25 || token.type == 26;
+    }
+
+    private boolean lista_arg_sec(LexicalToken token) {
+        return token.type == 9;
+    }
+
+    private boolean lista_arg(LexicalToken token) {
+        return token.type == 1 || token.type == 0
+                || token.type == 25 || token.type == 26;
+    }
+
+    private boolean bloco_else(LexicalToken token) {
+        return token.type == 22;
+    }
+
+    private boolean printar_sec(LexicalToken token) {
+        return token.type == 1 || token.type == 0
+                || token.type == 25 || token.type == 26;
+    }
+
+    private boolean printar(LexicalToken token) {
+        return token.type == 27;
+    }
+
     private boolean escopo(LexicalToken token) {
-        return token.type==16 || token.type==17 ||token.type==1 || token.type==27 ;
-
+        return token.type == 16 || token.type == 17
+                || token.type == 18 || token.type == 19
+                || token.type == 1 || token.type == 27
+                || token.type == 36 || token.type == 21
+                || token.type == 23 || token.type == 7;
     }
 
     private boolean programa(LexicalToken token) {
-        return token.lexeme.equals("main");
+        return token.type == 3;
     }
 }
