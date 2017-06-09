@@ -28,10 +28,11 @@ public class Sintatic {
 
         this.tokenListFromLexical = arr;
 
-        parser();
+        //parserOld();
+        parserNew();
     }
 
-    private void parser() throws SintaticException {
+    private void parserOld() throws SintaticException {
         //programa deve iniciar com main
         if (tokenListFromLexical.get(0).type != 3) {
             throw new SintaticException(
@@ -585,5 +586,55 @@ public class Sintatic {
                     + tokenListFromLexical.get(a).lexeme
                     + "' line " + tokenListFromLexical.get(a).line);
         }
+    }
+
+    private void parserNew() throws SintaticException {
+        ArrayList<LexicalToken> arr = this.tokenListFromLexical;
+
+        ArrayList<LexicalToken> pilha = new ArrayList<>();
+
+        for (int i = 0; i < arr.size(); i++) {
+            if (pilha.size() > 0) {
+                if (arr.get(i).type != pilha.get(0).type) {
+                    throw new SintaticException("Unexpected token '" + (arr.get(i).lexeme)
+                            + "' at line " + arr.get(i).line + " (expected: '" + pilha.get(0).description + "').");
+                } else {
+                    pilha.remove(0);
+                }
+            }
+
+            if (i == 0) {
+                if (programa(arr.get(i))) {
+                    pilha.add(new LexicalToken(4, "(", "("));
+                    pilha.add(new LexicalToken(5, ")", ")"));
+                    pilha.add(new LexicalToken(6, "{", "{"));
+                    continue;
+                } else {
+                    throw new SintaticException("Unexpected token '" + (arr.get(i).lexeme)
+                            + "' at line " + arr.get(i).line + " (expected: 'main').");
+                }
+            }
+
+        }
+    }
+
+    /*private boolean abre_parent(LexicalToken token) {
+
+    }
+
+    private boolean fecha_parent(LexicalToken token) {
+
+    }
+
+    private boolean abre_chaves(LexicalToken token) {
+
+    }*/
+    private boolean escopo(LexicalToken token) {
+        return token.type==16 || token.type==17 ||token.type==1 || token.type==27 ;
+
+    }
+
+    private boolean programa(LexicalToken token) {
+        return token.lexeme.equals("main");
     }
 }

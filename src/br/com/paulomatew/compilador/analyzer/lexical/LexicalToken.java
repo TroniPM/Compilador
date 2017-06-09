@@ -16,6 +16,21 @@ public class LexicalToken {
     public String description = null;
     public int line = 0;
 
+    public LexicalToken() {
+    }
+
+    public LexicalToken(int type, String lexeme/*, String description*/) {
+        this.type = type;
+        this.lexeme = lexeme;
+        //this.description = description;
+    }
+
+    public LexicalToken(int type, String lexeme, String description) {
+        this.type = type;
+        this.lexeme = lexeme;
+        this.description = description;
+    }
+
     public void print() {
         System.out.println("TOKEN: " + type);
         System.out.println("LEXEMA: " + lexeme);
