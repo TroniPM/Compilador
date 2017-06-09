@@ -29,6 +29,8 @@
                   <Component id="jScrollPane1" alignment="0" pref="780" max="32767" attributes="0"/>
                   <Group type="102" alignment="0" attributes="0">
                       <Component id="jButton2" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace type="separate" max="-2" attributes="0"/>
+                      <Component id="jButton4" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="32767" attributes="0"/>
                       <Component id="jButton3" min="-2" max="-2" attributes="0"/>
                   </Group>
@@ -53,6 +55,7 @@
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="jButton2" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="jButton3" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="jButton4" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace pref="47" max="32767" attributes="0"/>
               <Component id="jButton1" min="-2" max="-2" attributes="0"/>
@@ -76,7 +79,7 @@
             <Property name="font" type="java.awt.Font" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
               <Connection code="fontBasica" type="code"/>
             </Property>
-            <Property name="text" type="java.lang.String" value="main(){&#xa;&#x9;int i;&#xa;&#x9;int j;&#xa;&#x9;boolean flag;&#xa;&#xa;&#x9;print(1);&#xa;&#x9;print(true);&#xa;&#x9;print(false);&#xa;&#x9;print(i);&#xa;&#x9;print();&#xa;&#x9;&#xa;&#x9;call somar(1, 1);&#xa;&#x9;call somar(i, i);&#xa;&#x9;call somar(true, true);&#xa;&#x9;call somar(false, false);&#xa;&#x9;call somar(1, j);&#xa;&#x9;call somar(j, 1);&#xa;&#x9;call somar(true, i);&#xa;&#x9;call somar(i, false, 2, mateus, 2, atrue);&#xa;&#x9;call somar();&#xa;&#x9;&#xa;&#x9;break;&#xa;&#x9;continue;&#xa;&#x9;&#xa;&#x9;if(true == false){&#xa;&#x9;}&#xa;&#x9;if(true==true){&#xa;&#x9;} else {&#xa;&#x9;}&#xa;}"/>
+            <Property name="text" type="java.lang.String" value="main(){&#xa;&#x9;i = [1+2];&#xa;&#x9;i = [(1 + j)];&#xa;&#x9;i = [(j + 1) + 1];&#xa;}"/>
           </Properties>
           <AuxValues>
             <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new javax.swing.JTextPane(doc)"/>
@@ -112,6 +115,15 @@
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton3ActionPerformed"/>
+      </Events>
+    </Component>
+    <Component class="javax.swing.JButton" name="jButton4">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Estado da Pilha"/>
+        <Property name="enabled" type="boolean" value="false"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton4ActionPerformed"/>
       </Events>
     </Component>
   </SubComponents>

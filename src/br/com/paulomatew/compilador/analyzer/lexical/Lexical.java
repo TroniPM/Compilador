@@ -28,6 +28,7 @@ public class Lexical {
 
         this.sourceCode = formatSourceCode(sourceCode);
 
+        //System.out.println(this.sourceCode);
         tokenArray = parser();
     }
 
@@ -40,14 +41,16 @@ public class Lexical {
         t.addCell("TIPO");
         for (int i = 0; i < tokenArray.size(); i++) {
             LexicalToken in = tokenArray.get(i);
-            t.addCell("" + String.valueOf(i + 1));
+            t.addCell("" + (i + 1));
             t.addCell(Compilador.getToken(in.type));
-            t.addCell(in.lexeme);
-            t.addCell(String.valueOf(in.line));
-            t.addCell(String.valueOf(in.type));
-        }
+            t.addCell(in.lexeme + "");
+            t.addCell("" + (in.line));
+            t.addCell("" + (in.type));
 
-        return t.render();
+            System.out.println(in.lexeme);
+        }
+        String a = t.render().replace("[0m", "");//correção por causa do [
+        return a;
     }
 
     private String formatSourceCode(String msg) {
@@ -63,6 +66,8 @@ public class Lexical {
                 .replace("/", " / ")
                 .replace(",", " , ")
                 .replace(";", " ; ")
+                .replace("[", " [ ")
+                .replace("]", " ] ")
                 .replace("&&", " && ")
                 .replace("||", " || ");
 
@@ -181,9 +186,9 @@ public class Lexical {
                         l.lexeme = s;
                         l.line = j1 + 1;
                         arr.add(l);
-                        
+
                         throw new LexicalException("Unknow token '" + l.lexeme + "' at line " + l.line);
-                        
+
                         //continue;
                     } else {
 

@@ -29,10 +29,9 @@ main(){
 	break;
 	continue;
 	
-	if(true == false){
-	}
-	if(true==true){
-	} else {
-	}
+	i = 1;
+	i = j;
+	i = 1 + j;
+	i = j + 1 + 1;
 }
 ```

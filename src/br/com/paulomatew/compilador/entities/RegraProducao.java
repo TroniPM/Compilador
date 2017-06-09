@@ -14,10 +14,16 @@ import br.com.paulomatew.compilador.entities.LexicalToken;
 public class RegraProducao extends Objeto {
 
     public String method = null;
+    public boolean dontPrintException = false;
 
     public RegraProducao(String method) {
         this.method = method;
 
+    }
+
+    public RegraProducao(String condicao, boolean dontPrintException) {
+        this.method = method;
+        this.dontPrintException = dontPrintException;
     }
 
 }

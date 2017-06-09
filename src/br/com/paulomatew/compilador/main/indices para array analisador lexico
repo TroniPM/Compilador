@@ -2,10 +2,10 @@
 1	identificador
 2	token desconhecido
 3	principal ( main )
-4	ABRE_P ( ( )
-5	FECHA_P ( ) )
-6	ABRE_C ( { )
-7	FECHA_C ( } )
+4	ABRE_PARENT ( ( )
+5	FECHA_PARENT ( ) )
+6	ABRE_CHAVES ( { )
+7	FECHA_CHAVES ( } )
 8	END_COMMAND ( ; )
 9	comando vírgula ( , )
 10	comando de atribuição ( = )
@@ -35,3 +35,5 @@
 34	relação AND ( && )
 35	relação OR ( || )
 36	chamada de função ( call )
+37	ABRE_COLCHETES ( [ )
+38	FECHA_COLCHETES ( ] )
