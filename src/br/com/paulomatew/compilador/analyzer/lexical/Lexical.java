@@ -47,7 +47,7 @@ public class Lexical {
             t.addCell("" + (in.line));
             t.addCell("" + (in.type));
 
-            System.out.println(in.lexeme);
+            //System.out.println(in.lexeme);
         }
         String a = t.render().replace("[0m", "");//correção por causa do [
         return a;

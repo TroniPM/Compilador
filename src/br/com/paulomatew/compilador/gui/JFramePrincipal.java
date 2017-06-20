@@ -32,7 +32,7 @@ public class JFramePrincipal extends javax.swing.JFrame {
     3º X = minor changes
     4º X = gui
      */
-    private String title = "Compilador (P.Mateus): 5.2.0.0";
+    private String title = "Compilador (P.Mateus): 7.4.0.2";
 
     private DefaultStyledDocument doc;
     public javax.swing.JTextPane editor;
@@ -230,7 +230,7 @@ public class JFramePrincipal extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jTextPane1.setFont(fontBasica);
-        jTextPane1.setText("main(){\n\t#i = [1+2];\n\ti = [10+11];\n}");
+        jTextPane1.setText("main(){\n\tint i;\n\tint j;\n\tboolean flag;\n\n\tprint(1);\n\tprint(true);\n\tprint(false);\n\tprint(i);\n\tprint();\n\t\n\tcall somar(1, 1);\n\tcall somar(i, i);\n\tcall somar(true, true);\n\tcall somar(false, false);\n\tcall somar(1, j);\n\tcall somar(j, 1);\n\tcall somar(true, i);\n\tcall somar(i, false, 2, mateus, 2, Atrue);\n\tcall somar();\n\t\n\tbreak;\n\tcontinue;\n\t\n\ti = 1024;\n\ti = matt;\n\ti = true;\n\ti = [1024 + matt];\n\ti = [(j + matt) * 2048];\n\n\tif(matt == true){\n    } else{\n    \tint antony;\n        antony = [(matt * 1024) / 2];\n    }\n\tif((matt == true && 1 != 2) || flag == true){\n\t}\n}");
         jScrollPane1.setViewportView(jTextPane1);
 
         jButton1.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N

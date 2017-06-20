@@ -34,5 +34,13 @@ main(){
 	i = true;
 	i = [1024 + matt];
 	i = [(j + matt) * 2048];
+
+	if(matt == true){
+    } else{
+    	int antony;
+        antony = [(matt * 1024) / 2];
+    }
+	if((matt == true && 1 != 2) || flag == true){
+	}
 }
 ```

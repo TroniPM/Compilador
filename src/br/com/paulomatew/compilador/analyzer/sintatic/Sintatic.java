@@ -89,18 +89,7 @@ public class Sintatic {
             //if (pilha.size() > 0 && i != arr.size()) {
             Objeto o = getNaPilha();
             if (o instanceof LexicalToken) {
-                LexicalToken o1 = (LexicalToken) o;
-
-                salvarEstadoDaPilha(o1.lexeme);
-
-                if (arr.get(i).type != o1.type) {
-                    o1.print();
-                    arr.get(i).print();
-                    throw new SintaticException("Unexpected token '" + (arr.get(i).lexeme)
-                            + "' at line " + arr.get(i).line + ", position " + arr.get(i).position
-                            + " (expected: '" + o1.description + "').");
-                }
-
+                checkToken(o, arr.get(i));
             } else {
                 RegraProducao o1 = (RegraProducao) o;
 
@@ -158,7 +147,7 @@ public class Sintatic {
                             addNaPilha(new RegraProducao("escopo"));
                             addNaPilha(new LexicalToken(6, "{", "{"));
                             addNaPilha(new LexicalToken(5, ")", ")"));
-                            addNaPilha(new RegraProducao("condicao"));
+                            addNaPilha(new RegraProducao("exp_logic"));
                             addNaPilha(new LexicalToken(4, "(", "("));
                             addNaPilha(new LexicalToken(21, "if", spe));
                         } else if (arr.get(i).type == 23) {//WHILE
@@ -167,7 +156,7 @@ public class Sintatic {
                             addNaPilha(new RegraProducao("escopo"));
                             addNaPilha(new LexicalToken(6, "{", "{"));
                             addNaPilha(new LexicalToken(5, ")", ")"));
-                            addNaPilha(new RegraProducao("condicao"));
+                            addNaPilha(new RegraProducao("exp_logic"));
                             addNaPilha(new LexicalToken(4, "(", "("));
                             addNaPilha(new LexicalToken(23, "while", spe));
                         } else if (arr.get(i).type == 36) {//CALL
@@ -212,6 +201,22 @@ public class Sintatic {
                             addNaPilha(new RegraProducao("exp_arit"));
                             addNaPilha(new LexicalToken(37, "[", "["));
                         }
+                        /*else if ((arr.get(i).type == 0 //CONSTANTE e EXPRESSAO_LOGICA
+                                || arr.get(i).type == 1 //IDENTIFICADOR e EXPRESSAO_LOGICA
+                                || arr.get(i).type == 25 //TRUE e EXPRESSAO_LOGICA
+                                || arr.get(i).type == 26)//FALSE e EXPRESSAO_LOGICA
+                                && (lookAhead(arr.get(i + 1), new LexicalToken(28, "<", "<")))
+                                || lookAhead(arr.get(i + 1), new LexicalToken(29, ">", ">"))
+                                || lookAhead(arr.get(i + 1), new LexicalToken(30, "<=", "<="))
+                                || lookAhead(arr.get(i + 1), new LexicalToken(31, ">=", ">="))
+                                || lookAhead(arr.get(i + 1), new LexicalToken(32, "==", "=="))
+                                || lookAhead(arr.get(i + 1), new LexicalToken(33, "!=", "!="))) {
+                            addNaPilha(new RegraProducao("condicao"));
+                        } else if (arr.get(i).type == 4) {//ABRE_PARENTESES
+                            addNaPilha(new LexicalToken(5, ")", ")"));
+                            addNaPilha(new RegraProducao("exp_arit"));
+                            addNaPilha(new LexicalToken(4, "(", "("));
+                        }*/
                     } else {
                         throw new SintaticException("NÃO É <atrib>");
                     }
@@ -266,20 +271,83 @@ public class Sintatic {
                     }
                     /*QUANDO PALAVRA GERA VAZIO NÃO PODE GERAR EXCEPTION 
                         (PQ VAI CHAMAR O PRÓXIMO DA PILHA*/
-                } else if (o1.method.equals("condicao")) {
-
-                    if (condicao(arr.get(i))) {
+                } else if (o1.method.equals("exp_logic")) {
+                    if (exp_logic(arr.get(i))) {
+                        if (arr.get(i).type == 1) {
+                            addNaPilha(new RegraProducao("oper_logic"));
+                            addNaPilha(new LexicalToken(1, "<identificador>", "identificador"));
+                        } else if (arr.get(i).type == 0) {
+                            addNaPilha(new RegraProducao("oper_logic"));
+                            addNaPilha(new LexicalToken(0, "<numero>", "constante"));
+                        } else if (arr.get(i).type == 25) {
+                            addNaPilha(new RegraProducao("oper_logic"));
+                            addNaPilha(new LexicalToken(25, "true", "true"));
+                        } else if (arr.get(i).type == 26) {
+                            addNaPilha(new RegraProducao("oper_logic"));
+                            addNaPilha(new LexicalToken(26, "false", "false"));
+                        } else if (arr.get(i).type == 4) {//(
+                            addNaPilha(new RegraProducao("exp_logic_cont"));
+                            addNaPilha(new RegraProducao("oper_logic"));
+                            addNaPilha(new LexicalToken(5, ")", ")"));
+                            addNaPilha(new RegraProducao("exp_logic"));
+                            addNaPilha(new LexicalToken(4, "(", "("));
+                        }
 
                     } else if (o1.dontPrintException) {
-                        System.out.println("condicao >> o1.dontPrintException");
+                        System.out.println("exp_logic >> o1.dontPrintException");
 
                     } else {
-                        //throw new SintaticException("NÃO É <condicao>");
+                        //throw new SintaticException("NÃO É <exp_logic>");
 
                         throw new SintaticException("Unexpected token '" + (arr.get(i).lexeme)
-                                + "' at line " + arr.get(i).line + " (<condicao>).");
+                                + "' at line " + arr.get(i).line + " (<exp_logic>).");
                     }
 
+                } else if (o1.method.equals("oper_logic")) {
+                    //PODE GERAR VAZIO
+                    if (oper_logic(arr.get(i))) {
+                        if (arr.get(i).type == 28) {
+                            addNaPilha(new RegraProducao("exp_logic_cont"));
+                            addNaPilha(new RegraProducao("exp_logic"));
+                            addNaPilha(new LexicalToken(28, "<", "<"));
+                        } else if (arr.get(i).type == 29) {
+                            addNaPilha(new RegraProducao("exp_logic_cont"));
+                            addNaPilha(new RegraProducao("exp_logic"));
+                            addNaPilha(new LexicalToken(29, ">", ">"));
+                        } else if (arr.get(i).type == 30) {
+                            addNaPilha(new RegraProducao("exp_logic_cont"));
+                            addNaPilha(new RegraProducao("exp_logic"));
+                            addNaPilha(new LexicalToken(30, "<=", "<="));
+                        } else if (arr.get(i).type == 31) {
+                            addNaPilha(new RegraProducao("exp_logic_cont"));
+                            addNaPilha(new RegraProducao("exp_logic"));
+                            addNaPilha(new LexicalToken(31, ">=", ">="));
+                        } else if (arr.get(i).type == 32) {
+                            addNaPilha(new RegraProducao("exp_logic_cont"));
+                            addNaPilha(new RegraProducao("exp_logic"));
+                            addNaPilha(new LexicalToken(32, "==", "=="));
+                        } else if (arr.get(i).type == 33) {
+                            addNaPilha(new RegraProducao("exp_logic_cont"));
+                            addNaPilha(new RegraProducao("exp_logic"));
+                            addNaPilha(new LexicalToken(33, "!=", "!="));
+                        }
+
+                    }
+                    /*QUANDO PALAVRA GERA VAZIO NÃO PODE GERAR EXCEPTION 
+                        (PQ VAI CHAMAR O PRÓXIMO DA PILHA*/
+                } else if (o1.method.equals("exp_logic_cont")) {
+                    //PODE GERAR VAZIO
+                    if (oper_logic_cont(arr.get(i))) {
+                        if (arr.get(i).type == 34) {
+                            addNaPilha(new RegraProducao("exp_logic"));
+                            addNaPilha(new LexicalToken(34, "&&", "&&"));
+                        } else if (arr.get(i).type == 35) {
+                            addNaPilha(new RegraProducao("exp_logic"));
+                            addNaPilha(new LexicalToken(35, "||", "||"));
+                        }
+                    }
+                    /*QUANDO PALAVRA GERA VAZIO NÃO PODE GERAR EXCEPTION 
+                        (PQ VAI CHAMAR O PRÓXIMO DA PILHA*/
                 } else if (o1.method.equals("printar_sec")) {
                     //PODE GERAR VAZIO
                     if (printar_sec(arr.get(i))) {
@@ -300,9 +368,10 @@ public class Sintatic {
                 } else if (o1.method.equals("bloco_else")) {
                     //PODE GERAR VAZIO
                     if (bloco_else(arr.get(i))) {
-                        addNaPilha(new LexicalToken(21, "{", "{"));
+                        addNaPilha(new LexicalToken(7, "}", "}"));
                         addNaPilha(new RegraProducao("escopo"));
-                        addNaPilha(new LexicalToken(21, "}", "}"));
+                        addNaPilha(new LexicalToken(6, "{", "{"));
+                        addNaPilha(new LexicalToken(22, "else", "else"));
 
                     }
                     /*QUANDO PALAVRA GERA VAZIO NÃO PODE GERAR EXCEPTION 
@@ -486,10 +555,11 @@ public class Sintatic {
         return true;
     }
 
-    private boolean condicao(LexicalToken token) {
+    private boolean exp_logic(LexicalToken token) {
         return token.type == 0
                 || token.type == 1
                 || token.type == 4
+                || token.type == 5
                 || token.type == 25
                 || token.type == 26;
 
@@ -498,6 +568,15 @@ public class Sintatic {
     private boolean oper_arit(LexicalToken token) {
         return token.type == 11 || token.type == 12
                 || token.type == 13 || token.type == 14;
+    }
+
+    private boolean oper_logic(LexicalToken token) {
+        return token.type == 28
+                || token.type == 29
+                || token.type == 30
+                || token.type == 31
+                || token.type == 32
+                || token.type == 33;
     }
 
     private boolean exp_arit(LexicalToken token) {
@@ -582,5 +661,23 @@ public class Sintatic {
 
     private boolean programa(LexicalToken token) {
         return token.type == 3;
+    }
+
+    private void checkToken(Objeto o, LexicalToken token) throws SintaticException {
+        LexicalToken o1 = (LexicalToken) o;
+
+        salvarEstadoDaPilha(o1.lexeme);
+
+        if (token.type != o1.type) {
+            //o1.print();
+            //token.print();
+            throw new SintaticException("Unexpected token '" + (token.lexeme)
+                    + "' at line " + token.line + ", position " + token.position
+                    + " (expected: '" + o1.description + "').");
+        }
+    }
+
+    private boolean oper_logic_cont(LexicalToken token) {
+        return token.type == 34 || token.type == 35;
     }
 }

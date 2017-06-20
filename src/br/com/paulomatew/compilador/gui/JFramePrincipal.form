@@ -79,7 +79,7 @@
             <Property name="font" type="java.awt.Font" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
               <Connection code="fontBasica" type="code"/>
             </Property>
-            <Property name="text" type="java.lang.String" value="main(){&#xa;&#x9;#i = [1+2];&#xa;&#x9;i = [10+11];&#xa;}"/>
+            <Property name="text" type="java.lang.String" value="main(){&#xa;&#x9;int i;&#xa;&#x9;int j;&#xa;&#x9;boolean flag;&#xa;&#xa;&#x9;print(1);&#xa;&#x9;print(true);&#xa;&#x9;print(false);&#xa;&#x9;print(i);&#xa;&#x9;print();&#xa;&#x9;&#xa;&#x9;call somar(1, 1);&#xa;&#x9;call somar(i, i);&#xa;&#x9;call somar(true, true);&#xa;&#x9;call somar(false, false);&#xa;&#x9;call somar(1, j);&#xa;&#x9;call somar(j, 1);&#xa;&#x9;call somar(true, i);&#xa;&#x9;call somar(i, false, 2, mateus, 2, Atrue);&#xa;&#x9;call somar();&#xa;&#x9;&#xa;&#x9;break;&#xa;&#x9;continue;&#xa;&#x9;&#xa;&#x9;i = 1024;&#xa;&#x9;i = matt;&#xa;&#x9;i = true;&#xa;&#x9;i = [1024 + matt];&#xa;&#x9;i = [(j + matt) * 2048];&#xa;&#xa;&#x9;if(matt == true){&#xa;    } else{&#xa;    &#x9;int antony;&#xa;        antony = [(matt * 1024) / 2];&#xa;    }&#xa;&#x9;if((matt == true &amp;&amp; 1 != 2) || flag == true){&#xa;&#x9;}&#xa;}"/>
           </Properties>
           <AuxValues>
             <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new javax.swing.JTextPane(doc)"/>
