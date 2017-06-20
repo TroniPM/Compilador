@@ -49,18 +49,30 @@ public class Sintatic {
 
     private void salvarEstadoDaPilha(String atual) {
         estadoDaPilha += (interacao++) + ") -------------- ( " + atual + " )\n";
-        for (Objeto in : pilha) {
+
+        //TODO inverter posição da pilha
+        for (int i = pilha.size() - 1; i >= 0; i--) {
+            if (pilha.get(i) instanceof LexicalToken) {
+                estadoDaPilha += ((LexicalToken) pilha.get(i)).lexeme + "\n";
+            } else {
+                estadoDaPilha += ((RegraProducao) pilha.get(i)).method + "\n";
+            }
+        }
+        /*for (Objeto in : pilha) {
             if (in instanceof LexicalToken) {
                 estadoDaPilha += ((LexicalToken) in).lexeme + "\n";
             } else {
                 estadoDaPilha += "<" + ((RegraProducao) in).method + ">\n";
             }
-        }
+        }*/
         estadoDaPilha += "------------------------------\n";
     }
 
     private void parserNew() throws SintaticException {
-        ArrayList<LexicalToken> arr = (ArrayList<LexicalToken>) this.tokenListFromLexical.clone();
+        ArrayList<LexicalToken> arr = new ArrayList<>();
+        for (LexicalToken in : tokenListFromLexical) {
+            arr.add(in);
+        }
 
         pilha = new ArrayList<>();
 
@@ -85,7 +97,8 @@ public class Sintatic {
                     o1.print();
                     arr.get(i).print();
                     throw new SintaticException("Unexpected token '" + (arr.get(i).lexeme)
-                            + "' at line " + arr.get(i).line + " (expected: '" + o1.description + "').");
+                            + "' at line " + arr.get(i).line + ", position " + arr.get(i).position
+                            + " (expected: '" + o1.description + "').");
                 }
 
             } else {
@@ -198,22 +211,7 @@ public class Sintatic {
                             addNaPilha(new LexicalToken(38, "]", "]"));
                             addNaPilha(new RegraProducao("exp_arit"));
                             addNaPilha(new LexicalToken(37, "[", "["));
-                        }/* else if ((arr.get(i).type == 0 //CONSTANTE e EXPRESSAO_LOGICA
-                                || arr.get(i).type == 1
-                                || arr.get(i).type == 25
-                                || arr.get(i).type == 26)
-                                && (lookAhead(arr.get(i + 1), new LexicalToken(28, "<", "<")))
-                                || lookAhead(arr.get(i + 1), new LexicalToken(29, ">", ">"))
-                                || lookAhead(arr.get(i + 1), new LexicalToken(30, "<=", "<="))
-                                || lookAhead(arr.get(i + 1), new LexicalToken(31, ">=", ">="))
-                                || lookAhead(arr.get(i + 1), new LexicalToken(32, "==", "=="))
-                                || lookAhead(arr.get(i + 1), new LexicalToken(33, "!=", "!="))) {
-                            addNaPilha(new RegraProducao("condicao"));
-                        } else if (arr.get(i).type == 4) {//ABRE_PARENTESES
-                            addNaPilha(new LexicalToken(5, ")", ")"));
-                            addNaPilha(new RegraProducao("exp_arit"));
-                            addNaPilha(new LexicalToken(4, "(", "("));
-                        }*/
+                        }
                     } else {
                         throw new SintaticException("NÃO É <atrib>");
                     }
@@ -236,11 +234,8 @@ public class Sintatic {
                         } else if (arr.get(i).type == 0) {
                             addNaPilha(new RegraProducao("oper_arit"));
                             addNaPilha(new LexicalToken(0, "<numero>", "constante"));
-                        }/* else if (arr.get(i).type == 25) {//TRUE
-                                addNaPilha(new LexicalToken(25, "true", "true"));
-                            } else if (arr.get(i).type == 26) {//FALSE
-                                addNaPilha(new LexicalToken(26, "false", "false"));
-                            }*/ else if (arr.get(i).type == 4) {//(
+                        } else if (arr.get(i).type == 4) {//(
+                            addNaPilha(new RegraProducao("oper_arit"));
                             addNaPilha(new LexicalToken(5, ")", ")"));
                             addNaPilha(new RegraProducao("exp_arit"));
                             addNaPilha(new LexicalToken(4, "(", "("));
@@ -508,7 +503,8 @@ public class Sintatic {
     private boolean exp_arit(LexicalToken token) {
         return token.type == 0
                 || token.type == 1
-                || token.type == 4;
+                || token.type == 4
+                || token.type == 5;
 
     }
 

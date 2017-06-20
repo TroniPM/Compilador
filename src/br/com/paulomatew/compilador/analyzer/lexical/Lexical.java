@@ -134,10 +134,17 @@ public class Lexical {
         for (int j1 = 0; j1 < sourcePorLinha.length; j1++) {
             String linha = sourcePorLinha[j1];
 
+            //ignorar comentários
+            if (linha.trim().startsWith("#")) {
+                continue;
+            }
+
             StringTokenizer st = new StringTokenizer(linha);
 
+            int pos = 0;
             outer:
             while (st.hasMoreTokens()) {
+                pos++;
                 String s = st.nextToken();
 
                 boolean ctrl = false;
@@ -148,6 +155,7 @@ public class Lexical {
                         l.type = i + 3;//correção de indice para ocultar os 3 primeiros
                         l.lexeme = s;
                         l.line = j1 + 1;
+                        l.position = pos;
                         arr.add(l);
 
                         ctrl = true;
@@ -162,6 +170,7 @@ public class Lexical {
                     l.type = 2;// "token desconhecido";
                     l.lexeme = s;
                     l.line = j1 + 1;
+                    l.position = pos;
                     arr.add(l);
 
                     throw new LexicalException("Unknow token '" + l.lexeme + "' at line " + l.line);
@@ -185,6 +194,7 @@ public class Lexical {
                         l.type = 2;//"token desconhecido";
                         l.lexeme = s;
                         l.line = j1 + 1;
+                        l.position = pos;
                         arr.add(l);
 
                         throw new LexicalException("Unknow token '" + l.lexeme + "' at line " + l.line);
@@ -196,6 +206,7 @@ public class Lexical {
                         l.type = 0;//"constante";
                         l.lexeme = s;
                         l.line = j1 + 1;
+                        l.position = pos;
                         arr.add(l);
                         continue;
                     }

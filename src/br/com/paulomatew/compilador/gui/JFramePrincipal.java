@@ -103,6 +103,8 @@ public class JFramePrincipal extends javax.swing.JFrame {
 
                     if (i + 1 < Compilador.RESERVED_WORDS.size()) {
                         reserved += "|";
+                    } else {
+                        reserved += "|#";
                     }
                 }
 
@@ -155,6 +157,8 @@ public class JFramePrincipal extends javax.swing.JFrame {
 
                     if (i + 1 < Compilador.RESERVED_WORDS.size()) {
                         reserved += "|";
+                    } else {
+                        reserved += "|#";
                     }
                 }
 
@@ -226,7 +230,7 @@ public class JFramePrincipal extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jTextPane1.setFont(fontBasica);
-        jTextPane1.setText("main(){\n\ti = [1+2];\n\ti = [(1 + j)];\n\ti = [(j + 1) + 1];\n}");
+        jTextPane1.setText("main(){\n\t#i = [1+2];\n\ti = [10+11];\n}");
         jScrollPane1.setViewportView(jTextPane1);
 
         jButton1.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N

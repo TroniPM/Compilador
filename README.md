@@ -29,9 +29,10 @@ main(){
 	break;
 	continue;
 	
-	i = 1;
-	i = j;
-	i = 1 + j;
-	i = j + 1 + 1;
+	i = 1024;
+	i = matt;
+	i = true;
+	i = [1024 + matt];
+	i = [(j + matt) * 2048];
 }
 ```

@@ -15,6 +15,7 @@ public class LexicalToken extends Objeto{
     public String lexeme = null;
     public String description = null;
     public int line = 0;
+    public int position = 0;
 
     public LexicalToken() {
     }
