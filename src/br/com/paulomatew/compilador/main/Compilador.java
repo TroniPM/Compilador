@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package br.com.paulomatew.compilador.main;
 
 import br.com.paulomatew.compilador.analyzer.lexical.Lexical;
@@ -20,8 +15,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- *
- * @author matt
+ * Created by Paulo Mateus on 26/06/2017. For project Compiladores
+ * (https://github.com/TroniPM/Compilador) Contact: <paulomatew@gmail.com>
  */
 public class Compilador {
 

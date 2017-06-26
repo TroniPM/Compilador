@@ -15,15 +15,13 @@
  */
 package br.com.paulomatew.compilador.gui;
 
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.text.JTextComponent;
 
 /**
- *
- * @author PMateus <paulomatew@gmailcom>
+ * Created by Paulo Mateus on 26/06/2017. For project Compiladores
+ * (https://github.com/TroniPM/Compilador) Contact: <paulomatew@gmail.com>
  */
 public class PopUpMenuAtRightClick extends JPopupMenu {
 

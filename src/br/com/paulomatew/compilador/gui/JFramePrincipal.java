@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package br.com.paulomatew.compilador.gui;
 
 import static br.com.paulomatew.compilador.entities.OSValidator.isUnix;
@@ -21,8 +16,8 @@ import javax.swing.text.StyleConstants;
 import javax.swing.text.StyleContext;
 
 /**
- *
- * @author Mateus
+ * Created by Paulo Mateus on 26/06/2017. For project Compiladores
+ * (https://github.com/TroniPM/Compilador) Contact: <paulomatew@gmail.com>
  */
 public class JFramePrincipal extends javax.swing.JFrame {
 
@@ -341,10 +336,10 @@ public class JFramePrincipal extends javax.swing.JFrame {
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
 
-        if (compiler.analizadorSintatico.estadoDaPilha == null) {
+        if (compiler.analizadorSintatico.stackState == null) {
             JOptionPane.showMessageDialog(this, "Nenhum código fonte compilado.", "Error", JOptionPane.ERROR_MESSAGE);
         } else {
-            JTextArea textArea = new JTextArea(compiler.analizadorSintatico.estadoDaPilha);
+            JTextArea textArea = new JTextArea(compiler.analizadorSintatico.stackState);
             textArea.setFont(fontBasica);
             JScrollPane scrollPane = new JScrollPane(textArea);
 
