@@ -22,9 +22,9 @@ public class Lexical {
     public ArrayList<LexicalToken> tokenArray = null;
 
     public void init(String sourceCode) throws LexicalException {
-        if (sourceCode == null || sourceCode.isEmpty()) {
+        /*if (sourceCode == null || sourceCode.isEmpty()) {
             throw new LexicalException("Nenhum código fonte informado.");
-        }
+        }*/
 
         this.sourceCode = formatSourceCode(sourceCode);
 

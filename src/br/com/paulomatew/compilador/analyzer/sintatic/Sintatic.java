@@ -27,9 +27,9 @@ public class Sintatic {
     private int interacao = 1;
 
     public void init(ArrayList<LexicalToken> arr) throws SintaticException {
-        if (arr == null || arr.isEmpty()) {
+        /*if (arr == null || arr.isEmpty()) {
             throw new SintaticException("Nenhum token encontrado.");
-        }
+        }*/
 
         this.tokenListFromLexical = arr;
 
@@ -81,9 +81,13 @@ public class Sintatic {
         estadoDaPilha = "";
         interacao = 1;
 
-        addNaPilha(new LexicalToken(99, "$", "FIM DO PROGRAMA ($)"));
+        addNaPilha(new LexicalToken(99, "$", "FIM DO PROGRAMA ($), <declarar_func>"));
         addNaPilha(new RegraProducao("programa"));
         //salvarEstadoDaPilha("programa");
+
+        if (fitaSendoLida.size() == 0) {
+            throw new SintaticException("Unexpected token 'EMPTY' at line 1, position 1 (expected: 'main').");
+        }
         for (int i = 0; i < fitaSendoLida.size(); i++) {
             Objeto tokenDaPilha = getNaPilha();
             if (tokenDaPilha instanceof LexicalToken) {
@@ -123,7 +127,7 @@ public class Sintatic {
                                 + "' at line " + fitaSendoLida.get(i).line + " (expected: 'main').");
                     }
                 } else if (o1.method.equals("escopo")) {
-                    String spe = "int, boolean, identificador, print, call, if, while, break, continue";
+                    String spe = "int, boolean, identificador, print, call, if, while, break, continue, }";
                     if (escopo(fitaSendoLida.get(i))) {
                         //<escopo> sempre tem q ser a primeira chamada (pra ser a ultima na pila)
                         if (fitaSendoLida.get(i).type == 16) {//DECLARAÇÃO INT
@@ -546,7 +550,9 @@ public class Sintatic {
                             addNaPilha(new RegraProducao("exp_logic"));
                         }
                     } else {
-                        throw new SintaticException("NÃO É <retorno_func_sec>");
+                        //throw new SintaticException("NÃO É <retorno_func_sec>");
+                        throw new SintaticException("Unexpected token '" + (fitaSendoLida.get(i).lexeme)
+                                + "' at line " + fitaSendoLida.get(i).line + " (expected: 'identificador, constante, true, false, <chamar_func>, [<exp_arit>], <exp_logic>').");
                     }
                 }
                 i--;
@@ -580,7 +586,26 @@ public class Sintatic {
                         }
                     }*/
                     //System.out.println(arr.get(i+1));
-                    throw new SintaticException("All source code was readed, but stack is not EMPTY (" + pilha.size() + ").");
+                    String in = "";
+
+                    String esp = "";
+                    for (int x1 = 0; x1 < pilha.size(); x1++) {
+                        Objeto out = getNaPilha();
+                        if (out instanceof LexicalToken) {
+                            in += ((LexicalToken) out).lexeme + ", ";
+
+                            if (x1 == 0) {
+                                esp = ((LexicalToken) out).lexeme;
+                            }
+                        } else if (out instanceof RegraProducao) {
+                            in += (((RegraProducao) out).method) + ", ";
+
+                            if (x1 == 0) {
+                                esp = ((RegraProducao) out).method;
+                            }
+                        }
+                    }
+                    throw new SintaticException("All source code was readed, but stack is not EMPTY (size: " + pilha.size() + ", tokens: " + in + "). Expected: '" + esp + "'");
                 }
             }
         }
