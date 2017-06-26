@@ -28,11 +28,10 @@ public class JFramePrincipal extends javax.swing.JFrame {
 
     /*x.x.x.x
     1º X = gramática
-    2º X = analisadores
-    3º X = minor changes
+    2º X = minor changes
     4º X = gui
      */
-    private String title = "Compilador (P.Mateus): 7.4.0.2";
+    private String title = "Compilador (P.Mateus): 7.0.2";
 
     private DefaultStyledDocument doc;
     public javax.swing.JTextPane editor;

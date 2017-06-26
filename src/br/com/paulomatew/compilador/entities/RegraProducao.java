@@ -26,4 +26,9 @@ public class RegraProducao extends Objeto {
         this.dontPrintException = dontPrintException;
     }
 
+    public void print() {
+        System.out.println("-----------------");
+        System.out.println("Regra: <" + method + ">");
+        System.out.println("-----------------");
+    }
 }
