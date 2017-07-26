@@ -149,6 +149,11 @@ public class Lexical {
         String escopoAtual = "a";
         ArrayList<String> escoposAtivos = new ArrayList<>();
         escoposAtivos.add(escopoAtual);
+        String nextEscopo = getRandomNumberScope() + "";
+        boolean escopoDeIdentificadorEmMetodo = false;
+        /*escopoDeIdentificadorEmMetodo faz com q identificadores q estejam na
+        declaração de uma função estejam no escopo da função, e não no escopo
+        superior.*/
         for (int j1 = 0; j1 < sourcePorLinha.length; j1++) {
             String linha = sourcePorLinha[j1];
 
@@ -180,13 +185,23 @@ public class Lexical {
                         ctrl = true;
 
                         if (i == 3) {//NOVO ESCOPO
-                            escopoAtual = getRandomNumberScope() + "";
+                            escopoAtual = nextEscopo;
                             escoposAtivos.add(escopoAtual);
+
+                            nextEscopo = getRandomNumberScope() + "";
+
+                            escopoDeIdentificadorEmMetodo = false;
                         } else if (i == 4) {//ESCOPO ATUAL ENCERRADO
                             escoposAtivos.remove(escopoAtual);
                             escopoAtual = escoposAtivos.get(escoposAtivos.size() - 1);
                             l.scope = escopoAtual;//ficar com escopo igual ao do ABRE_PARENTESES
 
+                        } else if (i == 21) {//DECLARAÇÃO DE FUNÇÃO
+                            escopoDeIdentificadorEmMetodo = true;
+                        } else if (i == 13 && escopoDeIdentificadorEmMetodo) {//int
+                            l.scope = nextEscopo;
+                        } else if (i == 14 && escopoDeIdentificadorEmMetodo) {//boolean
+                            l.scope = nextEscopo;
                         }
                     }
                 }
@@ -213,7 +228,11 @@ public class Lexical {
                     l.lexeme = s;
                     l.line = j1 + 1;
                     l.position = pos;
-                    l.scope = escopoAtual;
+                    if (!escopoDeIdentificadorEmMetodo) {
+                        l.scope = escopoAtual;
+                    } else {
+                        l.scope = nextEscopo;
+                    }
                     arr.add(l);
                     continue;
                 }
