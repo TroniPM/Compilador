@@ -11,14 +11,14 @@ public class LexicalToken extends Objeto {
     public String description = null;
     public int line = 0;
     public int position = 0;
+    public String scope = null;
 
     public LexicalToken() {
     }
 
-    public LexicalToken(int type, String lexeme/*, String description*/) {
+    public LexicalToken(int type, String lexeme) {
         this.type = type;
         this.lexeme = lexeme;
-        //this.description = description;
     }
 
     public LexicalToken(int type, String lexeme, String description) {
@@ -32,6 +32,7 @@ public class LexicalToken extends Objeto {
         System.out.println("LEXEMA: " + lexeme);
         System.out.println("DESCRIÇÃO: " + description);
         System.out.println("LINHA: " + line);
+        System.out.println("ESCOPO: " + scope);
         System.out.println("--------------------------------");
     }
 
@@ -41,6 +42,7 @@ public class LexicalToken extends Objeto {
         a += ("\nLEXEMA: " + lexeme);
         a += ("\nDESCRIÇÃO: " + description);
         a += ("\nLINHA: " + line);
+        a += ("\nESCOPO: " + scope);
         a += ("\n--------------------------------");
 
         return a;

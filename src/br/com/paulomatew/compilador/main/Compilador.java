@@ -5,6 +5,7 @@ import br.com.paulomatew.compilador.analyzer.semantic.Semantic;
 import br.com.paulomatew.compilador.analyzer.sintatic.Sintatic;
 import br.com.paulomatew.compilador.entities.LexicalToken;
 import br.com.paulomatew.compilador.exceptions.LexicalException;
+import br.com.paulomatew.compilador.exceptions.SemanticException;
 import br.com.paulomatew.compilador.exceptions.SintaticException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -89,6 +90,7 @@ public class Compilador {
      * @param txt
      */
     private void start(String txt) {
+        boolean erro = false;
         try {
             analizadorLexico.init(txt);
         } catch (LexicalException ex) {
@@ -99,18 +101,38 @@ public class Compilador {
 
             errorConsole += "\n" + errors.toString().split("\n")[0];
             errorConsole = errorConsole.trim();
+
+            erro = true;
         }
 
-        try {
-            analizadorSintatico.init(analizadorLexico.tokenArray);
-        } catch (SintaticException ex) {
-            Logger.getLogger(Sintatic.class.getName()).log(Level.SEVERE, null, ex);
+        if (!erro) {
+            try {
+                analizadorSintatico.init(analizadorLexico.tokenArray);
+            } catch (SintaticException ex) {
+                Logger.getLogger(Sintatic.class.getName()).log(Level.SEVERE, null, ex);
 
-            StringWriter errors = new StringWriter();
-            ex.printStackTrace(new PrintWriter(errors));
+                StringWriter errors = new StringWriter();
+                ex.printStackTrace(new PrintWriter(errors));
 
-            errorConsole += "\n" + errors.toString().split("\n")[0];
-            errorConsole = errorConsole.trim();
+                errorConsole += "\n" + errors.toString().split("\n")[0];
+                errorConsole = errorConsole.trim();
+
+                erro = true;
+            }
+
+            if (!erro) {
+                try {
+                    analizadorSemantico.init(analizadorLexico.tokenArray);
+                } catch (SemanticException ex) {
+                    Logger.getLogger(Sintatic.class.getName()).log(Level.SEVERE, null, ex);
+
+                    StringWriter errors = new StringWriter();
+                    ex.printStackTrace(new PrintWriter(errors));
+
+                    errorConsole += "\n" + errors.toString().split("\n")[0];
+                    errorConsole = errorConsole.trim();
+                }
+            }
         }
     }
 

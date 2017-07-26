@@ -4,6 +4,7 @@ import br.com.paulomatew.compilador.entities.LexicalToken;
 import br.com.paulomatew.compilador.exceptions.LexicalException;
 import br.com.paulomatew.compilador.main.Compilador;
 import java.util.ArrayList;
+import java.util.Random;
 import java.util.StringTokenizer;
 import org.nocrala.tools.texttablefmt.Table;
 
@@ -15,6 +16,7 @@ public class Lexical {
 
     private String sourceCode = null;
     public ArrayList<LexicalToken> tokenArray = null;
+    public ArrayList<Integer> escopos = null;
 
     public void init(String sourceCode) throws LexicalException {
         /*if (sourceCode == null || sourceCode.isEmpty()) {
@@ -23,18 +25,20 @@ public class Lexical {
 
         this.sourceCode = formatSourceCode(sourceCode);
 
+        escopos = new ArrayList<>();
         //System.out.println(this.sourceCode);
         tokenArray = parser();
     }
 
     public String getTokenListAsTable() {
-        Table t = new Table(6);
+        Table t = new Table(7);
         t.addCell("POS");
         t.addCell("TOKEN");
         t.addCell("LEXEMA");
         t.addCell("LINHA");
         t.addCell("COLUNA");
         t.addCell("TIPO");
+        t.addCell("ESCOPO");
         for (int i = 0; i < tokenArray.size(); i++) {
             LexicalToken in = tokenArray.get(i);
             t.addCell("" + (i + 1));
@@ -43,6 +47,7 @@ public class Lexical {
             t.addCell("" + (in.line));
             t.addCell("" + (in.position));
             t.addCell("" + (in.type));
+            t.addCell(in.scope);
 
             //System.out.println(in.lexeme);
         }
@@ -124,10 +129,26 @@ public class Lexical {
         //return msg.trim().replaceAll(" +", " ");
     }
 
+    private int getRandomNumberScope() {
+        Random gerador = new Random();
+        int g = gerador.nextInt();
+
+        while (escopos.contains(g)) {
+            g = gerador.nextInt();
+        }
+        escopos.add(g);
+
+        return g;
+    }
+
     private ArrayList<LexicalToken> parser() throws LexicalException {
         ArrayList<LexicalToken> arr = new ArrayList<>();
 
         String[] sourcePorLinha = sourceCode.split("\n");
+
+        String escopoAtual = "a";
+        ArrayList<String> escoposAtivos = new ArrayList<>();
+        escoposAtivos.add(escopoAtual);
         for (int j1 = 0; j1 < sourcePorLinha.length; j1++) {
             String linha = sourcePorLinha[j1];
 
@@ -153,9 +174,20 @@ public class Lexical {
                         l.lexeme = s;
                         l.line = j1 + 1;
                         l.position = pos;
+                        l.scope = escopoAtual;
                         arr.add(l);
 
                         ctrl = true;
+
+                        if (i == 3) {//NOVO ESCOPO
+                            escopoAtual = getRandomNumberScope() + "";
+                            escoposAtivos.add(escopoAtual);
+                        } else if (i == 4) {//ESCOPO ATUAL ENCERRADO
+                            escoposAtivos.remove(escopoAtual);
+                            escopoAtual = escoposAtivos.get(escoposAtivos.size() - 1);
+                            l.scope = escopoAtual;//ficar com escopo igual ao do ABRE_PARENTESES
+
+                        }
                     }
                 }
                 if (ctrl) {
@@ -168,6 +200,7 @@ public class Lexical {
                     l.lexeme = s;
                     l.line = j1 + 1;
                     l.position = pos;
+                    l.scope = escopoAtual;
                     arr.add(l);
 
                     throw new LexicalException("Unknow token '" + l.lexeme + "' at line " + l.line);
@@ -180,6 +213,7 @@ public class Lexical {
                     l.lexeme = s;
                     l.line = j1 + 1;
                     l.position = pos;
+                    l.scope = escopoAtual;
                     arr.add(l);
                     continue;
                 }
@@ -193,6 +227,7 @@ public class Lexical {
                         l.lexeme = s;
                         l.line = j1 + 1;
                         l.position = pos;
+                        l.scope = escopoAtual;
                         arr.add(l);
 
                         throw new LexicalException("Unknow token '" + l.lexeme + "' at line " + l.line);
@@ -205,6 +240,7 @@ public class Lexical {
                         l.lexeme = s;
                         l.line = j1 + 1;
                         l.position = pos;
+                        l.scope = escopoAtual;
                         arr.add(l);
                         continue;
                     }
