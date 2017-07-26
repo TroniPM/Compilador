@@ -1,5 +1,6 @@
 package br.com.paulomatew.compilador.analyzer.lexical;
 
+import br.com.paulomatew.compilador.entities.Escopo;
 import br.com.paulomatew.compilador.entities.LexicalToken;
 import br.com.paulomatew.compilador.exceptions.LexicalException;
 import br.com.paulomatew.compilador.main.Compilador;
@@ -16,7 +17,8 @@ public class Lexical {
 
     private String sourceCode = null;
     public ArrayList<LexicalToken> tokenArray = null;
-    public ArrayList<Integer> escopos = null;
+    public ArrayList<String> escopos = null;
+    public Escopo arvoreEscopos = null;
 
     public void init(String sourceCode) throws LexicalException {
         /*if (sourceCode == null || sourceCode.isEmpty()) {
@@ -26,6 +28,7 @@ public class Lexical {
         this.sourceCode = formatSourceCode(sourceCode);
 
         escopos = new ArrayList<>();
+        arvoreEscopos = new Escopo();
         //System.out.println(this.sourceCode);
         tokenArray = parser();
     }
@@ -136,7 +139,7 @@ public class Lexical {
         while (escopos.contains(g)) {
             g = gerador.nextInt();
         }
-        escopos.add(g);
+        //escopos.add(g);
 
         return g;
     }
@@ -146,7 +149,7 @@ public class Lexical {
 
         String[] sourcePorLinha = sourceCode.split("\n");
 
-        String escopoAtual = "a";
+        String escopoAtual = "0";
         ArrayList<String> escoposAtivos = new ArrayList<>();
         escoposAtivos.add(escopoAtual);
         String nextEscopo = getRandomNumberScope() + "";
@@ -187,7 +190,7 @@ public class Lexical {
                         if (i == 3) {//NOVO ESCOPO
                             escopoAtual = nextEscopo;
                             escoposAtivos.add(escopoAtual);
-
+                            escopos.add(escopoAtual);
                             nextEscopo = getRandomNumberScope() + "";
 
                             escopoDeIdentificadorEmMetodo = false;
