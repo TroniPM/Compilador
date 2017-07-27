@@ -2,7 +2,7 @@ Características semânticas solicitadas no compilador (esta lista ainda pode se
 *1. Observar se já existe uma variável com o mesmo nome no mesmo escopo e informar que já foi criada. 
 	*1.1 Assim também para as funções, a mesmo que haja sobrecarga;
 *2. Observar se a variável utilizada foi declarada naquele escopo ou no escopo geral;
-3. Observar se as atribuições e operações matemáticas e lógicas são realizadas com operandos de mesmo tipo;
+*3. Observar se as atribuições e operações matemáticas e lógicas são realizadas com operandos de mesmo tipo;
 *4. Observar o escopo das variáveis e funções;
 5. Expressões aritméticas;
 6. Comandos de atribuição;
