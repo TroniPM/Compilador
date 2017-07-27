@@ -514,13 +514,13 @@ public class Sintatic {
                     String esp = "int, boolean";
                     if (lista_param(tokenListFromLexical.get(i))) {
                         if (tokenListFromLexical.get(i).type == 16) {//INT
-                            tokenListFromLexical.get(i).regra = "param_type";
+                            tokenListFromLexical.get(i).regra = "param_type_int";
                             tokenListFromLexical.get(i + 1).regra = "param_int";
                             addToStack(new RegraProducao("lista_param_sec"));
                             addToStack(new LexicalToken(1, "<identificador>", "identificador"));
                             addToStack(new LexicalToken(16, "int", esp));
                         } else if (tokenListFromLexical.get(i).type == 17) {//BOOELAN
-                            tokenListFromLexical.get(i).regra = "param_type";
+                            tokenListFromLexical.get(i).regra = "param_type_boolean";
                             tokenListFromLexical.get(i + 1).regra = "param_boolean";
                             addToStack(new RegraProducao("lista_param_sec"));
                             addToStack(new LexicalToken(1, "<identificador>", "identificador"));
@@ -532,17 +532,19 @@ public class Sintatic {
                 } else if (o1.method.equals("lista_param_sec")) {
                     //PODE GERAR VAZIO
                     if (lista_param_sec(tokenListFromLexical.get(i))) {
-                        tokenListFromLexical.get(i + 2).regra = "param_iden";
+                        //tokenListFromLexical.get(i + 2).regra = "param_iden";
                         addToStack(new RegraProducao("lista_param_sec"));
                         addToStack(new LexicalToken(1, "<identificador>", "identificador"));
                         //System.out.println(">>>>>>>>>>>>>>>>>> " + tokenListFromLexical.get(i).type);
                         if (tokenListFromLexical.get(i).type == 9//VIRGULA e INTEIRO
                                 && lookAhead(tokenListFromLexical.get(i + 1), new LexicalToken(16, "int", "int, boolean"))) {
-                            tokenListFromLexical.get(i + 1).regra = "param_type";
+                            tokenListFromLexical.get(i + 1).regra = "param_type_int";
+                            tokenListFromLexical.get(i + 2).regra = "param_int";
                             addToStack(new LexicalToken(16, "int", "int, boolean"));
                         } else if (tokenListFromLexical.get(i).type == 9//VIRGULA e BOLEAN
                                 && lookAhead(tokenListFromLexical.get(i + 1), new LexicalToken(17, "boolean", "int, boolean"))) {
-                            tokenListFromLexical.get(i + 1).regra = "param_type";
+                            tokenListFromLexical.get(i + 1).regra = "param_type_boolean";
+                            tokenListFromLexical.get(i + 2).regra = "param_boolean";
                             addToStack(new LexicalToken(17, "int", "int, boolean"));
                         }
 
@@ -572,19 +574,19 @@ public class Sintatic {
                     if (retorno_func_sec(tokenListFromLexical.get(i))) {
                         if (tokenListFromLexical.get(i).type == 1//IDENTIFICADOR e PONTOVIRGULA
                                 && lookAhead(tokenListFromLexical.get(i + 1), new LexicalToken(8, ";"))) {
-                            tokenListFromLexical.get(i).regra = "0";
+                            tokenListFromLexical.get(i).regra = "ident";
                             addToStack(new LexicalToken(1, "<identificador>", "identificador"));
                         } else if (tokenListFromLexical.get(i).type == 0//COSNTANTE e PONTOVIRGULA
                                 && lookAhead(tokenListFromLexical.get(i + 1), new LexicalToken(8, ";"))) {
-                            tokenListFromLexical.get(i).regra = "0";
+                            tokenListFromLexical.get(i).regra = "exp_arit";
                             addToStack(new LexicalToken(0, "<numero>", "constante"));
                         } else if (tokenListFromLexical.get(i).type == 25 //TRUE
                                 && lookAhead(tokenListFromLexical.get(i + 1), new LexicalToken(8, ";"))) {
-                            tokenListFromLexical.get(i).regra = "0";
+                            tokenListFromLexical.get(i).regra = "exp_logic";
                             addToStack(new LexicalToken(25, "true", "true"));
                         } else if (tokenListFromLexical.get(i).type == 26 //FALSE
                                 && lookAhead(tokenListFromLexical.get(i + 1), new LexicalToken(8, ";"))) {
-                            tokenListFromLexical.get(i).regra = "0";
+                            tokenListFromLexical.get(i).regra = "exp_logic";
                             addToStack(new LexicalToken(26, "false", "false"));
                         } else if (tokenListFromLexical.get(i).type == 36) {//CALL
                             addToStack(new RegraProducao("chamar_func"));

@@ -46,6 +46,13 @@ public class Semantic {
                     + ", scope " + flag.scope);
         }
 
+        flag = checkAtribs();
+        if (flag != null) {
+            throw new SemanticException("Expression has an unexpected type: "
+                    + flag.lexeme + " at line " + flag.line + ", position " + flag.position
+                    + ", scope " + flag.scope);
+        }
+
         flag = checkReturnTypeMethods();
         if (flag != null) {
             throw new SemanticException("Method has an unexpected return type: "
@@ -92,10 +99,11 @@ public class Semantic {
                     continue;
                 }
                 LexicalToken anterior = tokens.get(j - 1);
-                if (anterior.type == 16 || anterior.type == 17 || anterior.type == 36) {
-                    //INT, BOOLEAN, CALL
+                if (anterior.type == 15 || anterior.type == 16 || anterior.type == 17 || anterior.type == 36) {
+                    //VOID, INT, BOOLEAN, CALL
                     continue;
                 }
+
                 boolean flag = checkVariableDefinedInScopeTree(atual, escopo);
                 if (!flag) {
                     return atual;
@@ -114,9 +122,10 @@ public class Semantic {
                     && atual.lexeme.equals(token.lexeme)) {
 
                 LexicalToken anterior = tokens.get(i - 1);
-                if ((anterior.type == 16 || anterior.type == 17) /*&& */) {
+                if ((anterior.type == 16 || anterior.type == 17)) {
                     //return true;
                     if (anterior.line < token.line) {
+                        token.regra = atual.regra;
                         return true;
                     } else if (anterior.line == token.line && anterior.position < token.position) {
                         return true;
@@ -215,20 +224,82 @@ public class Semantic {
                     //function
                     continue;
                 }
-                LexicalToken retorno = tokens.get(j - 1);
 //aqui
-                /*for (int x = 0; x < tokens.size(); x++) {
-                    if (tokens.get(x).scope.equals(escopo)) {
+                //identificador.print();
+                for (int x = j; x < tokens.size(); x++) {
+                    if (tokens.get(x).type == 20) {
+                        if (identificador.regra.equals("int")
+                                && (tokens.get(x + 1).regra.equals("exp_arit")
+                                || tokens.get(x + 1).regra.equals("param_int"))) {
 
-                        LexicalToken identificadorFuncao = tokens.get(x + 2);
-                        if (identificador.lexeme.equals(identificadorFuncao.lexeme)) {
+                        } else if (identificador.regra.equals("boolean")
+                                && (tokens.get(x + 1).regra.equals("exp_logic")
+                                || tokens.get(x + 1).regra.equals("param_boolean"))) {
+                        } else {
                             return identificador;
                         }
+                        break;
                     }
-                }*/
+                }
             }
         }
 
+        return null;
+    }
+
+    private LexicalToken checkAtribs() {
+        int i;
+        for (i = 0; i < tokens.size(); i++) {
+            if (tokens.get(i).type == 10) {
+                LexicalToken ident = tokens.get(i - 1);
+                LexicalToken token = tokens.get(i);
+
+                LexicalToken pontoVirgula = null;
+                int j;
+                for (j = i; j < tokens.size(); j++) {
+                    if (tokens.get(j).type == 8) {
+                        pontoVirgula = tokens.get(j);
+                        break;
+                    }
+                }
+                for (int x = i + 1; x < j; x++) {
+                    //System.out.println("X: " + x + "\tI: " + i + "\tJ: " + j);
+                    LexicalToken atual = tokens.get(x);
+                    LexicalToken anterior = tokens.get(x - 1);
+
+                    if (ident.regra.equals("int")) {
+                        if (atual.regra != null && (atual.regra.equals("exp_arit")
+                                || atual.regra.equals("call_func")
+                                || atual.regra.equals("arg_bool")
+                                || atual.regra.equals("arg_int")
+                                || atual.regra.equals("func_iden")
+                                || atual.regra.equals("int")
+                                || (anterior.lexeme.equals(",") || anterior.lexeme.equals("(") && atual.regra.equals("boolean")))
+                                || atual.regra == null) {
+                        } else {
+                            return atual;
+                        }
+                    } else if (ident.regra.equals("boolean")) {
+                        if (atual.regra != null && (atual.regra.equals("exp_logic")
+                                || atual.regra.equals("call_func")
+                                || atual.regra.equals("arg_bool")
+                                || atual.regra.equals("arg_int")
+                                || atual.regra.equals("func_iden")
+                                || atual.regra.equals("boolean")
+                                || (anterior.lexeme.equals(",") || anterior.lexeme.equals("(") && atual.regra.equals("int")))
+                                || atual.regra == null) {
+                        } else {
+                            return atual;
+                        }
+                    }
+                }
+
+                /*LexicalToken proximo1 = tokens.get(i + 1);
+                LexicalToken proximo2 = tokens.get(i + 2);
+
+                 */
+            }
+        }
         return null;
     }
 }
