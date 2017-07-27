@@ -114,8 +114,13 @@ public class Semantic {
                     && atual.lexeme.equals(token.lexeme)) {
 
                 LexicalToken anterior = tokens.get(i - 1);
-                if (anterior.type == 16 || anterior.type == 17) {
-                    return true;
+                if ((anterior.type == 16 || anterior.type == 17) /*&& */) {
+                    //return true;
+                    if (anterior.line < token.line) {
+                        return true;
+                    } else if (anterior.line == token.line && anterior.position < token.position) {
+                        return true;
+                    }
                 }
             }
 
