@@ -59,6 +59,13 @@ public class Semantic {
                     + flag.lexeme + " at line " + flag.line + ", position " + flag.position
                     + ", scope " + flag.scope);
         }
+
+        flag = checkArgumentsNumber();
+        if (flag != null) {
+            throw new SemanticException("Method called with number of arguments wrong: "
+                    + flag.lexeme + " at line " + flag.line + ", position " + flag.position
+                    + ", scope " + flag.scope);
+        }
     }
 
     private LexicalToken checkVariableAlreadyDefinedInScope() {
@@ -271,7 +278,8 @@ public class Semantic {
                                 //| atual.regra.equals("param_int")
                                 || atual.regra.equals("func_iden")
                                 || atual.regra.equals("boolean")
-                                || (anterior.lexeme.equals("int") && atual.regra.equals("int")))
+                                || (anterior.lexeme.equals("int") && atual.regra.equals("int"))
+                                || (anterior.lexeme.equals("(") && atual.regra.equals("param_int")))
                                 || atual.regra == null) {
                         } else {
                             return atual;
@@ -345,6 +353,86 @@ public class Semantic {
                         }
                     }
                 }
+            }
+        }
+        return null;
+    }
+
+    private LexicalToken checkArgumentsNumber() {
+        for (int i = 0; i < escopos.size(); i++) {
+            Escopo escopo = escopos.get(i);
+
+            for (int j = 0; j < tokens.size(); j++) {//apenas identificadores
+                LexicalToken declaracaofuncao = tokens.get(j);
+                if (declaracaofuncao.type != 1 || !declaracaofuncao.scope.equals(escopo.label)) {
+                    continue;
+                }
+                if (tokens.get(j - 2).type != 24) {
+                    //function
+                    continue;
+                }
+//aqui
+                //ident.print();
+                LexicalToken pontoVirgula1 = null;
+                int m;
+                for (m = j; j < tokens.size(); m++) {
+                    if (tokens.get(m).type == 8) {
+                        pontoVirgula1 = tokens.get(m);
+                        break;
+                    }
+                }
+                int qtdParametros = 0;
+                for (int n = j; n < m; n++) {
+                    if (tokens.get(n).lexeme.equals(",")) {
+                        qtdParametros++;
+                    }
+                }
+                System.out.println("PARAM-> " + qtdParametros);
+                if (qtdParametros != 0) {
+                    qtdParametros++;//adiciono mais um, para ficar correto
+                } else if (m - j == 6) {
+                    //System.out.println("ENTROU");
+                    //SE SÓ EXISTIR UM ARGUMENTO
+                    qtdParametros = 1;
+                }
+
+                System.out.println("J: " + j + "\tM: " + m);
+
+                System.out.println("m - j == " + (m - j));
+                for (int x = 0; x < tokens.size(); x++) {
+                    if (tokens.get(x).type == 36) {
+                        LexicalToken call = tokens.get(x);
+                        LexicalToken chamadaFuncao = tokens.get(x + 1);
+                        if (chamadaFuncao.lexeme.equals(declaracaofuncao.lexeme)) {
+                            chamadaFuncao.print();
+
+                            //LexicalToken pontoVirgula = null;
+                            int y;
+                            for (y = x + 1; y < tokens.size(); y++) {
+                                if (tokens.get(y).type == 8) {
+                                    //pontoVirgula = tokens.get(y);
+                                    break;
+                                }
+                            }
+                            int qtdArgumentos = 0;
+                            for (int w = x + 1; w < y; w++) {
+                                if (tokens.get(w).lexeme.equals(",")) {
+                                    qtdArgumentos++;
+                                }
+                            }
+
+                            if (qtdArgumentos != 0) {
+                                qtdArgumentos++;//adiciono mais um, para ficar correto
+                            } else if (y - x == 5) {
+                                //SE SÓ EXISTIR UM ARGUMENTO
+                                qtdArgumentos++;
+                            }
+
+                            System.out.println("QUANTIDADE PARÂMETROS: " + qtdParametros + "\tQUANTIDADE ARGUMENTOS: " + qtdArgumentos);
+                        }
+                    }
+                }
+
             }
         }
         return null;
