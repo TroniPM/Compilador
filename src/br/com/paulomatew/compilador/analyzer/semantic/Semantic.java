@@ -387,24 +387,25 @@ public class Semantic {
                         qtdParametros++;
                     }
                 }
+                System.out.println("#####################################");
                 System.out.println("PARAM-> " + qtdParametros);
                 if (qtdParametros != 0) {
                     qtdParametros++;//adiciono mais um, para ficar correto
-                } else if (m - j == 6) {
+                } else if (m - j == 8) {
                     //System.out.println("ENTROU");
                     //SE SÓ EXISTIR UM ARGUMENTO
                     qtdParametros = 1;
                 }
 
-                System.out.println("J: " + j + "\tM: " + m);
+                System.out.println("M: " + m + "\tJ: " + j + "\t m - j = " + (m - j));
 
-                System.out.println("m - j == " + (m - j));
+                //System.out.println("m - j == " + (m - j));
                 for (int x = 0; x < tokens.size(); x++) {
                     if (tokens.get(x).type == 36) {
                         LexicalToken call = tokens.get(x);
                         LexicalToken chamadaFuncao = tokens.get(x + 1);
                         if (chamadaFuncao.lexeme.equals(declaracaofuncao.lexeme)) {
-                            chamadaFuncao.print();
+                            //chamadaFuncao.print();
 
                             //LexicalToken pontoVirgula = null;
                             int y;
@@ -429,6 +430,10 @@ public class Semantic {
                             }
 
                             System.out.println("QUANTIDADE PARÂMETROS: " + qtdParametros + "\tQUANTIDADE ARGUMENTOS: " + qtdArgumentos);
+
+                            if (qtdArgumentos != qtdParametros) {
+                                return chamadaFuncao;
+                            }
                         }
                     }
                 }
