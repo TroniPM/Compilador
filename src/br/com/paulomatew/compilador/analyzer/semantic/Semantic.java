@@ -1,5 +1,6 @@
 package br.com.paulomatew.compilador.analyzer.semantic;
 
+import br.com.paulomatew.compilador.entities.Escopo;
 import br.com.paulomatew.compilador.entities.LexicalToken;
 import br.com.paulomatew.compilador.exceptions.SemanticException;
 import java.util.ArrayList;
@@ -11,11 +12,11 @@ import java.util.ArrayList;
 public class Semantic {
 
     private ArrayList<LexicalToken> tokens = null;
-    private ArrayList<String> escopos = null;
+    private ArrayList<Escopo> escopos = null;
 
     private ArrayList<LexicalToken> identificadoresDeclaracao = null;
 
-    public void init(ArrayList<LexicalToken> tokens, ArrayList<String> escopos) throws SemanticException {
+    public void init(ArrayList<LexicalToken> tokens, ArrayList<Escopo> escopos) throws SemanticException {
         this.tokens = tokens;
         this.escopos = escopos;
 
@@ -37,7 +38,7 @@ public class Semantic {
 
     private LexicalToken checkVariableAlreadyDefinedInScope() {
         for (int i = 0; i < escopos.size(); i++) {
-            String escopo = escopos.get(i);
+            String escopo = escopos.get(i).label;
             ArrayList<String> token = new ArrayList<>();
 
             for (int j = 0; j < tokens.size(); j++) {//apenas identificadores
@@ -63,14 +64,14 @@ public class Semantic {
 
     private LexicalToken checkVariableWasDefinedInScopeBeforeUse() {
         for (int i = 0; i < escopos.size(); i++) {
-            String escopo = escopos.get(i);
+            Escopo escopo = escopos.get(i);
             ArrayList<String> token = new ArrayList<>();
 
             boolean erro = false;
 
             for (int j = 0; j < tokens.size(); j++) {//apenas identificadores
                 LexicalToken atual = tokens.get(j);
-                if (atual.type != 1 || !atual.scope.equals(escopo)) {
+                if (atual.type != 1 || !atual.scope.equals(escopo.label)) {
                     continue;
                 }
                 LexicalToken anterior = tokens.get(j - 1);
@@ -78,30 +79,42 @@ public class Semantic {
                     //INT, BOOLEAN, CALL
                     continue;
                 }
-                /*
-                fazer verificação agora se variável foi "criada" antes de ser utilizada.
-                 */
-
-                //atual.print();
-                /*lala:
-                for (int x = 0; x <= j; x++) {
-                    if (tokens.get(x).scope.equals(atual.scope)
-                            && tokens.get(x).lexeme.equals(atual.lexeme)
-                            && (tokens.get(x).type == 16 || tokens.get(x).type == 17)) {
-                        erro = false;
-                        break lala;
-                    } else {
-                        erro = true;
-                    }
-                }
-
-                if (erro) {
+                boolean flag = checkVariableDefinedInScopeTree(atual, escopo);
+                if (!flag) {
                     return atual;
-                }*/
+                }
             }
         }
 
         return null;
     }
 
+    private boolean checkVariableDefinedInScope(LexicalToken token, Escopo escopo) {
+        for (int i = 0; i < tokens.size(); i++) {
+            LexicalToken atual = tokens.get(i);
+
+            if (atual.type == 1 && atual.scope.equals(escopo.label)
+                    && atual.lexeme.equals(token.lexeme)) {
+
+                LexicalToken anterior = tokens.get(i - 1);
+                if (anterior.type == 16 || anterior.type == 17) {
+                    return true;
+                }
+            }
+
+        }
+        return false;
+    }
+
+    private boolean checkVariableDefinedInScopeTree(LexicalToken token, Escopo escopo) {
+        if (checkVariableDefinedInScope(token, escopo)) {
+            return true;
+        }
+
+        if (escopo.pai == null) {
+            return false;
+        }
+
+        return checkVariableDefinedInScopeTree(token, escopo.pai);
+    }
 }

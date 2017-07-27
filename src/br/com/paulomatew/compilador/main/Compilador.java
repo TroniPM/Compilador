@@ -122,7 +122,7 @@ public class Compilador {
 
             if (!erro) {
                 try {
-                    analizadorSemantico.init(analizadorLexico.tokenArray, analizadorLexico.escopos);
+                    analizadorSemantico.init(analizadorLexico.tokenArray, analizadorLexico.escoposArvore);
                 } catch (SemanticException ex) {
                     Logger.getLogger(Sintatic.class.getName()).log(Level.SEVERE, null, ex);
 

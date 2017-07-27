@@ -17,8 +17,10 @@ public class Lexical {
 
     private String sourceCode = null;
     public ArrayList<LexicalToken> tokenArray = null;
-    public ArrayList<String> escopos = null;
-    public Escopo arvoreEscopos = null;
+    private ArrayList<String> escopos = null;
+    //public Escopo arvoreEscopos = null;
+
+    public ArrayList<Escopo> escoposArvore = null;
 
     public void init(String sourceCode) throws LexicalException {
         /*if (sourceCode == null || sourceCode.isEmpty()) {
@@ -28,7 +30,7 @@ public class Lexical {
         this.sourceCode = formatSourceCode(sourceCode);
 
         escopos = new ArrayList<>();
-        arvoreEscopos = new Escopo();
+        escoposArvore = new ArrayList<>();
         //System.out.println(this.sourceCode);
         tokenArray = parser();
     }
@@ -152,6 +154,7 @@ public class Lexical {
         String escopoAtual = "0";
         ArrayList<String> escoposAtivos = new ArrayList<>();
         escoposAtivos.add(escopoAtual);
+        escoposArvore.add(new Escopo(escopoAtual));
         String nextEscopo = getRandomNumberScope() + "";
         boolean escopoDeIdentificadorEmMetodo = false;
         /*escopoDeIdentificadorEmMetodo faz com q identificadores q estejam na
@@ -188,6 +191,17 @@ public class Lexical {
                         ctrl = true;
 
                         if (i == 3) {//NOVO ESCOPO
+                            Escopo e = new Escopo(nextEscopo);
+
+                            for (int x = 0; x < escoposArvore.size(); x++) {
+                                if (escoposArvore.get(x).label.equals(escopoAtual)) {
+                                    e.pai = escoposArvore.get(x);
+                                    break;
+                                }
+                            }
+
+                            escoposArvore.add(e);
+
                             escopoAtual = nextEscopo;
                             escoposAtivos.add(escopoAtual);
                             escopos.add(escopoAtual);

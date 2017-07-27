@@ -14,7 +14,7 @@ import java.util.ArrayList;
 public class Escopo {
 
     public Escopo pai = null;
-    public ArrayList<Escopo> filhos = new ArrayList<>();
+    //public ArrayList<Escopo> filhos = new ArrayList<>();
     public String label = null;
 
     public Escopo() {
