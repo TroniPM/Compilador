@@ -36,7 +36,7 @@ public class Lexical {
     }
 
     public String getTokenListAsTable() {
-        Table t = new Table(7);
+        Table t = new Table(8);
         t.addCell("POS");
         t.addCell("TOKEN");
         t.addCell("LEXEMA");
@@ -44,6 +44,7 @@ public class Lexical {
         t.addCell("COLUNA");
         t.addCell("TIPO");
         t.addCell("ESCOPO");
+        t.addCell("REGRA");
         for (int i = 0; i < tokenArray.size(); i++) {
             LexicalToken in = tokenArray.get(i);
             t.addCell("" + (i + 1));
@@ -53,6 +54,7 @@ public class Lexical {
             t.addCell("" + (in.position));
             t.addCell("" + (in.type));
             t.addCell(in.scope);
+            t.addCell(in.regra);
 
             //System.out.println(in.lexeme);
         }

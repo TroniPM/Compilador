@@ -51,7 +51,7 @@ public class Compilador {
         analizadorSintatico = new Sintatic();
         analizadorSemantico = new Semantic();
 
-        String[] t1 = new String[]{"main", "(", ")", "{", "}", ";", ",", "=", "+", "-"/*10*/, "*", "/", "void", "int", "boolean", "break", "continue", "return", "if", "else"/*20*/, "while", "function", "true", "false", "print", "<", ">", "<=", ">=", "=="/*30*/, "!=", "&&", "||", "call", "[", "]"};
+        String[] t1 = new String[]{/*+3*/"main", "(", ")", "{", "}", ";", ",", "=", "+", "-"/*10*/, "*", "/", "void", "int", "boolean", "break", "continue", "return", "if", "else"/*20*/, "while", "function", "true", "false", "print", "<", ">", "<=", ">=", "=="/*30*/, "!=", "&&", "||", "call", "[", "]"};
         RESERVED_WORDS_AND_OPERATORS = new ArrayList(Arrays.asList(t1));
 
         //utilizar esses indices para o LexicalObject type no array do analisador lexico

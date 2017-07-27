@@ -62,10 +62,10 @@ public class Sintatic {
     }
 
     private void parserNew() throws SintaticException {
-        ArrayList<LexicalToken> fitaSendoLida = new ArrayList<>();
-        for (LexicalToken in : tokenListFromLexical) {
-            fitaSendoLida.add(in);
-        }
+        //ArrayList<LexicalToken> tokenListFromLexical = new ArrayList<>();
+        /*for (LexicalToken in : tokenListFromLexical) {
+            tokenListFromLexical.add(in);
+        }*/
 
         stack = new ArrayList<>();
 
@@ -76,21 +76,21 @@ public class Sintatic {
         addToStack(new RegraProducao("programa"));
         //salvarEstadoDaPilha("programa");
 
-        if (fitaSendoLida.size() == 0) {
+        if (tokenListFromLexical.size() == 0) {
             throw new SintaticException("Unexpected token 'EMPTY' at line 1, position 1 (expected: 'main').");
         }
-        for (int i = 0; i < fitaSendoLida.size(); i++) {
+        for (int i = 0; i < tokenListFromLexical.size(); i++) {
             Objeto tokenDaPilha = getObjectFromStack();
             if (tokenDaPilha instanceof LexicalToken) {
 
                 LexicalToken o1 = (LexicalToken) tokenDaPilha;
                 saveStackState(o1.lexeme);
 
-                if (fitaSendoLida.get(i).type != o1.type) {
+                if (tokenListFromLexical.get(i).type != o1.type) {
                     //o1.print();
                     //token.print();
-                    throw new SintaticException("Unexpected token '" + (fitaSendoLida.get(i).lexeme)
-                            + "' at line " + fitaSendoLida.get(i).line + ", position " + fitaSendoLida.get(i).position
+                    throw new SintaticException("Unexpected token '" + (tokenListFromLexical.get(i).lexeme)
+                            + "' at line " + tokenListFromLexical.get(i).line + ", position " + tokenListFromLexical.get(i).position
                             + " (expected: '" + o1.description + "').");
                 } else {
                     //throw new SintaticException("TOKEN DIFERENTE. COMPILADOR NÃO RECONHECE ESSA LINGUAGEM");
@@ -103,7 +103,7 @@ public class Sintatic {
 
                 if (o1.method.equals("programa")) {
                     //throw new SintaticException("CHAMOU PROGRAMA. NÃO DEVERIA");
-                    if (programa(fitaSendoLida.get(i))) {
+                    if (programa(tokenListFromLexical.get(i))) {
                         addToStack(new RegraProducao("declarar_func"));
                         addToStack(new LexicalToken(7, "}", "}"));
                         addToStack(new RegraProducao("escopo"));
@@ -114,24 +114,24 @@ public class Sintatic {
 
                         //i++;
                     } else {
-                        throw new SintaticException("Unexpected token '" + (fitaSendoLida.get(i).lexeme)
-                                + "' at line " + fitaSendoLida.get(i).line + " (expected: 'main').");
+                        throw new SintaticException("Unexpected token '" + (tokenListFromLexical.get(i).lexeme)
+                                + "' at line " + tokenListFromLexical.get(i).line + " (expected: 'main').");
                     }
                 } else if (o1.method.equals("escopo")) {
                     String spe = "int, boolean, identificador, print, call, if, while, break, continue, }";
-                    if (escopo(fitaSendoLida.get(i))) {
+                    if (escopo(tokenListFromLexical.get(i))) {
                         //<escopo> sempre tem q ser a primeira chamada (pra ser a ultima na pila)
-                        if (fitaSendoLida.get(i).type == 16) {//DECLARAÇÃO INT
+                        if (tokenListFromLexical.get(i).type == 16) {//DECLARAÇÃO INT
                             addToStack(new RegraProducao("escopo"));
                             addToStack(new LexicalToken(8, ";", ";"));
                             addToStack(new LexicalToken(1, "<identificador>", "identificador"));
                             addToStack(new LexicalToken(16, "int", spe));
-                        } else if (fitaSendoLida.get(i).type == 17) {//DECLARAÇÃO BOOLEAN
+                        } else if (tokenListFromLexical.get(i).type == 17) {//DECLARAÇÃO BOOLEAN
                             addToStack(new RegraProducao("escopo"));
                             addToStack(new LexicalToken(8, ";", ";"));
                             addToStack(new LexicalToken(1, "<identificador>", "identificador"));
                             addToStack(new LexicalToken(17, "boolean", spe));
-                        } else if (fitaSendoLida.get(i).type == 1) {//Atribuição
+                        } else if (tokenListFromLexical.get(i).type == 1) {//Atribuição
                             addToStack(new RegraProducao("escopo"));
                             addToStack(new LexicalToken(8, ";", ";"));
                             addToStack(new RegraProducao("atrib"));
@@ -139,14 +139,14 @@ public class Sintatic {
                             addToStack(new LexicalToken(1, "<identificador>", spe));
 
                             //throw new SintaticException("FAZER REGRAS DE <atrib>");
-                        } else if (fitaSendoLida.get(i).type == 27) {//Print
+                        } else if (tokenListFromLexical.get(i).type == 27) {//Print
                             addToStack(new RegraProducao("escopo"));
                             addToStack(new LexicalToken(8, ";", ";"));
                             addToStack(new LexicalToken(5, ")", "false, true, identificador, constante, )"));
                             addToStack(new RegraProducao("printar_sec"));
                             addToStack(new LexicalToken(4, "(", "("));
                             addToStack(new LexicalToken(27, "print", spe));
-                        } else if (fitaSendoLida.get(i).type == 21) {//IF
+                        } else if (tokenListFromLexical.get(i).type == 21) {//IF
                             addToStack(new RegraProducao("escopo"));
                             addToStack(new RegraProducao("bloco_else"));
                             addToStack(new LexicalToken(7, "}", "}"));
@@ -156,7 +156,7 @@ public class Sintatic {
                             addToStack(new RegraProducao("exp_logic"));
                             addToStack(new LexicalToken(4, "(", "("));
                             addToStack(new LexicalToken(21, "if", spe));
-                        } else if (fitaSendoLida.get(i).type == 23) {//WHILE
+                        } else if (tokenListFromLexical.get(i).type == 23) {//WHILE
                             addToStack(new RegraProducao("escopo"));
                             addToStack(new LexicalToken(7, "}", "}"));
                             addToStack(new RegraProducao("escopo"));
@@ -165,16 +165,16 @@ public class Sintatic {
                             addToStack(new RegraProducao("exp_logic"));
                             addToStack(new LexicalToken(4, "(", "("));
                             addToStack(new LexicalToken(23, "while", spe));
-                        } else if (fitaSendoLida.get(i).type == 36) {//CALL
+                        } else if (tokenListFromLexical.get(i).type == 36) {//CALL
                             addToStack(new RegraProducao("escopo"));
                             addToStack(new LexicalToken(8, ";", ";"));
                             addToStack(new RegraProducao("chamar_func"));
 
-                        } else if (fitaSendoLida.get(i).type == 18) {//BREAK
+                        } else if (tokenListFromLexical.get(i).type == 18) {//BREAK
                             addToStack(new RegraProducao("escopo"));
                             addToStack(new LexicalToken(8, ";", ";"));
                             addToStack(new LexicalToken(18, "break", spe));
-                        } else if (fitaSendoLida.get(i).type == 19) {//CONTINUE
+                        } else if (tokenListFromLexical.get(i).type == 19) {//CONTINUE
                             addToStack(new RegraProducao("escopo"));
                             addToStack(new LexicalToken(8, ";", ";"));
                             addToStack(new LexicalToken(19, "continue", spe));
@@ -182,27 +182,32 @@ public class Sintatic {
 
                     } else {
                         //throw new SintaticException("NÃO É <escopo>");
-                        throw new SintaticException("Unexpected token '" + (fitaSendoLida.get(i).lexeme)
-                                + "' at line " + fitaSendoLida.get(i).line + " (expected: '" + spe + "').");
+                        throw new SintaticException("Unexpected token '" + (tokenListFromLexical.get(i).lexeme)
+                                + "' at line " + tokenListFromLexical.get(i).line + " (expected: '" + spe + "').");
                     }
                 } else if (o1.method.equals("atrib")) {
                     //UTILIZANDO LOOK AHEAD
-                    if (atrib(fitaSendoLida.get(i))) {
-                        if (fitaSendoLida.get(i).type == 1//IDENTIFICADOR e PONTOVIRGULA
-                                && lookAhead(fitaSendoLida.get(i + 1), new LexicalToken(8, ";"))) {
+                    if (atrib(tokenListFromLexical.get(i))) {
+                        if (tokenListFromLexical.get(i).type == 1//IDENTIFICADOR e PONTOVIRGULA
+                                && lookAhead(tokenListFromLexical.get(i + 1), new LexicalToken(8, ";"))) {
+                            tokenListFromLexical.get(i).regra = "atrib";
                             addToStack(new LexicalToken(1, "<identificador>", "identificador"));
-                        } else if (fitaSendoLida.get(i).type == 0//COSNTANTE e PONTOVIRGULA
-                                && lookAhead(fitaSendoLida.get(i + 1), new LexicalToken(8, ";"))) {
+                        } else if (tokenListFromLexical.get(i).type == 0//COSNTANTE e PONTOVIRGULA
+                                && lookAhead(tokenListFromLexical.get(i + 1), new LexicalToken(8, ";"))) {
+                            tokenListFromLexical.get(i).regra = "atrib";
                             addToStack(new LexicalToken(0, "<numero>", "cosntante"));
-                        } else if (fitaSendoLida.get(i).type == 25 //TRUE
-                                && lookAhead(fitaSendoLida.get(i + 1), new LexicalToken(8, ";"))) {
+                        } else if (tokenListFromLexical.get(i).type == 25 //TRUE
+                                && lookAhead(tokenListFromLexical.get(i + 1), new LexicalToken(8, ";"))) {
                             addToStack(new LexicalToken(25, "true", "true"));
-                        } else if (fitaSendoLida.get(i).type == 26 //FALSE
-                                && lookAhead(fitaSendoLida.get(i + 1), new LexicalToken(8, ";"))) {
+                            tokenListFromLexical.get(i).regra = "atrib";
+                        } else if (tokenListFromLexical.get(i).type == 26 //FALSE
+                                && lookAhead(tokenListFromLexical.get(i + 1), new LexicalToken(8, ";"))) {
+                            tokenListFromLexical.get(i).regra = "atrib";
                             addToStack(new LexicalToken(26, "false", "false"));
-                        } else if (fitaSendoLida.get(i).type == 36) {//CALL
+                        } else if (tokenListFromLexical.get(i).type == 36) {//CALL
                             addToStack(new RegraProducao("chamar_func"));
-                        } else if (fitaSendoLida.get(i).type == 37) { //[ exp_arit
+                        } else if (tokenListFromLexical.get(i).type == 37) { //[ exp_arit
+                            tokenListFromLexical.get(i).regra = "exp_arit";
                             addToStack(new LexicalToken(38, "]", "]"));
                             addToStack(new RegraProducao("exp_arit"));
                             addToStack(new LexicalToken(37, "[", "["));
@@ -229,25 +234,29 @@ public class Sintatic {
                         throw new SintaticException("NÃO É <atrib>");
                     }
                 } else if (o1.method.equals("chamar_func")) {
-                    if (chamar_func(fitaSendoLida.get(i))) {
+                    if (chamar_func(tokenListFromLexical.get(i))) {
+                        tokenListFromLexical.get(i).regra = "call_func";
                         addToStack(new LexicalToken(5, ")", ")"));
                         addToStack(new RegraProducao("lista_arg"));
                         addToStack(new LexicalToken(4, "(", "("));
                         addToStack(new LexicalToken(1, "<identificador>", "identificador"));
                         addToStack(new LexicalToken(36, "call", "call"));
                     } else {
-                        throw new SintaticException("Unexpected token '" + (fitaSendoLida.get(i).lexeme)
-                                + "' at line " + fitaSendoLida.get(i).line + " (expected: 'call').");
+                        throw new SintaticException("Unexpected token '" + (tokenListFromLexical.get(i).lexeme)
+                                + "' at line " + tokenListFromLexical.get(i).line + " (expected: 'call').");
                     }
                 } else if (o1.method.equals("exp_arit")) {
-                    if (exp_arit(fitaSendoLida.get(i))) {
-                        if (fitaSendoLida.get(i).type == 1) {
+                    if (exp_arit(tokenListFromLexical.get(i))) {
+                        if (tokenListFromLexical.get(i).type == 1) {
+                            tokenListFromLexical.get(i).regra = "exp_arit";
                             addToStack(new RegraProducao("oper_arit"));
                             addToStack(new LexicalToken(1, "<identificador>", "identificador"));
-                        } else if (fitaSendoLida.get(i).type == 0) {
+                        } else if (tokenListFromLexical.get(i).type == 0) {
+                            tokenListFromLexical.get(i).regra = "exp_arit";
                             addToStack(new RegraProducao("oper_arit"));
                             addToStack(new LexicalToken(0, "<numero>", "constante"));
-                        } else if (fitaSendoLida.get(i).type == 4) {//(
+                        } else if (tokenListFromLexical.get(i).type == 4) {//(
+                            tokenListFromLexical.get(i).regra = "exp_arit";
                             addToStack(new RegraProducao("oper_arit"));
                             addToStack(new LexicalToken(5, ")", ")"));
                             addToStack(new RegraProducao("exp_arit"));
@@ -256,22 +265,26 @@ public class Sintatic {
                     } else if (o1.dontPrintException) {
                         System.out.println("exp_arit >> o1.dontPrintException");
                     } else {
-                        throw new SintaticException("Unexpected token '" + (fitaSendoLida.get(i).lexeme)
-                                + "' at line " + fitaSendoLida.get(i).line + " (<exp_arit>).");
+                        throw new SintaticException("Unexpected token '" + (tokenListFromLexical.get(i).lexeme)
+                                + "' at line " + tokenListFromLexical.get(i).line + " (<exp_arit>).");
                     }
                 } else if (o1.method.equals("oper_arit")) {
                     //PODE GERAR VAZIO
-                    if (oper_arit(fitaSendoLida.get(i))) {
-                        if (fitaSendoLida.get(i).type == 11) {
+                    if (oper_arit(tokenListFromLexical.get(i))) {
+                        if (tokenListFromLexical.get(i).type == 11) {
+                            tokenListFromLexical.get(i).regra = "exp_arit";
                             addToStack(new RegraProducao("exp_arit"));
                             addToStack(new LexicalToken(11, "+", "+"));
-                        } else if (fitaSendoLida.get(i).type == 12) {
+                        } else if (tokenListFromLexical.get(i).type == 12) {
+                            tokenListFromLexical.get(i).regra = "exp_arit";
                             addToStack(new RegraProducao("exp_arit"));
                             addToStack(new LexicalToken(12, "-", "-"));
-                        } else if (fitaSendoLida.get(i).type == 13) {
+                        } else if (tokenListFromLexical.get(i).type == 13) {
+                            tokenListFromLexical.get(i).regra = "exp_arit";
                             addToStack(new RegraProducao("exp_arit"));
                             addToStack(new LexicalToken(13, "*", "*"));
-                        } else if (fitaSendoLida.get(i).type == 14) {
+                        } else if (tokenListFromLexical.get(i).type == 14) {
+                            tokenListFromLexical.get(i).regra = "exp_arit";
                             addToStack(new RegraProducao("exp_arit"));
                             addToStack(new LexicalToken(14, "/", "/"));
                         }
@@ -280,20 +293,25 @@ public class Sintatic {
                     /*QUANDO PALAVRA GERA VAZIO NÃO PODE GERAR EXCEPTION 
                         (PQ VAI CHAMAR O PRÓXIMO DA PILHA*/
                 } else if (o1.method.equals("exp_logic")) {
-                    if (exp_logic(fitaSendoLida.get(i))) {
-                        if (fitaSendoLida.get(i).type == 1) {
+                    if (exp_logic(tokenListFromLexical.get(i))) {
+                        if (tokenListFromLexical.get(i).type == 1) {
+                            tokenListFromLexical.get(i).regra = "exp_logic";
                             addToStack(new RegraProducao("oper_logic"));
                             addToStack(new LexicalToken(1, "<identificador>", "identificador"));
-                        } else if (fitaSendoLida.get(i).type == 0) {
+                        } else if (tokenListFromLexical.get(i).type == 0) {
+                            tokenListFromLexical.get(i).regra = "exp_logic";
                             addToStack(new RegraProducao("oper_logic"));
                             addToStack(new LexicalToken(0, "<numero>", "constante"));
-                        } else if (fitaSendoLida.get(i).type == 25) {
+                        } else if (tokenListFromLexical.get(i).type == 25) {
+                            tokenListFromLexical.get(i).regra = "exp_logic";
                             addToStack(new RegraProducao("oper_logic"));
                             addToStack(new LexicalToken(25, "true", "true"));
-                        } else if (fitaSendoLida.get(i).type == 26) {
+                        } else if (tokenListFromLexical.get(i).type == 26) {
+                            tokenListFromLexical.get(i).regra = "exp_logic";
                             addToStack(new RegraProducao("oper_logic"));
                             addToStack(new LexicalToken(26, "false", "false"));
-                        } else if (fitaSendoLida.get(i).type == 4) {//(
+                        } else if (tokenListFromLexical.get(i).type == 4) {//(
+                            tokenListFromLexical.get(i).regra = "exp_logic";
                             addToStack(new RegraProducao("exp_logic_cont"));
                             addToStack(new RegraProducao("oper_logic"));
                             addToStack(new LexicalToken(5, ")", ")"));
@@ -301,8 +319,8 @@ public class Sintatic {
                             addToStack(new LexicalToken(4, "(", "("));
                         } else {
                             //Evitar que seja passada uma condição vazia.
-                            throw new SintaticException("Unexpected token '" + (fitaSendoLida.get(i).lexeme)
-                                    + "' at line " + fitaSendoLida.get(i).line + " (<exp_logic>).");
+                            throw new SintaticException("Unexpected token '" + (tokenListFromLexical.get(i).lexeme)
+                                    + "' at line " + tokenListFromLexical.get(i).line + " (<exp_logic>).");
                         }
 
                     } else if (o1.dontPrintException) {
@@ -311,34 +329,40 @@ public class Sintatic {
                     } else {
                         //throw new SintaticException("NÃO É <exp_logic>");
 
-                        throw new SintaticException("Unexpected token '" + (fitaSendoLida.get(i).lexeme)
-                                + "' at line " + fitaSendoLida.get(i).line + " (<exp_logic>).");
+                        throw new SintaticException("Unexpected token '" + (tokenListFromLexical.get(i).lexeme)
+                                + "' at line " + tokenListFromLexical.get(i).line + " (<exp_logic>).");
                     }
 
                 } else if (o1.method.equals("oper_logic")) {
                     //PODE GERAR VAZIO
-                    if (oper_logic(fitaSendoLida.get(i))) {
-                        if (fitaSendoLida.get(i).type == 28) {
+                    if (oper_logic(tokenListFromLexical.get(i))) {
+                        if (tokenListFromLexical.get(i).type == 28) {
+                            tokenListFromLexical.get(i).regra = "exp_logic";
                             addToStack(new RegraProducao("exp_logic_cont"));
                             addToStack(new RegraProducao("exp_logic"));
                             addToStack(new LexicalToken(28, "<", "<"));
-                        } else if (fitaSendoLida.get(i).type == 29) {
+                        } else if (tokenListFromLexical.get(i).type == 29) {
+                            tokenListFromLexical.get(i).regra = "exp_logic";
                             addToStack(new RegraProducao("exp_logic_cont"));
                             addToStack(new RegraProducao("exp_logic"));
                             addToStack(new LexicalToken(29, ">", ">"));
-                        } else if (fitaSendoLida.get(i).type == 30) {
+                        } else if (tokenListFromLexical.get(i).type == 30) {
+                            tokenListFromLexical.get(i).regra = "exp_logic";
                             addToStack(new RegraProducao("exp_logic_cont"));
                             addToStack(new RegraProducao("exp_logic"));
                             addToStack(new LexicalToken(30, "<=", "<="));
-                        } else if (fitaSendoLida.get(i).type == 31) {
+                        } else if (tokenListFromLexical.get(i).type == 31) {
+                            tokenListFromLexical.get(i).regra = "exp_logic";
                             addToStack(new RegraProducao("exp_logic_cont"));
                             addToStack(new RegraProducao("exp_logic"));
                             addToStack(new LexicalToken(31, ">=", ">="));
-                        } else if (fitaSendoLida.get(i).type == 32) {
+                        } else if (tokenListFromLexical.get(i).type == 32) {
+                            tokenListFromLexical.get(i).regra = "exp_logic";
                             addToStack(new RegraProducao("exp_logic_cont"));
                             addToStack(new RegraProducao("exp_logic"));
                             addToStack(new LexicalToken(32, "==", "=="));
-                        } else if (fitaSendoLida.get(i).type == 33) {
+                        } else if (tokenListFromLexical.get(i).type == 33) {
+                            tokenListFromLexical.get(i).regra = "exp_logic";
                             addToStack(new RegraProducao("exp_logic_cont"));
                             addToStack(new RegraProducao("exp_logic"));
                             addToStack(new LexicalToken(33, "!=", "!="));
@@ -349,11 +373,13 @@ public class Sintatic {
                         (PQ VAI CHAMAR O PRÓXIMO DA PILHA*/
                 } else if (o1.method.equals("exp_logic_cont")) {
                     //PODE GERAR VAZIO
-                    if (oper_logic_cont(fitaSendoLida.get(i))) {
-                        if (fitaSendoLida.get(i).type == 34) {
+                    if (oper_logic_cont(tokenListFromLexical.get(i))) {
+                        if (tokenListFromLexical.get(i).type == 34) {
+                            tokenListFromLexical.get(i).regra = "exp_logic";
                             addToStack(new RegraProducao("exp_logic"));
                             addToStack(new LexicalToken(34, "&&", "&&"));
-                        } else if (fitaSendoLida.get(i).type == 35) {
+                        } else if (tokenListFromLexical.get(i).type == 35) {
+                            tokenListFromLexical.get(i).regra = "exp_logic";
                             addToStack(new RegraProducao("exp_logic"));
                             addToStack(new LexicalToken(35, "||", "||"));
                         }
@@ -362,15 +388,15 @@ public class Sintatic {
                         (PQ VAI CHAMAR O PRÓXIMO DA PILHA*/
                 } else if (o1.method.equals("printar_sec")) {
                     //PODE GERAR VAZIO
-                    if (printar_sec(fitaSendoLida.get(i))) {
+                    if (printar_sec(tokenListFromLexical.get(i))) {
                         String esp = "false, true, identificador, constante";
-                        if (fitaSendoLida.get(i).type == 1) {//IDENTIFICADOR
+                        if (tokenListFromLexical.get(i).type == 1) {//IDENTIFICADOR
                             addToStack(new LexicalToken(1, "<identificador>", esp));
-                        } else if (fitaSendoLida.get(i).type == 0) {//CONSTANTE
+                        } else if (tokenListFromLexical.get(i).type == 0) {//CONSTANTE
                             addToStack(new LexicalToken(0, "<numero>", esp));
-                        } else if (fitaSendoLida.get(i).type == 25) {//TRUE
+                        } else if (tokenListFromLexical.get(i).type == 25) {//TRUE
                             addToStack(new LexicalToken(25, "true", esp));
-                        } else if (fitaSendoLida.get(i).type == 26) {//FALSE
+                        } else if (tokenListFromLexical.get(i).type == 26) {//FALSE
                             addToStack(new LexicalToken(26, "false", esp));
                         }
                     }
@@ -379,7 +405,7 @@ public class Sintatic {
 
                 } else if (o1.method.equals("bloco_else")) {
                     //PODE GERAR VAZIO
-                    if (bloco_else(fitaSendoLida.get(i))) {
+                    if (bloco_else(tokenListFromLexical.get(i))) {
                         addToStack(new LexicalToken(7, "}", "}"));
                         addToStack(new RegraProducao("escopo"));
                         addToStack(new LexicalToken(6, "{", "{"));
@@ -390,17 +416,21 @@ public class Sintatic {
                         (PQ VAI CHAMAR O PRÓXIMO DA PILHA*/
                 } else if (o1.method.equals("lista_arg")) {
                     //PODE GERAR VAZIO
-                    if (lista_arg(fitaSendoLida.get(i))) {
-                        if (fitaSendoLida.get(i).type == 0) {//CONSTANTE
+                    if (lista_arg(tokenListFromLexical.get(i))) {
+                        if (tokenListFromLexical.get(i).type == 0) {//CONSTANTE
+                            tokenListFromLexical.get(i).regra = "argument";
                             addToStack(new RegraProducao("lista_arg_sec"));
                             addToStack(new LexicalToken(0, "<numero>", "constante"));
-                        } else if (fitaSendoLida.get(i).type == 1) {//IDENTIFICADOR
+                        } else if (tokenListFromLexical.get(i).type == 1) {//IDENTIFICADOR
+                            tokenListFromLexical.get(i).regra = "argument";
                             addToStack(new RegraProducao("lista_arg_sec"));
                             addToStack(new LexicalToken(1, "<identificador>", "identificador"));
-                        } else if (fitaSendoLida.get(i).type == 25) {//TRUE
+                        } else if (tokenListFromLexical.get(i).type == 25) {//TRUE
+                            tokenListFromLexical.get(i).regra = "argument";
                             addToStack(new RegraProducao("lista_arg_sec"));
                             addToStack(new LexicalToken(25, "true", "true"));
-                        } else if (fitaSendoLida.get(i).type == 26) {//FALSE
+                        } else if (tokenListFromLexical.get(i).type == 26) {//FALSE
+                            tokenListFromLexical.get(i).regra = "argument";
                             addToStack(new RegraProducao("lista_arg_sec"));
                             addToStack(new LexicalToken(26, "false", "false"));
                         }
@@ -408,8 +438,8 @@ public class Sintatic {
                     /*QUANDO PALAVRA GERA VAZIO NÃO PODE GERAR EXCEPTION 
                         (PQ VAI CHAMAR O PRÓXIMO DA PILHA*/
                 } else if (o1.method.equals("lista_arg_sec")) {
-                    if (lista_arg_sec(fitaSendoLida.get(i))) {
-                        if (fitaSendoLida.get(i).type == 9) {//VIRGULA
+                    if (lista_arg_sec(tokenListFromLexical.get(i))) {
+                        if (tokenListFromLexical.get(i).type == 9) {//VIRGULA
                             addToStack(new RegraProducao("lista_arg_sec"));
                             addToStack(new RegraProducao("lista_arg_ter"));
                             addToStack(new LexicalToken(9, ",", ","));
@@ -419,23 +449,27 @@ public class Sintatic {
                         (PQ VAI CHAMAR O PRÓXIMO DA PILHA*/
                 } else if (o1.method.equals("lista_arg_ter")) {
                     String esp = "false, true, identificador, constante";
-                    if (lista_arg_ter(fitaSendoLida.get(i))) {
-                        if (fitaSendoLida.get(i).type == 0) {//CONSTANTE
+                    if (lista_arg_ter(tokenListFromLexical.get(i))) {
+                        if (tokenListFromLexical.get(i).type == 0) {//CONSTANTE
+                            tokenListFromLexical.get(i).regra = "arg_int";
                             addToStack(new LexicalToken(0, "<numero>", esp));
-                        } else if (fitaSendoLida.get(i).type == 1) {//IDENTIFICADOR
+                        } else if (tokenListFromLexical.get(i).type == 1) {//IDENTIFICADOR
+                            tokenListFromLexical.get(i).regra = "argument";
                             addToStack(new LexicalToken(1, "<identificador>", esp));
-                        } else if (fitaSendoLida.get(i).type == 25) {//TRUE
+                        } else if (tokenListFromLexical.get(i).type == 25) {//TRUE
+                            tokenListFromLexical.get(i).regra = "arg_bool";
                             addToStack(new LexicalToken(25, "true", esp));
-                        } else if (fitaSendoLida.get(i).type == 26) {//FALSE
+                        } else if (tokenListFromLexical.get(i).type == 26) {//FALSE
+                            tokenListFromLexical.get(i).regra = "arg_bool";
                             addToStack(new LexicalToken(26, "false", esp));
                         }
                     } else {
-                        throw new SintaticException("Unexpected token '" + (fitaSendoLida.get(i).lexeme)
-                                + "' at line " + fitaSendoLida.get(i).line + " (expected: '" + esp + "').");
+                        throw new SintaticException("Unexpected token '" + (tokenListFromLexical.get(i).lexeme)
+                                + "' at line " + tokenListFromLexical.get(i).line + " (expected: '" + esp + "').");
                     }
                 } else if (o1.method.equals("declarar_func")) {
                     //PODE GERAR VAZIO
-                    if (declarar_func(fitaSendoLida.get(i))) {
+                    if (declarar_func(tokenListFromLexical.get(i))) {
                         addToStack(new RegraProducao("declarar_func"));
                         addToStack(new LexicalToken(7, "}", "}"));
                         addToStack(new RegraProducao("retorno_func"));
@@ -453,27 +487,34 @@ public class Sintatic {
                         (PQ VAI CHAMAR O PRÓXIMO DA PILHA*/
                 } else if (o1.method.equals("func_tipo")) {
                     String esp = "void, int, boolean";
-                    if (func_tipo(fitaSendoLida.get(i))) {
-                        if (fitaSendoLida.get(i).type == 15) {//VOID
+                    if (func_tipo(tokenListFromLexical.get(i))) {
+                        if (tokenListFromLexical.get(i).type == 15) {//VOID
+                            tokenListFromLexical.get(i).regra = "func_tipo";
                             addToStack(new LexicalToken(15, "void", esp));
-                        } else if (fitaSendoLida.get(i).type == 16) {//INT
+                        } else if (tokenListFromLexical.get(i).type == 16) {//INT
+                            tokenListFromLexical.get(i).regra = "func_tipo";
                             addToStack(new LexicalToken(16, "int", esp));
-                        } else if (fitaSendoLida.get(i).type == 17) {//BOOELAN
+                        } else if (tokenListFromLexical.get(i).type == 17) {//BOOELAN
+                            tokenListFromLexical.get(i).regra = "func_tipo";
                             addToStack(new LexicalToken(17, "boolean", esp));
                         }
                     } else {
-                        throw new SintaticException("Unexpected token '" + (fitaSendoLida.get(i).lexeme)
-                                + "' at line " + fitaSendoLida.get(i).line + " (expected: '" + esp + "').");
+                        throw new SintaticException("Unexpected token '" + (tokenListFromLexical.get(i).lexeme)
+                                + "' at line " + tokenListFromLexical.get(i).line + " (expected: '" + esp + "').");
                     }
                 } else if (o1.method.equals("lista_param")) {
                     //PODE GERAR VAZIO
                     String esp = "int, boolean";
-                    if (lista_param(fitaSendoLida.get(i))) {
-                        if (fitaSendoLida.get(i).type == 16) {//INT
+                    if (lista_param(tokenListFromLexical.get(i))) {
+                        if (tokenListFromLexical.get(i).type == 16) {//INT
+                            tokenListFromLexical.get(i).regra = "param_type";
+                            tokenListFromLexical.get(i + 1).regra = "param_iden";
                             addToStack(new RegraProducao("lista_param_sec"));
                             addToStack(new LexicalToken(1, "<identificador>", "identificador"));
                             addToStack(new LexicalToken(16, "int", esp));
-                        } else if (fitaSendoLida.get(i).type == 17) {//BOOELAN
+                        } else if (tokenListFromLexical.get(i).type == 17) {//BOOELAN
+                            tokenListFromLexical.get(i).regra = "param_type";
+                            tokenListFromLexical.get(i + 1).regra = "param_iden";
                             addToStack(new RegraProducao("lista_param_sec"));
                             addToStack(new LexicalToken(1, "<identificador>", "identificador"));
                             addToStack(new LexicalToken(17, "boolean", esp));
@@ -483,22 +524,25 @@ public class Sintatic {
                         (PQ VAI CHAMAR O PRÓXIMO DA PILHA*/
                 } else if (o1.method.equals("lista_param_sec")) {
                     //PODE GERAR VAZIO
-                    if (lista_param_sec(fitaSendoLida.get(i))) {
+                    if (lista_param_sec(tokenListFromLexical.get(i))) {
+                        tokenListFromLexical.get(i + 2).regra = "param_iden";
                         addToStack(new RegraProducao("lista_param_sec"));
                         addToStack(new LexicalToken(1, "<identificador>", "identificador"));
-                        //System.out.println(">>>>>>>>>>>>>>>>>> " + fitaSendoLida.get(i).type);
-                        if (fitaSendoLida.get(i).type == 9//VIRGULA e INTEIRO
-                                && lookAhead(fitaSendoLida.get(i + 1), new LexicalToken(16, "int", "int, boolean"))) {
+                        //System.out.println(">>>>>>>>>>>>>>>>>> " + tokenListFromLexical.get(i).type);
+                        if (tokenListFromLexical.get(i).type == 9//VIRGULA e INTEIRO
+                                && lookAhead(tokenListFromLexical.get(i + 1), new LexicalToken(16, "int", "int, boolean"))) {
+                            tokenListFromLexical.get(i + 1).regra = "param_type";
                             addToStack(new LexicalToken(16, "int", "int, boolean"));
-                        } else if (fitaSendoLida.get(i).type == 9//VIRGULA e BOLEAN
-                                && lookAhead(fitaSendoLida.get(i + 1), new LexicalToken(17, "boolean", "int, boolean"))) {
+                        } else if (tokenListFromLexical.get(i).type == 9//VIRGULA e BOLEAN
+                                && lookAhead(tokenListFromLexical.get(i + 1), new LexicalToken(17, "boolean", "int, boolean"))) {
+                            tokenListFromLexical.get(i + 1).regra = "param_type";
                             addToStack(new LexicalToken(17, "int", "int, boolean"));
                         }
 
-                        /*if (fitaSendoLida.get(i).type == 16) {//INT
+                        /*if (tokenListFromLexical.get(i).type == 16) {//INT
                             System.out.println("ENTROU NO INT");
                             addNaPilha(new LexicalToken(16, "int", "int, boolean"));
-                        } else if (fitaSendoLida.get(i).type == 17) {//BOOELAN
+                        } else if (tokenListFromLexical.get(i).type == 17) {//BOOELAN
                             System.out.println("ENTROU NO BOOELAN");
                             addNaPilha(new LexicalToken(17, "boolean", "int, boolean"));
                         }*/
@@ -509,7 +553,7 @@ public class Sintatic {
                         (PQ VAI CHAMAR O PRÓXIMO DA PILHA*/
                 } else if (o1.method.equals("retorno_func")) {
                     //PODE GERAR VAZIO
-                    if (retorno_func(fitaSendoLida.get(i))) {
+                    if (retorno_func(tokenListFromLexical.get(i))) {
                         addToStack(new LexicalToken(8, ";", ";"));
                         addToStack(new RegraProducao("retorno_func_sec"));
                         addToStack(new LexicalToken(20, "return", "return"));
@@ -518,22 +562,26 @@ public class Sintatic {
                         (PQ VAI CHAMAR O PRÓXIMO DA PILHA*/
                 } else if (o1.method.equals("retorno_func_sec")) {
                     //É o mesmo esquema da atribuição
-                    if (retorno_func_sec(fitaSendoLida.get(i))) {
-                        if (fitaSendoLida.get(i).type == 1//IDENTIFICADOR e PONTOVIRGULA
-                                && lookAhead(fitaSendoLida.get(i + 1), new LexicalToken(8, ";"))) {
+                    if (retorno_func_sec(tokenListFromLexical.get(i))) {
+                        if (tokenListFromLexical.get(i).type == 1//IDENTIFICADOR e PONTOVIRGULA
+                                && lookAhead(tokenListFromLexical.get(i + 1), new LexicalToken(8, ";"))) {
+                            tokenListFromLexical.get(i).regra = "0";
                             addToStack(new LexicalToken(1, "<identificador>", "identificador"));
-                        } else if (fitaSendoLida.get(i).type == 0//COSNTANTE e PONTOVIRGULA
-                                && lookAhead(fitaSendoLida.get(i + 1), new LexicalToken(8, ";"))) {
-                            addToStack(new LexicalToken(0, "<numero>", "cosntante"));
-                        } else if (fitaSendoLida.get(i).type == 25 //TRUE
-                                && lookAhead(fitaSendoLida.get(i + 1), new LexicalToken(8, ";"))) {
+                        } else if (tokenListFromLexical.get(i).type == 0//COSNTANTE e PONTOVIRGULA
+                                && lookAhead(tokenListFromLexical.get(i + 1), new LexicalToken(8, ";"))) {
+                            tokenListFromLexical.get(i).regra = "0";
+                            addToStack(new LexicalToken(0, "<numero>", "constante"));
+                        } else if (tokenListFromLexical.get(i).type == 25 //TRUE
+                                && lookAhead(tokenListFromLexical.get(i + 1), new LexicalToken(8, ";"))) {
+                            tokenListFromLexical.get(i).regra = "0";
                             addToStack(new LexicalToken(25, "true", "true"));
-                        } else if (fitaSendoLida.get(i).type == 26 //FALSE
-                                && lookAhead(fitaSendoLida.get(i + 1), new LexicalToken(8, ";"))) {
+                        } else if (tokenListFromLexical.get(i).type == 26 //FALSE
+                                && lookAhead(tokenListFromLexical.get(i + 1), new LexicalToken(8, ";"))) {
+                            tokenListFromLexical.get(i).regra = "0";
                             addToStack(new LexicalToken(26, "false", "false"));
-                        } else if (fitaSendoLida.get(i).type == 36) {//CALL
+                        } else if (tokenListFromLexical.get(i).type == 36) {//CALL
                             addToStack(new RegraProducao("chamar_func"));
-                        } else if (fitaSendoLida.get(i).type == 37) { //[ exp_arit
+                        } else if (tokenListFromLexical.get(i).type == 37) { //[ exp_arit
                             addToStack(new LexicalToken(38, "]", "]"));
                             addToStack(new RegraProducao("exp_arit"));
                             addToStack(new LexicalToken(37, "[", "["));
@@ -542,8 +590,8 @@ public class Sintatic {
                         }
                     } else {
                         //throw new SintaticException("NÃO É <retorno_func_sec>");
-                        throw new SintaticException("Unexpected token '" + (fitaSendoLida.get(i).lexeme)
-                                + "' at line " + fitaSendoLida.get(i).line + " (expected: 'identificador, constante, true, false, <chamar_func>, [<exp_arit>], <exp_logic>').");
+                        throw new SintaticException("Unexpected token '" + (tokenListFromLexical.get(i).lexeme)
+                                + "' at line " + tokenListFromLexical.get(i).line + " (expected: 'identificador, constante, true, false, <chamar_func>, [<exp_arit>], <exp_logic>').");
                     }
                 }
                 i--;
@@ -555,14 +603,14 @@ public class Sintatic {
              */
             if (stack.get(stack.size() - 1) == null) {
 
-                if (fitaSendoLida.get(i) instanceof LexicalToken) {
-                    throw new SintaticException("Unexpected token '" + (fitaSendoLida.get(i).lexeme)
-                            + "' at line " + fitaSendoLida.get(i).line + " (expected: '" + fitaSendoLida.get(i).description + "').");
+                if (tokenListFromLexical.get(i) instanceof LexicalToken) {
+                    throw new SintaticException("Unexpected token '" + (tokenListFromLexical.get(i).lexeme)
+                            + "' at line " + tokenListFromLexical.get(i).line + " (expected: '" + tokenListFromLexical.get(i).description + "').");
                 } else {
                     throw new SintaticException("Pilha foi lida mas o código fonte ainda não acabou.");
                 }
             }
-            if (i + 1 == fitaSendoLida.size() && stack.size() > 0) {
+            if (i + 1 == tokenListFromLexical.size() && stack.size() > 0) {
                 //RegraProducao o1 = (RegraProducao) getNaPilha();
 
                 Objeto o = getObjectFromStack();

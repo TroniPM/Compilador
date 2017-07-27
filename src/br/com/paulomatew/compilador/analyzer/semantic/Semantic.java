@@ -14,21 +14,10 @@ public class Semantic {
     private ArrayList<LexicalToken> tokens = null;
     private ArrayList<Escopo> escopos = null;
 
-    //private ArrayList<LexicalToken> indentifiersDefinitions = null;
-    //private ArrayList<LexicalToken> indentifiersUse = null;
     public void init(ArrayList<LexicalToken> tokens, ArrayList<Escopo> escopos) throws SemanticException {
         this.tokens = tokens;
         this.escopos = escopos;
 
-        //this.indentifiersDefinitions = getIndentifiersDefinitions();
-        //this.indentifiersUse = getIndentifiersUse();
-        //for (LexicalToken in : indentifiersDefinitions) {
-        //    in.print();
-        //}
-
-        /*for (LexicalToken in : tokens) {
-            System.out.println(in.lexeme);
-        }*/
         LexicalToken flag = checkVariableAlreadyDefinedInScope();
         if (flag != null) {
             throw new SemanticException("Variable already defined in method: "
@@ -45,14 +34,21 @@ public class Semantic {
 
         flag = checkIfIdentifierHasSameNameMethod();
         if (flag != null) {
-            throw new SemanticException("Variable already defined as method: "
+            throw new SemanticException("Variable already defined as a method: "
                     + flag.lexeme + " at line " + flag.line + ", position " + flag.position
                     + ", scope " + flag.scope);
         }
 
-        flag = checkIfMethodAlradeyDeclared();
+        flag = checkIfMethodAlreadyDeclared();
         if (flag != null) {
             throw new SemanticException("Method already defined: "
+                    + flag.lexeme + " at line " + flag.line + ", position " + flag.position
+                    + ", scope " + flag.scope);
+        }
+
+        flag = checkReturnTypeMethods();
+        if (flag != null) {
+            throw new SemanticException("Method has an unexpected return type: "
                     + flag.lexeme + " at line " + flag.line + ", position " + flag.position
                     + ", scope " + flag.scope);
         }
@@ -171,11 +167,9 @@ public class Semantic {
         return null;
     }
 
-    private LexicalToken checkIfMethodAlradeyDeclared() {
+    private LexicalToken checkIfMethodAlreadyDeclared() {
         for (int i = 0; i < escopos.size(); i++) {
             String escopo = escopos.get(i).label;
-            ArrayList<String> token = new ArrayList<>();
-
             for (int j = 0; j < tokens.size(); j++) {//apenas identificadores
                 LexicalToken atual = tokens.get(j);
                 if (atual.type != 1 || !atual.scope.equals(escopo)) {
@@ -202,30 +196,34 @@ public class Semantic {
         return null;
     }
 
-    private ArrayList<LexicalToken> getIndentifiersUse() {
-        ArrayList<LexicalToken> arr = new ArrayList<>();
-
+    private LexicalToken checkReturnTypeMethods() {
         for (int i = 0; i < escopos.size(); i++) {
-            Escopo escopo = escopos.get(i);
-            ArrayList<String> token = new ArrayList<>();
-
-            boolean erro = false;
+            String escopo = escopos.get(i).label;
 
             for (int j = 0; j < tokens.size(); j++) {//apenas identificadores
-                LexicalToken atual = tokens.get(j);
-                if (atual.type != 1 || !atual.scope.equals(escopo.label)) {
+                LexicalToken identificador = tokens.get(j);
+                if (identificador.type != 1 || !identificador.scope.equals(escopo)) {
                     continue;
                 }
-                LexicalToken anterior = tokens.get(j - 1);
-                if (anterior.type == 16 || anterior.type == 17 || anterior.type == 36) {
-                    //INT, BOOLEAN, CALL
+                LexicalToken funcao = tokens.get(j - 2);
+                if (funcao.type != 24) {
+                    //function
                     continue;
                 }
+                LexicalToken retorno = tokens.get(j - 1);
+//aqui
+                /*for (int x = 0; x < tokens.size(); x++) {
+                    if (tokens.get(x).scope.equals(escopo)) {
 
-                arr.add(atual);
+                        LexicalToken identificadorFuncao = tokens.get(x + 2);
+                        if (identificador.lexeme.equals(identificadorFuncao.lexeme)) {
+                            return identificador;
+                        }
+                    }
+                }*/
             }
         }
 
-        return arr;
+        return null;
     }
 }

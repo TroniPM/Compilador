@@ -9,6 +9,7 @@ public class LexicalToken extends Objeto {
     public int type = -99;
     public String lexeme = null;
     public String description = null;
+    public String regra = null;
     public int line = 0;
     public int position = 0;
     public String scope = null;
