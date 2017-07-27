@@ -3,7 +3,7 @@ Características semânticas solicitadas no compilador (esta lista ainda pode se
 	*1.1 Assim também para as funções, a mesmo que haja sobrecarga;
 *2. Observar se a variável utilizada foi declarada naquele escopo ou no escopo geral;
 *3. Observar se as atribuições e operações matemáticas e lógicas são realizadas com operandos de mesmo tipo;
-*4. Observar o escopo das variáveis e funções;
+4. Observar o escopo das variáveis e funções;
 5. Expressões aritméticas;
 6. Comandos de atribuição;
 7. Atribuição de funções;
@@ -12,3 +12,6 @@ Características semânticas solicitadas no compilador (esta lista ainda pode se
 10. If (expressão lógica);
 11. While (expressão lógica);
 12. Função (retorno de tipo, quantidade de parâmetros e tipos).
+	*12.1 retorno de tipo
+	12.2 quantidade de argumentos
+	12.3 tipos dos argumentos passados
