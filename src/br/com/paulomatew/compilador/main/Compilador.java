@@ -35,7 +35,7 @@ public class Compilador {
 
     public static void main(String[] args) {
         Compilador c = new Compilador();
-        c.creating();
+        //c.creating();
 
         for (int i = 0; i < c.RESERVED_WORDS_TOKEN.size(); i++) {
             System.out.print(i + "\t" + c.RESERVED_WORDS_TOKEN.get(i));

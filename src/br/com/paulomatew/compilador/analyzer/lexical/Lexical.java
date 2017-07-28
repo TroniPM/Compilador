@@ -291,7 +291,7 @@ public class Lexical {
 
     private String getString(String a, int i1, int i2) {
         if (a.length() >= i2 + 1) {
-            System.out.println(i2 + " " + a);
+            //System.out.println(i2 + " " + a);
             return (a.substring(i1, i2));
         } else {
             return (a.substring(i1, i2 + 1));

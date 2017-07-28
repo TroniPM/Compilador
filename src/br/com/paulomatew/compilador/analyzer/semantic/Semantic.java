@@ -91,6 +91,13 @@ public class Semantic {
                     + flag.lexeme + "' at line " + flag.line + ", position " + flag.position
                     + ", scope " + flag.scope);
         }
+
+        flag = checkExpressionLogic();
+        if (flag != null) {
+            throw new SemanticException("Expression has an unexpected behaviour: '"
+                    + flag.lexeme + "' at line " + flag.line + ", position " + flag.position
+                    + ", scope " + flag.scope);
+        }
     }
 
     /**
@@ -636,6 +643,92 @@ public class Semantic {
                 }
             }
         }
+        return null;
+    }
+
+    /**
+     * Verifica se expressão lógica está com comparações adequadas: "1 > 2" e
+     * não "1 > true". Também verifica tipos de identificadores em relação as
+     * comparações.
+     *
+     * @return
+     */
+    private LexicalToken checkExpressionLogic() {
+        if (true) {
+            return null;
+        }
+        for (int i = 0; i < tokens.size(); i++) {//caso IF 21
+            if (tokens.get(i).type == 21) {
+                LexicalToken lexemaIF = tokens.get(i);
+                LexicalToken fechaParentese = null;
+                int j;
+                for (j = i; j < tokens.size(); j++) {
+                    if (tokens.get(j).type == 6) {// { 6, ; 8
+                        fechaParentese = tokens.get(j);
+                        break;
+                    }
+                }
+
+                for (int x = i; x < j; x++) {
+                    LexicalToken atual = tokens.get(x);
+                    //averiguar todos os itens "i" até o "j"
+                }
+            }
+        }
+        for (int i = 0; i < tokens.size(); i++) {//caso WHILE 23
+            if (tokens.get(i).type == 23) {
+                LexicalToken lexemaWHILE = tokens.get(i);
+                LexicalToken fechaParentese = null;
+                int j;
+                for (j = i; j < tokens.size(); j++) {
+                    if (tokens.get(j).type == 6) {// { 6, ; 8
+                        fechaParentese = tokens.get(j);
+                        break;
+                    }
+                }
+                for (int x = i; x < j; x++) {
+                    LexicalToken atual = tokens.get(x);
+                    //averiguar todos os itens "i" até o "j"
+                }
+            }
+        }
+        for (int i = 0; i < tokens.size(); i++) {//caso ATRIBUIÇÃO 10
+            if (tokens.get(i).type == 10) {
+                LexicalToken lexemaATRIBUICAO = tokens.get(i);
+                LexicalToken pontoVirgula = null;
+                int j;
+                for (j = i; j < tokens.size(); j++) {
+                    if (tokens.get(j).type == 8) {// { 6, ; 8
+                        pontoVirgula = tokens.get(j);
+                        break;
+                    }
+                }
+                for (int x = i; x < j; x++) {
+                    LexicalToken atual = tokens.get(x);
+                    //averiguar todos os itens "i" até o "j"
+                }
+            }
+        }
+
+        //VER SE ISSO JÁ NÃO ESTÁ SENDO FEITO NO MÉTODO checkReturnTypeMethods()
+        for (int i = 0; i < tokens.size(); i++) {//caso return 20
+            if (tokens.get(i).type == 20) {
+                LexicalToken lexemaRETURN = tokens.get(i);
+                LexicalToken pontoVirgula = null;
+                int j;
+                for (j = i; j < tokens.size(); j++) {
+                    if (tokens.get(j).type == 8) {// { 6, ; 8
+                        pontoVirgula = tokens.get(j);
+                        break;
+                    }
+                }
+                for (int x = i; x < j; x++) {
+                    LexicalToken atual = tokens.get(x);
+                    //averiguar todos os itens "i" até o "j"
+                }
+            }
+        }
+
         return null;
     }
 }
