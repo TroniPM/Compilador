@@ -8,9 +8,9 @@ Características semânticas solicitadas no compilador (esta lista ainda pode se
 *6. Comandos de atribuição;
 *7. Atribuição de funções;
 8. Expressões relacionais (>, <, ...) (verificar tipos de identificadores e operadores);
-9. For (tipos do verificador);
-10. If (expressão lógica);
-11. While (expressão lógica);
+*9. For (tipos do verificador);
+*10. If (expressão lógica);
+*11. While (expressão lógica);
 *12. Função (retorno de tipo, quantidade de parâmetros e tipos).
 	*12.1 retorno de tipo
 	*12.2 quantidade de argumentos
