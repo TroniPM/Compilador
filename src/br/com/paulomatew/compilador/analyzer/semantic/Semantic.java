@@ -82,6 +82,13 @@ public class Semantic {
                     + flag.lexeme + " at line " + flag.line + ", position " + flag.position
                     + ", scope " + flag.scope);
         }
+
+        flag = checkReturnFromMethodAndVariableAssigned();
+        if (flag != null) {
+            throw new SemanticException("Method return and variable assigned has different types: "
+                    + flag.lexeme + " at line " + flag.line + ", position " + flag.position
+                    + ", scope " + flag.scope);
+        }
     }
 
     private LexicalToken checkVariableAlreadyDefinedInScope() {
@@ -303,22 +310,6 @@ public class Semantic {
                         }
                     }
                 }
-
-                /*for (x = j; x < tokens.size(); x++) {
-                    if (tokens.get(x).type == 20) {
-                        if (identificador.regra.equals("int")
-                                && (tokens.get(x + 1).regra.equals("exp_arit")
-                                || tokens.get(x + 1).regra.equals("param_int"))) {
-
-                        } else if (identificador.regra.equals("boolean")
-                                && (tokens.get(x + 1).regra.equals("exp_logic")
-                                || tokens.get(x + 1).regra.equals("param_boolean"))) {
-                        } else {
-                            return identificador;
-                        }
-                        break;
-                    }
-                }*/
             }
         }
 
@@ -488,6 +479,7 @@ public class Semantic {
                         LexicalToken chamadaFuncao = tokens.get(x + 1);
                         if (chamadaFuncao.lexeme.equals(declaracaofuncao.lexeme)) {
 //aqui2
+                            chamadaFuncao.regra = declaracaofuncao.regra;
                             //declaracaofuncao.print();
                             //chamadaFuncao.print();
                             int m1;
@@ -549,6 +541,13 @@ public class Semantic {
                 }
             }
         }
+        return null;
+    }
+
+    private LexicalToken checkReturnFromMethodAndVariableAssigned() {
+        //verificar call IDENTIFICADOR com
+        //          function retorno IDENTIFICADOR
+        //com XX = call....
         return null;
     }
 }
