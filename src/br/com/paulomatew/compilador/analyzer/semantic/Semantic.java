@@ -94,7 +94,7 @@ public class Semantic {
 
         flag = checkExpressionLogic();
         if (flag != null) {
-            throw new SemanticException("Expression has an unexpected behaviour: '"
+            throw new SemanticException("Expression has an unexpected behaviour: starting in '"
                     + flag.lexeme + "' at line " + flag.line + ", position " + flag.position
                     + ", scope " + flag.scope);
         }
@@ -181,7 +181,24 @@ public class Semantic {
                 if ((anterior.type == 16 || anterior.type == 17)) {
                     //return true;
                     if (anterior.line < token.line) {
-                        token.regra = atual.regra;
+
+                        /**
+                         * Expressão lógica tem um tratamento específico,
+                         * fazendo com q o identificador tenha informação que é
+                         * uma expressão lógica e um INT ou BOOLEAN, isso para
+                         * fazer a verificação de se uma expressão booleana é
+                         * aceitável ou não.
+                         */
+                        if (token.regra != null && token.regra.equals("exp_logic")) {
+                            //System.out.println("token.regra.equals");
+                            //System.out.println(token.lexeme);
+                            //token.print();
+                            token.regra += "_" + atual.regra;
+                        } else if (token.regra != null && token.regra.contains("exp_logic")) {
+
+                        } else {
+                            token.regra = atual.regra;
+                        }
                         return true;
                     } else if (anterior.line == token.line && anterior.position < token.position) {
                         return true;
@@ -334,7 +351,7 @@ public class Semantic {
                     LexicalToken anterior = tokens.get(y - 1);
 
                     if (ident.regra.equals("int")) {
-                        if (atual.regra != null && (atual.regra.equals("exp_arit")
+                        if (atual.regra != null && (atual.regra.contains("exp_arit")
                                 || atual.regra.equals("call_func")
                                 //|| atual.regra.equals("param_boolean")
                                 || atual.regra.equals("param_int")
@@ -346,13 +363,13 @@ public class Semantic {
                             return atual;
                         }
                     } else if (ident.regra.equals("boolean")) {
-                        if (atual.regra != null && (atual.regra.equals("exp_logic")
+                        if (atual.regra != null && (atual.regra.contains("exp_logic")
                                 || atual.regra.equals("call_func")
                                 || atual.regra.equals("param_boolean")
                                 //| atual.regra.equals("param_int")
                                 || atual.regra.equals("func_iden")
                                 || atual.regra.equals("boolean")
-                                || (anterior.lexeme.equals("int") && atual.regra.equals("int"))
+                                || (anterior.lexeme.contains("int") && atual.regra.contains("int"))
                                 || (anterior.lexeme.equals("(") && atual.regra.equals("param_int")))
                                 || atual.regra == null) {
                         } else {
@@ -395,7 +412,7 @@ public class Semantic {
                     LexicalToken atual = tokens.get(x);
 
                     if (ident.regra.equals("int")) {
-                        if (atual.regra != null && (atual.regra.equals("exp_arit")
+                        if (atual.regra != null && (atual.regra.contains("exp_arit")
                                 || atual.regra.equals("call_func")
                                 || atual.regra.equals("arg_boolean")
                                 || atual.regra.equals("arg_int")
@@ -407,13 +424,13 @@ public class Semantic {
                             return atual;
                         }
                     } else if (ident.regra.equals("boolean")) {
-                        if (atual.regra != null && (atual.regra.equals("exp_logic")
+                        if (atual.regra != null && (atual.regra.contains("exp_logic")
                                 || atual.regra.equals("call_func")
                                 || atual.regra.equals("arg_boolean")
                                 || atual.regra.equals("arg_int")
                                 || atual.regra.equals("func_iden")
-                                || atual.regra.equals("boolean")
-                                || (isFunctionCall && atual.regra.equals("int")))
+                                || atual.regra.contains("boolean")
+                                || (isFunctionCall && atual.regra.contains("int")))
                                 || atual.regra == null) {
                         } else {
                             return atual;
@@ -536,7 +553,7 @@ public class Semantic {
 
                 ArrayList<LexicalToken> tiposDeclaracao = new ArrayList<>();
                 for (int w = j + 1; w < m; w++) {
-                    if (tokens.get(w).lexeme.equals("int") || tokens.get(w).lexeme.equals("boolean")) {
+                    if (tokens.get(w).lexeme.contains("int") || tokens.get(w).lexeme.contains("boolean")) {
                         tiposDeclaracao.add(tokens.get(w));
                     }
                 }
@@ -654,12 +671,16 @@ public class Semantic {
      * @return
      */
     private LexicalToken checkExpressionLogic() {
-        if (true) {
+        /*if (true) {
             return null;
-        }
-        for (int i = 0; i < tokens.size(); i++) {//caso IF 21
-            if (tokens.get(i).type == 21) {
+        }*/
+        /**
+         * CASO IF 21 | CASO WHILE 23
+         */
+        for (int i = 0; i < tokens.size(); i++) {
+            if (tokens.get(i).type == 21 || tokens.get(i).type == 23) {
                 LexicalToken lexemaIF = tokens.get(i);
+                //lexemaIF.print();
                 LexicalToken fechaParentese = null;
                 int j;
                 for (j = i; j < tokens.size(); j++) {
@@ -671,28 +692,67 @@ public class Semantic {
 
                 for (int x = i; x < j; x++) {
                     LexicalToken atual = tokens.get(x);
+                    LexicalToken operador = tokens.get(x + 1);
+                    LexicalToken proximo = tokens.get(x + 2);
                     //averiguar todos os itens "i" até o "j"
-                }
-            }
-        }
-        for (int i = 0; i < tokens.size(); i++) {//caso WHILE 23
-            if (tokens.get(i).type == 23) {
-                LexicalToken lexemaWHILE = tokens.get(i);
-                LexicalToken fechaParentese = null;
-                int j;
-                for (j = i; j < tokens.size(); j++) {
-                    if (tokens.get(j).type == 6) {// { 6, ; 8
-                        fechaParentese = tokens.get(j);
-                        break;
+
+                    if (atual.type == 1) {//identificador
+                        //System.out.println("IDENTIFICADOR");
+                        //X > X
+                        //X > 1
+                        //X > 1)
+                        //(28) "<", ">", "<=", ">=", "==", "!="
+                        if (atual.regra != null && atual.regra.contains("int")) {
+                            if ((operador.type == 28 || operador.type == 29
+                                    || operador.type == 30 || operador.type == 31
+                                    || operador.type == 32 || operador.type == 33) && proximo.regra.contains("int")) {
+
+                            } else {
+                                return atual;
+                            }
+                        } else if (atual.regra != null && atual.regra.contains("boolean")) {
+                            if ((operador.type == 32 || operador.type == 33) && proximo.regra.contains("boolean")) {
+
+                            } else {
+                                return atual;
+                            }
+                        }
+
+                        x += 2;
+                    } else if (atual.type == 0) {//constante
+                        //System.out.println("CONSTANTE");
+                        //(28) "<", ">", "<=", ">=", "==", "!="
+                        if (atual.regra != null && atual.regra.contains("int")) {
+                            if ((operador.type == 28 || operador.type == 29
+                                    || operador.type == 30 || operador.type == 31
+                                    || operador.type == 32 || operador.type == 33) && proximo.regra.contains("int")) {
+
+                            } else {
+                                return atual;
+                            }
+                        }
+                        x += 2;
+                    } else if (atual.type == 25 || atual.type == 26) {//true e false
+                        //System.out.println("TRUE|FALSE");
+                        //(28) "<", ">", "<=", ">=", "==", "!="
+                        if (atual.regra != null && atual.regra.contains("boolean")) {
+                            if ((operador.type == 32 || operador.type == 33) && proximo.regra.contains("boolean")) {
+
+                            } else {
+                                return atual;
+                            }
+                        }
+
+                        x += 2;
                     }
                 }
-                for (int x = i; x < j; x++) {
-                    LexicalToken atual = tokens.get(x);
-                    //averiguar todos os itens "i" até o "j"
-                }
             }
         }
-        for (int i = 0; i < tokens.size(); i++) {//caso ATRIBUIÇÃO 10
+
+        /**
+         * CASO ATRIBUIÇÃO 10
+         */
+        /*for (int i = 0; i < tokens.size(); i++) {//caso ATRIBUIÇÃO 10
             if (tokens.get(i).type == 10) {
                 LexicalToken lexemaATRIBUICAO = tokens.get(i);
                 LexicalToken pontoVirgula = null;
@@ -703,15 +763,11 @@ public class Semantic {
                         break;
                     }
                 }
-                for (int x = i; x < j; x++) {
-                    LexicalToken atual = tokens.get(x);
-                    //averiguar todos os itens "i" até o "j"
-                }
-            }
-        }
 
+            }
+        }*/
         //VER SE ISSO JÁ NÃO ESTÁ SENDO FEITO NO MÉTODO checkReturnTypeMethods()
-        for (int i = 0; i < tokens.size(); i++) {//caso return 20
+        /*for (int i = 0; i < tokens.size(); i++) {//caso return 20
             if (tokens.get(i).type == 20) {
                 LexicalToken lexemaRETURN = tokens.get(i);
                 LexicalToken pontoVirgula = null;
@@ -727,8 +783,7 @@ public class Semantic {
                     //averiguar todos os itens "i" até o "j"
                 }
             }
-        }
-
+        }*/
         return null;
     }
 }
