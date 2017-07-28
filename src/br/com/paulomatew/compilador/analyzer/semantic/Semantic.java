@@ -13,10 +13,12 @@ public class Semantic {
 
     private ArrayList<LexicalToken> tokens = null;
     private ArrayList<Escopo> escopos = null;
+    private ArrayList<LexicalToken> funcoes = null;
 
     public void init(ArrayList<LexicalToken> tokens, ArrayList<Escopo> escopos) throws SemanticException {
         this.tokens = tokens;
         this.escopos = escopos;
+        this.funcoes = new ArrayList<>();
 
         LexicalToken flag = checkVariableAlreadyDefinedInScope();
         if (flag != null) {
@@ -70,6 +72,13 @@ public class Semantic {
         flag = checkArgumentsType();
         if (flag != null) {
             throw new SemanticException("Method called with wrong arguments type: "
+                    + flag.lexeme + " at line " + flag.line + ", position " + flag.position
+                    + ", scope " + flag.scope);
+        }
+
+        flag = checkMethodWasDefined();
+        if (flag != null) {
+            throw new SemanticException("Method might not have been initialized: "
                     + flag.lexeme + " at line " + flag.line + ", position " + flag.position
                     + ", scope " + flag.scope);
         }
@@ -239,6 +248,7 @@ public class Semantic {
                     continue;
                 }
 //aqui
+                funcoes.add(ident);
                 //ident.print();
                 LexicalToken retorno = null, pontoVirgula = null;
                 int x;
@@ -518,6 +528,27 @@ public class Semantic {
             }
         }
 
+        return null;
+    }
+
+    private LexicalToken checkMethodWasDefined() {//TODO 7
+        for (int i = 0; i < tokens.size(); i++) {
+            boolean flag = true;
+            if (tokens.get(i).type == 36) {
+                //tokens.get(i).print();
+                LexicalToken t = tokens.get(i + 1);
+                for (int j = 0; j < funcoes.size(); j++) {
+                    //System.out.println(funcoes.get(j).lexeme);
+                    if (t.lexeme.equals(funcoes.get(j).lexeme)) {
+                        flag = false;
+                        break;
+                    }
+                }
+                if (flag) {
+                    return t;
+                }
+            }
+        }
         return null;
     }
 }

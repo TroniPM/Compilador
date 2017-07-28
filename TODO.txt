@@ -3,9 +3,9 @@ Características semânticas solicitadas no compilador (esta lista ainda pode se
 	*1.1 Assim também para as funções, a mesmo que haja sobrecarga;
 *2. Observar se a variável utilizada foi declarada naquele escopo ou no escopo geral;
 *3. Observar se as atribuições e operações matemáticas e lógicas são realizadas com operandos de mesmo tipo;
-4. Observar o escopo das variáveis e funções;
-5. Expressões aritméticas;
-6. Comandos de atribuição;
+*4. Observar o escopo das variáveis e funções;
+5. Expressões aritméticas (verificar tipos de identificadores e operadores);
+*6. Comandos de atribuição;
 7. Atribuição de funções;
 8. Expressões relacionais (>, <, ...);
 9. For (tipos do verificador);
