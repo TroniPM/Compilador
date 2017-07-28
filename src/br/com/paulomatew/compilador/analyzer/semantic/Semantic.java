@@ -13,12 +13,14 @@ public class Semantic {
 
     private ArrayList<LexicalToken> tokens = null;
     private ArrayList<Escopo> escopos = null;
-    private ArrayList<LexicalToken> funcoes = null;
+    private ArrayList<LexicalToken> funcoesDeclaracao = null;
+    private ArrayList<LexicalToken> funcoesChamada = null;
 
     public void init(ArrayList<LexicalToken> tokens, ArrayList<Escopo> escopos) throws SemanticException {
         this.tokens = tokens;
         this.escopos = escopos;
-        this.funcoes = new ArrayList<>();
+        this.funcoesDeclaracao = new ArrayList<>();
+        this.funcoesChamada = new ArrayList<>();
 
         LexicalToken flag = checkVariableAlreadyDefinedInScope();
         if (flag != null) {
@@ -91,6 +93,11 @@ public class Semantic {
         }
     }
 
+    /**
+     * Checa se varíavel foi definida duas vezes no mesmo escopo
+     *
+     * @return
+     */
     private LexicalToken checkVariableAlreadyDefinedInScope() {
         for (int i = 0; i < escopos.size(); i++) {
             String escopo = escopos.get(i).label;
@@ -116,6 +123,11 @@ public class Semantic {
         return null;
     }
 
+    /**
+     * Checa se variável foi criada (apenas se ela for utilizada, claro)
+     *
+     * @return
+     */
     private LexicalToken checkVariableWasDefinedInScopeBeforeUse() {
         for (int i = 0; i < escopos.size(); i++) {
             Escopo escopo = escopos.get(i);
@@ -144,6 +156,13 @@ public class Semantic {
         return null;
     }
 
+    /**
+     * Utilizado recursivamente por "checkVariableDefinedInScopeTree"
+     *
+     * @param token
+     * @param escopo
+     * @return
+     */
     private boolean checkVariableDefinedInScope(LexicalToken token, Escopo escopo) {
         for (int i = 0; i < tokens.size(); i++) {
             LexicalToken atual = tokens.get(i);
@@ -167,6 +186,14 @@ public class Semantic {
         return false;
     }
 
+    /**
+     * Verifica se identificador foi definida no escopo, ou escopo ascendente
+     * (em "linhas" anteriores)
+     *
+     * @param token
+     * @param escopo
+     * @return
+     */
     private boolean checkVariableDefinedInScopeTree(LexicalToken token, Escopo escopo) {
         if (checkVariableDefinedInScope(token, escopo)) {
             return true;
@@ -179,6 +206,11 @@ public class Semantic {
         return checkVariableDefinedInScopeTree(token, escopo.pai);
     }
 
+    /**
+     * Procura se variável criada já foi criada como nome de método
+     *
+     * @return
+     */
     private LexicalToken checkIfIdentifierHasSameNameMethod() {
         boolean mesmoNome = false;
         for (int i = 0; i < escopos.size(); i++) {
@@ -211,6 +243,11 @@ public class Semantic {
         return null;
     }
 
+    /**
+     * Verifica se metodo foi declarado (apenas se ele for utilizado, claro)
+     *
+     * @return
+     */
     private LexicalToken checkIfMethodAlreadyDeclared() {
         for (int i = 0; i < escopos.size(); i++) {
             String escopo = escopos.get(i).label;
@@ -240,6 +277,12 @@ public class Semantic {
         return null;
     }
 
+    /**
+     * Checa o tipo de retorno de uma expressão com o seu tipo de retorno
+     * declarado.
+     *
+     * @return
+     */
     private LexicalToken checkReturnTypeMethods() {
         for (int i = 0; i < escopos.size(); i++) {
             Escopo escopo = escopos.get(i);
@@ -255,7 +298,7 @@ public class Semantic {
                     continue;
                 }
 //aqui
-                funcoes.add(ident);
+                funcoesDeclaracao.add(ident);
                 //ident.print();
                 LexicalToken retorno = null, pontoVirgula = null;
                 int x;
@@ -316,24 +359,33 @@ public class Semantic {
         return null;
     }
 
+    /**
+     * Verifica se exp_logic e exp_arit são atribuídas de maneira correta, de
+     * acordo com o tipo da variável atribuída. Por exemplo, se numa soma tem um
+     * identificador do tipo boolean, isso irá dar erro.
+     *
+     * @return
+     */
     private LexicalToken checkAtribs() {
         int i;
         for (i = 0; i < tokens.size(); i++) {
-            if (tokens.get(i).type == 10) {
+            if (tokens.get(i).type == 10) {//=
                 LexicalToken ident = tokens.get(i - 1);
-                LexicalToken token = tokens.get(i);
-
-                LexicalToken pontoVirgula = null;
+                //LexicalToken atribuicao = tokens.get(i);
+                //LexicalToken pontoVirgula = null;
                 int j;
+                boolean isFunctionCall = false;
                 for (j = i; j < tokens.size(); j++) {
                     if (tokens.get(j).type == 8) {
-                        pontoVirgula = tokens.get(j);
+                        //pontoVirgula = tokens.get(j);
                         break;
+                    }
+                    if (tokens.get(j).type == 36) {
+                        isFunctionCall = true;
                     }
                 }
                 for (int x = i + 1; x < j; x++) {
                     LexicalToken atual = tokens.get(x);
-                    LexicalToken anterior = tokens.get(x - 1);
 
                     if (ident.regra.equals("int")) {
                         if (atual.regra != null && (atual.regra.equals("exp_arit")
@@ -342,7 +394,7 @@ public class Semantic {
                                 || atual.regra.equals("arg_int")
                                 || atual.regra.equals("func_iden")
                                 || atual.regra.equals("int")
-                                || (anterior.lexeme.equals(",") || anterior.lexeme.equals("(") && atual.regra.equals("boolean")))
+                                || (isFunctionCall && atual.regra.equals("boolean")))
                                 || atual.regra == null) {
                         } else {
                             return atual;
@@ -354,7 +406,7 @@ public class Semantic {
                                 || atual.regra.equals("arg_int")
                                 || atual.regra.equals("func_iden")
                                 || atual.regra.equals("boolean")
-                                || (anterior.lexeme.equals(",") || anterior.lexeme.equals("(") && atual.regra.equals("int")))
+                                || (isFunctionCall && atual.regra.equals("int")))
                                 || atual.regra == null) {
                         } else {
                             return atual;
@@ -366,6 +418,12 @@ public class Semantic {
         return null;
     }
 
+    /**
+     * Verifica se o número de argumentos passados é igual ao número de
+     * argumentos da definição do método.
+     *
+     * @return
+     */
     private LexicalToken checkArgumentsNumber() {
         for (int i = 0; i < escopos.size(); i++) {
             Escopo escopo = escopos.get(i);
@@ -441,6 +499,12 @@ public class Semantic {
         return null;
     }
 
+    /**
+     * Verifica se os tipos de argumentos passados são iguais aos tipos de
+     * argumentos declarados.
+     *
+     * @return
+     */
     private LexicalToken checkArgumentsType() {
         for (int i = 0; i < escopos.size(); i++) {
             Escopo escopo = escopos.get(i);
@@ -479,6 +543,7 @@ public class Semantic {
                         LexicalToken chamadaFuncao = tokens.get(x + 1);
                         if (chamadaFuncao.lexeme.equals(declaracaofuncao.lexeme)) {
 //aqui2
+                            funcoesChamada.add(chamadaFuncao);
                             chamadaFuncao.regra = declaracaofuncao.regra;
                             //declaracaofuncao.print();
                             //chamadaFuncao.print();
@@ -523,15 +588,21 @@ public class Semantic {
         return null;
     }
 
+    /**
+     * Verifica se algum método foi utilizado e se foi declarado. Se ele foi
+     * utilizado mas não foi declarado, dará erro.
+     *
+     * @return
+     */
     private LexicalToken checkMethodWasDefined() {//TODO 7
         for (int i = 0; i < tokens.size(); i++) {
             boolean flag = true;
             if (tokens.get(i).type == 36) {
                 //tokens.get(i).print();
                 LexicalToken t = tokens.get(i + 1);
-                for (int j = 0; j < funcoes.size(); j++) {
+                for (int j = 0; j < funcoesDeclaracao.size(); j++) {
                     //System.out.println(funcoes.get(j).lexeme);
-                    if (t.lexeme.equals(funcoes.get(j).lexeme)) {
+                    if (t.lexeme.equals(funcoesDeclaracao.get(j).lexeme)) {
                         flag = false;
                         break;
                     }
@@ -544,10 +615,24 @@ public class Semantic {
         return null;
     }
 
+    /**
+     * Verifica se o tipo de retorno do método é compatível com a variável a ser
+     * atribuído esse valor.
+     *
+     * @return
+     */
     private LexicalToken checkReturnFromMethodAndVariableAssigned() {
-        //verificar call IDENTIFICADOR com
-        //          function retorno IDENTIFICADOR
-        //com XX = call....
+        for (int i = 0; i < tokens.size(); i++) {
+            boolean flag = true;
+            if (tokens.get(i).type == 36) {
+                LexicalToken identificadorFuncao = tokens.get(i + 1);
+                LexicalToken identificadorAtribuido = tokens.get(i - 2);
+
+                if (!identificadorFuncao.regra.equals(identificadorAtribuido.regra)) {
+                    return identificadorFuncao;
+                }
+            }
+        }
         return null;
     }
 }
