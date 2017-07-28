@@ -623,8 +623,11 @@ public class Semantic {
      */
     private LexicalToken checkReturnFromMethodAndVariableAssigned() {
         for (int i = 0; i < tokens.size(); i++) {
-            boolean flag = true;
+            //boolean flag = true;
             if (tokens.get(i).type == 36) {
+                if (tokens.get(i - 1).type != 10) {//chamar método sem atribuir a variável
+                    continue;
+                }
                 LexicalToken identificadorFuncao = tokens.get(i + 1);
                 LexicalToken identificadorAtribuido = tokens.get(i - 2);
 
