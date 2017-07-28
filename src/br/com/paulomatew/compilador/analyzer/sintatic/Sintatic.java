@@ -430,11 +430,11 @@ public class Sintatic {
                             addToStack(new RegraProducao("lista_arg_sec"));
                             addToStack(new LexicalToken(1, "<identificador>", "identificador"));
                         } else if (tokenListFromLexical.get(i).type == 25) {//TRUE
-                            tokenListFromLexical.get(i).regra = "arg_bool";
+                            tokenListFromLexical.get(i).regra = "arg_boolean";
                             addToStack(new RegraProducao("lista_arg_sec"));
                             addToStack(new LexicalToken(25, "true", "true"));
                         } else if (tokenListFromLexical.get(i).type == 26) {//FALSE
-                            tokenListFromLexical.get(i).regra = "arg_bool";
+                            tokenListFromLexical.get(i).regra = "arg_boolean";
                             addToStack(new RegraProducao("lista_arg_sec"));
                             addToStack(new LexicalToken(26, "false", "false"));
                         }
@@ -461,10 +461,10 @@ public class Sintatic {
                             tokenListFromLexical.get(i).regra = "argument";
                             addToStack(new LexicalToken(1, "<identificador>", esp));
                         } else if (tokenListFromLexical.get(i).type == 25) {//TRUE
-                            tokenListFromLexical.get(i).regra = "arg_bool";
+                            tokenListFromLexical.get(i).regra = "arg_boolean";
                             addToStack(new LexicalToken(25, "true", esp));
                         } else if (tokenListFromLexical.get(i).type == 26) {//FALSE
-                            tokenListFromLexical.get(i).regra = "arg_bool";
+                            tokenListFromLexical.get(i).regra = "arg_boolean";
                             addToStack(new LexicalToken(26, "false", esp));
                         }
                     } else {

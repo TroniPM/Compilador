@@ -33,6 +33,7 @@ public class LexicalToken extends Objeto {
         System.out.println("LEXEMA: " + lexeme);
         System.out.println("DESCRIÇÃO: " + description);
         System.out.println("LINHA: " + line);
+        System.out.println("POSIÇÃO: " + position);
         System.out.println("ESCOPO: " + scope);
         System.out.println("REGRA: " + regra);
         System.out.println("--------------------------------");
@@ -44,6 +45,7 @@ public class LexicalToken extends Objeto {
         a += ("\nLEXEMA: " + lexeme);
         a += ("\nDESCRIÇÃO: " + description);
         a += ("\nLINHA: " + line);
+        a += ("\nPOSIÇÃO: " + position);
         a += ("\nESCOPO: " + scope);
         a += ("\nREGRA: " + regra);
         a += ("\n--------------------------------");

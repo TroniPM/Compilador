@@ -66,6 +66,13 @@ public class Semantic {
                     + flag.lexeme + " at line " + flag.line + ", position " + flag.position
                     + ", scope " + flag.scope);
         }
+
+        flag = checkArgumentsType();
+        if (flag != null) {
+            throw new SemanticException("Method called with wrong arguments type: "
+                    + flag.lexeme + " at line " + flag.line + ", position " + flag.position
+                    + ", scope " + flag.scope);
+        }
     }
 
     private LexicalToken checkVariableAlreadyDefinedInScope() {
@@ -330,7 +337,7 @@ public class Semantic {
                     if (ident.regra.equals("int")) {
                         if (atual.regra != null && (atual.regra.equals("exp_arit")
                                 || atual.regra.equals("call_func")
-                                || atual.regra.equals("arg_bool")
+                                || atual.regra.equals("arg_boolean")
                                 || atual.regra.equals("arg_int")
                                 || atual.regra.equals("func_iden")
                                 || atual.regra.equals("int")
@@ -342,7 +349,7 @@ public class Semantic {
                     } else if (ident.regra.equals("boolean")) {
                         if (atual.regra != null && (atual.regra.equals("exp_logic")
                                 || atual.regra.equals("call_func")
-                                || atual.regra.equals("arg_bool")
+                                || atual.regra.equals("arg_boolean")
                                 || atual.regra.equals("arg_int")
                                 || atual.regra.equals("func_iden")
                                 || atual.regra.equals("boolean")
@@ -372,12 +379,13 @@ public class Semantic {
                     continue;
                 }
 //aqui
-                //ident.print();
                 LexicalToken pontoVirgula1 = null;
                 int m;
                 for (m = j; j < tokens.size(); m++) {
-                    if (tokens.get(m).type == 8) {
+                    if (tokens.get(m).type == 6) {
                         pontoVirgula1 = tokens.get(m);
+
+                        //pontoVirgula1.print();
                         break;
                     }
                 }
@@ -387,27 +395,17 @@ public class Semantic {
                         qtdParametros++;
                     }
                 }
-                System.out.println("#####################################");
-                System.out.println("PARAM-> " + qtdParametros);
                 if (qtdParametros != 0) {
                     qtdParametros++;//adiciono mais um, para ficar correto
-                } else if (m - j == 8) {
-                    //System.out.println("ENTROU");
+                } else if (m - j == 5) {
                     //SE SÓ EXISTIR UM ARGUMENTO
                     qtdParametros = 1;
                 }
 
-                System.out.println("M: " + m + "\tJ: " + j + "\t m - j = " + (m - j));
-
-                //System.out.println("m - j == " + (m - j));
                 for (int x = 0; x < tokens.size(); x++) {
                     if (tokens.get(x).type == 36) {
-                        LexicalToken call = tokens.get(x);
                         LexicalToken chamadaFuncao = tokens.get(x + 1);
                         if (chamadaFuncao.lexeme.equals(declaracaofuncao.lexeme)) {
-                            //chamadaFuncao.print();
-
-                            //LexicalToken pontoVirgula = null;
                             int y;
                             for (y = x + 1; y < tokens.size(); y++) {
                                 if (tokens.get(y).type == 8) {
@@ -429,8 +427,7 @@ public class Semantic {
                                 qtdArgumentos++;
                             }
 
-                            System.out.println("QUANTIDADE PARÂMETROS: " + qtdParametros + "\tQUANTIDADE ARGUMENTOS: " + qtdArgumentos);
-
+                            //System.out.println("QUANTIDADE PARÂMETROS: " + qtdParametros + "\tQUANTIDADE ARGUMENTOS: " + qtdArgumentos);
                             if (qtdArgumentos != qtdParametros) {
                                 return chamadaFuncao;
                             }
@@ -440,6 +437,87 @@ public class Semantic {
 
             }
         }
+        return null;
+    }
+
+    private LexicalToken checkArgumentsType() {
+        for (int i = 0; i < escopos.size(); i++) {
+            Escopo escopo = escopos.get(i);
+
+            for (int j = 0; j < tokens.size(); j++) {//apenas identificadores
+                LexicalToken declaracaofuncao = tokens.get(j);
+                if (declaracaofuncao.type != 1 || !declaracaofuncao.scope.equals(escopo.label)) {
+                    continue;
+                }
+                if (tokens.get(j - 2).type != 24) {
+                    //function
+                    continue;
+                }
+                //LexicalToken pontoVirgula1 = null;
+                int m;
+                for (m = j; m < tokens.size(); m++) {
+                    if (tokens.get(m).type == 6) {
+                        //pontoVirgula1 = tokens.get(m);
+                        break;
+                    }
+                }
+
+                ArrayList<LexicalToken> tiposDeclaracao = new ArrayList<>();
+                for (int w = j + 1; w < m; w++) {
+                    if (tokens.get(w).lexeme.equals("int") || tokens.get(w).lexeme.equals("boolean")) {
+                        tiposDeclaracao.add(tokens.get(w));
+                    }
+                }
+                /*for (LexicalToken in : tipos) {
+                    System.out.println(in.lexeme);
+                }*/
+//aqui1
+
+                for (int x = 0; x < tokens.size(); x++) {
+                    if (tokens.get(x).type == 36) {
+                        LexicalToken chamadaFuncao = tokens.get(x + 1);
+                        if (chamadaFuncao.lexeme.equals(declaracaofuncao.lexeme)) {
+//aqui2
+                            //declaracaofuncao.print();
+                            //chamadaFuncao.print();
+                            int m1;
+                            for (m1 = x + 1; m1 < tokens.size(); m1++) {
+                                if (tokens.get(m1).type == 8) {
+                                    //tokens.get(m1).print();
+                                    break;
+                                }
+                            }
+//aqui3
+                            ArrayList<LexicalToken> tiposChamada = new ArrayList<>();
+                            for (int w1 = x + 2; w1 < m1; w1++) {
+                                LexicalToken t = tokens.get(w1);
+                                if (t.regra == null
+                                        || t.lexeme.equals(",")
+                                        || t.lexeme.equals("(")
+                                        || t.lexeme.equals(")")) {
+                                    continue;
+                                }
+                                tiposChamada.add(t);
+                            }
+                            for (int mm = 0; mm < tiposDeclaracao.size(); mm++) {
+                                //System.out.println(tiposDeclaracao.get(mm).regra + "\t" + tiposChamada.get(mm).regra);
+                                //for (int mm1 = 0; mm1 < tiposChamada.size(); mm1++) {
+                                if (tiposDeclaracao.get(mm).regra.equals("param_type_int")
+                                        && tiposChamada.get(mm).regra.contains("int")) {
+
+                                } else if (tiposDeclaracao.get(mm).regra.equals("param_type_boolean")
+                                        && tiposChamada.get(mm).regra.contains("boolean")) {
+
+                                } else {
+                                    return tiposChamada.get(mm);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
         return null;
     }
 }
