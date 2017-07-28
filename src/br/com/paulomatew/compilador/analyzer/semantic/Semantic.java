@@ -24,71 +24,71 @@ public class Semantic {
 
         LexicalToken flag = checkVariableAlreadyDefinedInScope();
         if (flag != null) {
-            throw new SemanticException("Variable already defined in method: "
-                    + flag.lexeme + " at line " + flag.line + ", position " + flag.position
+            throw new SemanticException("Variable already defined in method: '"
+                    + flag.lexeme + "' at line " + flag.line + ", position " + flag.position
                     + ", scope " + flag.scope);
         }
 
         flag = checkVariableWasDefinedInScopeBeforeUse();
         if (flag != null) {
-            throw new SemanticException("Variable might not have been initialized: "
-                    + flag.lexeme + " at line " + flag.line + ", position " + flag.position
+            throw new SemanticException("Variable might not have been initialized: '"
+                    + flag.lexeme + "' at line " + flag.line + ", position " + flag.position
                     + ", scope " + flag.scope);
         }
 
         flag = checkIfIdentifierHasSameNameMethod();
         if (flag != null) {
-            throw new SemanticException("Variable already defined as a method: "
-                    + flag.lexeme + " at line " + flag.line + ", position " + flag.position
+            throw new SemanticException("Variable already defined as a method: '"
+                    + flag.lexeme + "' at line " + flag.line + ", position " + flag.position
                     + ", scope " + flag.scope);
         }
 
         flag = checkIfMethodAlreadyDeclared();
         if (flag != null) {
-            throw new SemanticException("Method already defined: "
-                    + flag.lexeme + " at line " + flag.line + ", position " + flag.position
+            throw new SemanticException("Method already defined: '"
+                    + flag.lexeme + "' at line " + flag.line + ", position " + flag.position
                     + ", scope " + flag.scope);
         }
 
         flag = checkAtribs();
         if (flag != null) {
-            throw new SemanticException("Expression has an unexpected type: "
-                    + flag.lexeme + " at line " + flag.line + ", position " + flag.position
+            throw new SemanticException("Expression has an unexpected type: '"
+                    + flag.lexeme + "' at line " + flag.line + ", position " + flag.position
                     + ", scope " + flag.scope);
         }
 
         flag = checkReturnTypeMethods();
         if (flag != null) {
-            throw new SemanticException("Method has an unexpected return type: "
-                    + flag.lexeme + " at line " + flag.line + ", position " + flag.position
+            throw new SemanticException("Method has an unexpected return type: '"
+                    + flag.lexeme + "' at line " + flag.line + ", position " + flag.position
                     + ", scope " + flag.scope);
         }
 
         flag = checkArgumentsNumber();
         if (flag != null) {
-            throw new SemanticException("Method called with number of arguments wrong: "
-                    + flag.lexeme + " at line " + flag.line + ", position " + flag.position
+            throw new SemanticException("Method called with number of arguments wrong: '"
+                    + flag.lexeme + "' at line " + flag.line + ", position " + flag.position
                     + ", scope " + flag.scope);
         }
 
         flag = checkArgumentsType();
         if (flag != null) {
-            throw new SemanticException("Method called with wrong arguments type: "
-                    + flag.lexeme + " at line " + flag.line + ", position " + flag.position
+            throw new SemanticException("Method called with wrong arguments type: '"
+                    + flag.lexeme + "' at line " + flag.line + ", position " + flag.position
                     + ", scope " + flag.scope);
         }
 
         flag = checkMethodWasDefined();
         if (flag != null) {
-            throw new SemanticException("Method might not have been initialized: "
-                    + flag.lexeme + " at line " + flag.line + ", position " + flag.position
+            throw new SemanticException("Method might not have been initialized: '"
+                    + flag.lexeme + "' at line " + flag.line + ", position " + flag.position
                     + ", scope " + flag.scope);
         }
 
         flag = checkReturnFromMethodAndVariableAssigned();
         if (flag != null) {
-            throw new SemanticException("Method return and variable assigned has different types: "
-                    + flag.lexeme + " at line " + flag.line + ", position " + flag.position
+            throw new SemanticException("Method return and variable assigned has different types: '"
+                    + flag.lexeme + "' at line " + flag.line + ", position " + flag.position
                     + ", scope " + flag.scope);
         }
     }
