@@ -752,8 +752,8 @@ public class Semantic {
         /**
          * CASO ATRIBUIÇÃO 10
          */
-        /*for (int i = 0; i < tokens.size(); i++) {//caso ATRIBUIÇÃO 10
-            if (tokens.get(i).type == 10) {
+        for (int i = 0; i < tokens.size(); i++) {//caso ATRIBUIÇÃO 10
+            if (tokens.get(i).type == 10 && tokens.get(i).regra != null && tokens.get(i).regra.equals("atrib_exp_logic")) {
                 LexicalToken lexemaATRIBUICAO = tokens.get(i);
                 LexicalToken pontoVirgula = null;
                 int j;
@@ -764,8 +764,61 @@ public class Semantic {
                     }
                 }
 
+                for (int x = i; x < j; x++) {
+                    LexicalToken atual = tokens.get(x);
+                    LexicalToken operador = tokens.get(x + 1);
+                    LexicalToken proximo = tokens.get(x + 2);
+                    //averiguar todos os itens "i" até o "j"
+
+                    if (atual.type == 1) {//identificador
+                        //(28) "<", ">", "<=", ">=", "==", "!="
+                        if (atual.regra != null && atual.regra.contains("int")) {
+                            if ((operador.type == 28 || operador.type == 29
+                                    || operador.type == 30 || operador.type == 31
+                                    || operador.type == 32 || operador.type == 33) && proximo.regra.contains("int")) {
+
+                            } else {
+                                return atual;
+                            }
+                        } else if (atual.regra != null && atual.regra.contains("boolean")) {
+                            if ((operador.type == 32 || operador.type == 33) && proximo.regra.contains("boolean")) {
+
+                            } else {
+                                return atual;
+                            }
+                        }
+
+                        x += 2;
+                    } else if (atual.type == 0) {//constante
+                        //System.out.println("CONSTANTE");
+                        //(28) "<", ">", "<=", ">=", "==", "!="
+                        if (atual.regra != null && atual.regra.contains("int")) {
+                            if ((operador.type == 28 || operador.type == 29
+                                    || operador.type == 30 || operador.type == 31
+                                    || operador.type == 32 || operador.type == 33) && proximo.regra.contains("int")) {
+
+                            } else {
+                                return atual;
+                            }
+                        }
+                        x += 2;
+                    } else if (atual.type == 25 || atual.type == 26) {//true e false
+                        //System.out.println("TRUE|FALSE");
+                        //(28) "<", ">", "<=", ">=", "==", "!="
+                        if (atual.regra != null && atual.regra.contains("boolean")) {
+                            if ((operador.type == 32 || operador.type == 33) && proximo.regra.contains("boolean")) {
+
+                            } else {
+                                return atual;
+                            }
+                        }
+
+                        x += 2;
+                    }
+                }
+
             }
-        }*/
+        }
         //VER SE ISSO JÁ NÃO ESTÁ SENDO FEITO NO MÉTODO checkReturnTypeMethods()
         /*for (int i = 0; i < tokens.size(); i++) {//caso return 20
             if (tokens.get(i).type == 20) {

@@ -211,6 +211,7 @@ public class Sintatic {
                             addToStack(new LexicalToken(37, "[", "["));
                         } else {
                             //tokensLexical.get(i).print();
+                            tokensLexical.get(i - 1).regra += "_" + "exp_logic";
                             addToStack(new RegraProducao("exp_logic"));
                         }
                     } else {
