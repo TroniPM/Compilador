@@ -32,6 +32,7 @@ public class Compilador {
     public String sourceCode = null;
 
     public String errorConsole = "";
+    public boolean erro = false;
 
     public static void main(String[] args) {
         Compilador c = new Compilador();
@@ -90,7 +91,8 @@ public class Compilador {
      * @param txt
      */
     private void start(String txt) {
-        boolean erro = false;
+        erro = false;
+
         try {
             analizadorLexico.init(txt);
         } catch (LexicalException ex) {
@@ -131,6 +133,8 @@ public class Compilador {
 
                     errorConsole += "\n" + errors.toString().split("\n")[0];
                     errorConsole = errorConsole.trim();
+
+                    erro = true;
                 }
             }
         }

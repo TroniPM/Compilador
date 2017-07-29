@@ -21,18 +21,18 @@ import javax.swing.text.StyleContext;
  */
 public class JFramePrincipal extends javax.swing.JFrame {
 
-    /*x.x.x.x
+    /*x.x.x
     1º X = gramática
     2º X = minor changes
-    4º X = gui
+    3º X = gui
      */
-    private String title = "Compilador (P.Mateus): 7.0.2";
+    private String title = "Compilador (P.Mateus): 7.1.3";
 
     private DefaultStyledDocument doc;
     public javax.swing.JTextPane editor;
 
     public Compilador compiler = null;
-    public ImageIcon iconExecute, iconList;
+    public ImageIcon iconExecute, iconList, circleRed, circleGreen;
 
     private String consoleText = "";
     private Font fontBasica = null;
@@ -53,11 +53,14 @@ public class JFramePrincipal extends javax.swing.JFrame {
 
         iconExecute = new ImageIcon("./images/execute.png");
         iconList = new ImageIcon("./images/list.png");
+        circleRed = new ImageIcon("./images/circle_red.png");
+        circleGreen = new ImageIcon("./images/circle_green.png");
 
         initEditor();
 
         initComponents();
         setTitle(title);
+        jCircle.setVisible(false);
 
         TextLineNumber tln = new TextLineNumber(jTextPane1);
         jScrollPane1.setRowHeaderView(tln);
@@ -220,6 +223,7 @@ public class JFramePrincipal extends javax.swing.JFrame {
         jProgressBar1 = new javax.swing.JProgressBar();
         jButton3 = new javax.swing.JButton();
         jButton4 = new javax.swing.JButton();
+        jCircle = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -279,9 +283,11 @@ public class JFramePrincipal extends javax.swing.JFrame {
                         .addComponent(jButton3))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jProgressBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jProgressBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
+                            .addComponent(jCircle, javax.swing.GroupLayout.Alignment.TRAILING))))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -294,7 +300,9 @@ public class JFramePrincipal extends javax.swing.JFrame {
                     .addComponent(jButton2)
                     .addComponent(jButton3)
                     .addComponent(jButton4))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 47, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 41, Short.MAX_VALUE)
+                .addComponent(jCircle)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButton1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jProgressBar1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -370,6 +378,15 @@ public class JFramePrincipal extends javax.swing.JFrame {
         compiler.init(jTextPane1.getText());
         jProgressBar1.setValue(100);
 
+        if (compiler.erro) {
+            jCircle.setIcon(circleRed);
+            jCircle.setText("Error");
+        } else {
+            jCircle.setIcon(circleGreen);
+            jCircle.setText("Compiled");
+        }
+        jCircle.setVisible(true);
+
         /* new Thread(new Runnable() {
             @Override
             public void run() {
@@ -418,6 +435,7 @@ public class JFramePrincipal extends javax.swing.JFrame {
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
+    private javax.swing.JLabel jCircle;
     private javax.swing.JProgressBar jProgressBar1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextPane jTextPane1;
