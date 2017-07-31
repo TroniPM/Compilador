@@ -57,7 +57,7 @@ public class Semantic {
                     + ", scope " + flag.scope);
         }
 
-        flag = checkReturnTypeMethods();
+        flag = checkReturnTypeMethodsNew();
         if (flag != null) {
             throw new SemanticException("Method has an unexpected return type: '"
                     + flag.lexeme + "' at line " + flag.line + ", position " + flag.position
@@ -307,7 +307,7 @@ public class Semantic {
      *
      * @return
      */
-    private LexicalToken checkReturnTypeMethods() {
+    private LexicalToken checkReturnTypeMethodsOld() {
         for (int i = 0; i < escopos.size(); i++) {
             Escopo escopo = escopos.get(i);
 
@@ -377,6 +377,147 @@ public class Semantic {
                         }
                     }
                 }
+            }
+        }
+
+        return null;
+    }
+
+    private LexicalToken checkReturnTypeMethodsNew() {
+        for (int i = 0; i < escopos.size(); i++) {
+            Escopo escopo = escopos.get(i);
+
+            for (int j = 0; j < tokens.size(); j++) {//apenas identificadores
+                LexicalToken ident = tokens.get(j);
+                if (ident.type != 1 || !ident.scope.equals(escopo.label)) {
+                    continue;
+                }
+                LexicalToken funcao = tokens.get(j - 2);
+                if (funcao.type != 24) {
+                    //function
+                    continue;
+                }
+//aqui
+                funcoesDeclaracao.add(ident);
+                //ident.print();
+                LexicalToken retorno = null, pontoVirgula = null;
+                int x;
+                for (x = j; x < tokens.size(); x++) {
+                    if (tokens.get(x).type == 20) {
+                        retorno = tokens.get(x);
+                        //retorno.print();
+                        break;
+                    }
+
+                }
+                if (retorno != null) {//evitar nullpointer em function VOID
+                    //ident.print();
+                    retorno.regra = ident.regra;
+                } else {
+                    continue;
+                }
+
+                int x1;
+                for (x1 = x; x1 < tokens.size(); x1++) {
+                    if (tokens.get(x1).type == 8) {
+                        pontoVirgula = tokens.get(x1);
+                        break;
+                    }
+
+                }
+                //aqui
+                if (retorno.regra.contains("boolean")) {
+                    if (x1 - x == 2) {//só identificador
+                        LexicalToken ident_or_truefalse = tokens.get(x + 1);
+                        if (!ident_or_truefalse.regra.contains("boolean")) {
+                            return ident_or_truefalse;
+                        }
+                    } else {
+                        for (int w = x; w < x1; w++) {
+                            LexicalToken atual = tokens.get(w);
+                            LexicalToken operador = tokens.get(w + 1);
+                            LexicalToken proximo = tokens.get(w + 2);
+                            //averiguar todos os itens "i" até o "j"
+
+                            if (atual.type == 1) {//identificador
+                                //System.out.println("IDENTIFICADOR");
+                                //X > X
+                                //X > 1
+                                //X > 1)
+                                //(28) "<", ">", "<=", ">=", "==", "!="
+                                if (atual.regra != null && atual.regra.contains("int")) {
+                                    if ((operador.type == 28 || operador.type == 29
+                                            || operador.type == 30 || operador.type == 31
+                                            || operador.type == 32 || operador.type == 33) && proximo.regra.contains("int")) {
+
+                                    } else {
+                                        return atual;
+                                    }
+                                } else if (atual.regra != null && atual.regra.contains("boolean")) {
+                                    if ((operador.type == 32 || operador.type == 33) && proximo.regra.contains("boolean")) {
+
+                                    } else {
+                                        return atual;
+                                    }
+                                }
+
+                                w += 2;
+                            } else if (atual.type == 0) {//constante
+                                //System.out.println("CONSTANTE");
+                                //(28) "<", ">", "<=", ">=", "==", "!="
+                                if (atual.regra != null && atual.regra.contains("int")) {
+                                    if ((operador.type == 28 || operador.type == 29
+                                            || operador.type == 30 || operador.type == 31
+                                            || operador.type == 32 || operador.type == 33) && proximo.regra.contains("int")) {
+
+                                    } else {
+                                        return atual;
+                                    }
+                                }
+                                w += 2;
+                            } else if (atual.type == 25 || atual.type == 26) {//true e false
+                                //System.out.println("TRUE|FALSE");
+                                //(28) "<", ">", "<=", ">=", "==", "!="
+                                if (atual.regra != null && atual.regra.contains("boolean")) {
+                                    if ((operador.type == 32 || operador.type == 33) && proximo.regra.contains("boolean")) {
+
+                                    } else {
+                                        return atual;
+                                    }
+                                }
+
+                                w += 2;
+                            }
+                        }
+                    }
+                } else if (retorno.regra.contains("int")) {
+                    if (x1 - x == 2) {//só identificador
+                        LexicalToken ident_or_const = tokens.get(x + 1);
+                        if (!ident_or_const.regra.contains("int")) {
+                            return ident_or_const;
+                        }
+                    } else {
+                        System.out.println("retorno.regra.contains(\"int\") \te\t");
+                        for (int w = x; w < x1; w++) {
+                            LexicalToken atual = tokens.get(w);
+                            LexicalToken operador = tokens.get(w + 1);
+                            LexicalToken proximo = tokens.get(w + 2);
+                            //averiguar todos os itens "i" até o "j"
+
+                            if (atual.type == 1 || atual.type == 0) {//identificador
+                                if (atual.regra != null && atual.regra.contains("int")) {
+                                } else {
+                                    return atual;
+                                }
+
+                                //w += 1;
+                            } else if (atual.type == 25 || atual.type == 26) {//true e false
+                                return atual;
+                            }
+                        }
+                    }
+                }
+                //ate aqui
             }
         }
 
@@ -690,60 +831,68 @@ public class Semantic {
                     }
                 }
 
-                for (int x = i; x < j; x++) {
-                    LexicalToken atual = tokens.get(x);
-                    LexicalToken operador = tokens.get(x + 1);
-                    LexicalToken proximo = tokens.get(x + 2);
-                    //averiguar todos os itens "i" até o "j"
+                if (j - i == 4) {//só identificador
+                    LexicalToken ident_or_truefalse = tokens.get(i + 2);
+                    if (!ident_or_truefalse.regra.contains("boolean")) {
+                        return ident_or_truefalse;
+                    }
+                } else {
 
-                    if (atual.type == 1) {//identificador
-                        //System.out.println("IDENTIFICADOR");
-                        //X > X
-                        //X > 1
-                        //X > 1)
-                        //(28) "<", ">", "<=", ">=", "==", "!="
-                        if (atual.regra != null && atual.regra.contains("int")) {
-                            if ((operador.type == 28 || operador.type == 29
-                                    || operador.type == 30 || operador.type == 31
-                                    || operador.type == 32 || operador.type == 33) && proximo.regra.contains("int")) {
+                    for (int x = i; x < j; x++) {
+                        LexicalToken atual = tokens.get(x);
+                        LexicalToken operador = tokens.get(x + 1);
+                        LexicalToken proximo = tokens.get(x + 2);
+                        //averiguar todos os itens "i" até o "j"
 
-                            } else {
-                                return atual;
+                        if (atual.type == 1) {//identificador
+                            //System.out.println("IDENTIFICADOR");
+                            //X > X
+                            //X > 1
+                            //X > 1)
+                            //(28) "<", ">", "<=", ">=", "==", "!="
+                            if (atual.regra != null && atual.regra.contains("int")) {
+                                if ((operador.type == 28 || operador.type == 29
+                                        || operador.type == 30 || operador.type == 31
+                                        || operador.type == 32 || operador.type == 33) && proximo.regra.contains("int")) {
+
+                                } else {
+                                    return atual;
+                                }
+                            } else if (atual.regra != null && atual.regra.contains("boolean")) {
+                                if ((operador.type == 32 || operador.type == 33) && proximo.regra.contains("boolean")) {
+
+                                } else {
+                                    return atual;
+                                }
                             }
-                        } else if (atual.regra != null && atual.regra.contains("boolean")) {
-                            if ((operador.type == 32 || operador.type == 33) && proximo.regra.contains("boolean")) {
 
-                            } else {
-                                return atual;
+                            x += 2;
+                        } else if (atual.type == 0) {//constante
+                            //System.out.println("CONSTANTE");
+                            //(28) "<", ">", "<=", ">=", "==", "!="
+                            if (atual.regra != null && atual.regra.contains("int")) {
+                                if ((operador.type == 28 || operador.type == 29
+                                        || operador.type == 30 || operador.type == 31
+                                        || operador.type == 32 || operador.type == 33) && proximo.regra.contains("int")) {
+
+                                } else {
+                                    return atual;
+                                }
                             }
+                            x += 2;
+                        } else if (atual.type == 25 || atual.type == 26) {//true e false
+                            //System.out.println("TRUE|FALSE");
+                            //(28) "<", ">", "<=", ">=", "==", "!="
+                            if (atual.regra != null && atual.regra.contains("boolean")) {
+                                if ((operador.type == 32 || operador.type == 33) && proximo.regra.contains("boolean")) {
+
+                                } else {
+                                    return atual;
+                                }
+                            }
+
+                            x += 2;
                         }
-
-                        x += 2;
-                    } else if (atual.type == 0) {//constante
-                        //System.out.println("CONSTANTE");
-                        //(28) "<", ">", "<=", ">=", "==", "!="
-                        if (atual.regra != null && atual.regra.contains("int")) {
-                            if ((operador.type == 28 || operador.type == 29
-                                    || operador.type == 30 || operador.type == 31
-                                    || operador.type == 32 || operador.type == 33) && proximo.regra.contains("int")) {
-
-                            } else {
-                                return atual;
-                            }
-                        }
-                        x += 2;
-                    } else if (atual.type == 25 || atual.type == 26) {//true e false
-                        //System.out.println("TRUE|FALSE");
-                        //(28) "<", ">", "<=", ">=", "==", "!="
-                        if (atual.regra != null && atual.regra.contains("boolean")) {
-                            if ((operador.type == 32 || operador.type == 33) && proximo.regra.contains("boolean")) {
-
-                            } else {
-                                return atual;
-                            }
-                        }
-
-                        x += 2;
                     }
                 }
             }

@@ -101,8 +101,8 @@ public class Compilador {
             StringWriter errors = new StringWriter();
             ex.printStackTrace(new PrintWriter(errors));
 
-            errorConsole += "\n" + errors.toString().split("\n")[0];
-            errorConsole = errorConsole.trim();
+            errorConsole += "\n" + (errors.toString().split("\n")[0]).trim();
+            //errorConsole = errorConsole.trim();
 
             erro = true;
         }
@@ -116,8 +116,8 @@ public class Compilador {
                 StringWriter errors = new StringWriter();
                 ex.printStackTrace(new PrintWriter(errors));
 
-                errorConsole += "\n" + errors.toString().split("\n")[0];
-                errorConsole = errorConsole.trim();
+                errorConsole += "\n" + (errors.toString().split("\n")[0]).trim();
+                //errorConsole = errorConsole.trim();
 
                 erro = true;
             }
@@ -131,10 +131,14 @@ public class Compilador {
                     StringWriter errors = new StringWriter();
                     ex.printStackTrace(new PrintWriter(errors));
 
-                    errorConsole += "\n" + errors.toString().split("\n")[0];
-                    errorConsole = errorConsole.trim();
+                    errorConsole += "\n" + (errors.toString().split("\n")[0]).trim();
+                    //errorConsole = errorConsole.trim();
 
                     erro = true;
+                }
+
+                if (!erro) {
+                    errorConsole += "\n\t" + "<<Compiled>>";
                 }
             }
         }

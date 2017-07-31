@@ -2,6 +2,7 @@ package br.com.paulomatew.compilador.gui;
 
 import static br.com.paulomatew.compilador.entities.OSValidator.isUnix;
 import br.com.paulomatew.compilador.main.Compilador;
+import com.sun.glass.events.KeyEvent;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -59,6 +60,7 @@ public class JFramePrincipal extends javax.swing.JFrame {
         initEditor();
 
         initComponents();
+        jButton1.setMnemonic(KeyEvent.VK_F5);
         setTitle(title);
         jCircle.setVisible(false);
 
@@ -220,13 +222,17 @@ public class JFramePrincipal extends javax.swing.JFrame {
         jTextPane1 = new javax.swing.JTextPane(doc);
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
-        jProgressBar1 = new javax.swing.JProgressBar();
         jButton3 = new javax.swing.JButton();
         jButton4 = new javax.swing.JButton();
         jCircle = new javax.swing.JLabel();
         jButton5 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                formKeyPressed(evt);
+            }
+        });
 
         jTextPane1.setFont(fontBasica);
         jTextPane1.setText("#main(){\n#    int i;\n#    int j;\n#    boolean flag;\n#\n#    print(1);\n#    print(true);\n#    print(false);\n#    print(i);\n#    print();\n#    \n#    call somar(1, 1);\n#    call somar(i, i);\n#    call somar(true, true);\n#    call somar(false, false);\n#    call somar(1, j);\n#    call somar(j, 1);\n#    call somar(true, i);\n#    call somar(i, false, 2, mateus, 2, true);\n#    call somar();\n#    \n#    break;\n#    continue;\n#    \n#    i = 1024;\n#    i = matt;\n#    i = true;\n#    i = [1024 + matt];\n#    i = [(j + matt) * 2048];\n#\n#    if(matt == true){\n#    } else{\n#        int antony;\n#        antony = [(matt * 1024) / 2];\n#    }\n#    if((matt == true && 1 != 2) || flag == true){\n#    }\n#\n#    while(true){\n#        break;\n#    }\n#\n#    if(m == true){\n#        int i;\n#        int j;\n#        i = 30;\n#        j = [i * 50];\n#    } else{\n#        int antony;\n#        antony = [(m * 1024) / 2];\n#    }\n#\n#   n = 35;\n#   m = call aeee1(n, flag, 1, true);\n#   flag = call aeee2(flag, n, true, 1);\n#}\n#function int aeee(int flag1, boolean flag2){\n#    return [flag1+2];\n#}\n#function boolean aeee2(int flag1, boolean flag2){\n#    return (flag2 == 1) && true !=flag2;\n#}\n#function void aeee2(int flag1, boolean flag2){\n#}\n\nmain(){\n    int m;\n    int n;\n    boolean flag;\n    boolean flag2;\n\n    #if ((flag2 == true && true != false && flag2 == flag) || 1 == 2 || m > 25 || m > n){}\n    #while ((flag2 == true && true != false && flag2 == flag) || 1 == 2 || m > 25 || m > n){}\n    flag2 =  ((flag2 == true && true != false && flag2 == flag) || 1 == 2 || m > 25 || m > n);\n\n}\nfunction int aeee1(int flag1, boolean flag2, int flag3, boolean flag4){\n    return [flag1+2];\n}\nfunction boolean aeee2(boolean flag1, int flag2, boolean flag3, int flag4){\n    return (flag2 == 1) && true !=flag1;\n}\nfunction boolean aeee4(boolean flag1){\n    return flag1;\n}\nfunction void aeee3(){\n\tint j;\n\tj = 25;\n}");
@@ -238,7 +244,7 @@ public class JFramePrincipal extends javax.swing.JFrame {
         jScrollPane1.setViewportView(jTextPane1);
 
         jButton1.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
-        jButton1.setText("Compilar");
+        jButton1.setText("Compilar (F5)");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
@@ -268,6 +274,9 @@ public class JFramePrincipal extends javax.swing.JFrame {
             }
         });
 
+        jCircle.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jCircle.setPreferredSize(new java.awt.Dimension(93, 20));
+
         jButton5.setText("Código 3 endereços");
         jButton5.setEnabled(false);
         jButton5.addActionListener(new java.awt.event.ActionListener() {
@@ -295,10 +304,8 @@ public class JFramePrincipal extends javax.swing.JFrame {
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jProgressBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
-                            .addComponent(jCircle, javax.swing.GroupLayout.Alignment.TRAILING))))
+                            .addComponent(jButton1, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jCircle, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -312,12 +319,10 @@ public class JFramePrincipal extends javax.swing.JFrame {
                     .addComponent(jButton3)
                     .addComponent(jButton4)
                     .addComponent(jButton5))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 41, Short.MAX_VALUE)
-                .addComponent(jCircle)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 18, Short.MAX_VALUE)
+                .addComponent(jCircle, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButton1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jProgressBar1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
 
@@ -353,7 +358,7 @@ public class JFramePrincipal extends javax.swing.JFrame {
 
         textArea.setLineWrap(true);
         textArea.setWrapStyleWord(true);
-        scrollPane.setPreferredSize(new Dimension(500, 500));
+        scrollPane.setPreferredSize(new Dimension(700, 500));
         textArea.setEditable(false);
         JOptionPane.showMessageDialog(null, scrollPane, "Console",
                 JOptionPane.INFORMATION_MESSAGE);
@@ -380,6 +385,8 @@ public class JFramePrincipal extends javax.swing.JFrame {
     private void jTextPane1KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextPane1KeyPressed
         if (evt.getKeyCode() == java.awt.event.KeyEvent.VK_ESCAPE) {
             System.exit(0);
+        } else if (evt.getKeyCode() == java.awt.event.KeyEvent.VK_F5) {
+            compilar();
         }
     }//GEN-LAST:event_jTextPane1KeyPressed
 
@@ -387,12 +394,18 @@ public class JFramePrincipal extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_jButton5ActionPerformed
 
+    private void formKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_formKeyPressed
+        if (evt.getKeyCode() == java.awt.event.KeyEvent.VK_F5) {
+            compilar();
+        }
+    }//GEN-LAST:event_formKeyPressed
+
     private void compilar() {
         jButton2.setEnabled(true);
         jButton4.setEnabled(true);
-        jProgressBar1.setValue(0);
+        //jProgressBar1.setValue(0);
         compiler.init(jTextPane1.getText());
-        jProgressBar1.setValue(100);
+        //jProgressBar1.setValue(100);
 
         if (compiler.erro) {
             jCircle.setIcon(circleRed);
@@ -453,7 +466,6 @@ public class JFramePrincipal extends javax.swing.JFrame {
     private javax.swing.JButton jButton4;
     private javax.swing.JButton jButton5;
     private javax.swing.JLabel jCircle;
-    private javax.swing.JProgressBar jProgressBar1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextPane jTextPane1;
     // End of variables declaration//GEN-END:variables
