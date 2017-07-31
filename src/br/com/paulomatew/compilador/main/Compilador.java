@@ -138,7 +138,10 @@ public class Compilador {
                 }
 
                 if (!erro) {
-                    errorConsole += "\n\t" + "<<Compiled>>";
+                    if (!errorConsole.isEmpty()) {
+                        errorConsole += "\n";
+                    }
+                    errorConsole += "\t" + "<<Compiled>>";
                 }
             }
         }

@@ -57,6 +57,13 @@ public class Semantic {
                     + ", scope " + flag.scope);
         }
 
+        flag = checkIfFunctionHasReturn();
+        if (flag != null) {
+            throw new SemanticException("Method was declared with return type " + flag.description + ", " + flag.regra + ": '"
+                    + flag.lexeme + "' at line " + flag.line + ", position " + flag.position
+                    + ", scope " + flag.scope);
+        }
+
         flag = checkReturnTypeMethodsNew();
         if (flag != null) {
             throw new SemanticException("Method has an unexpected return type: '"
@@ -497,7 +504,6 @@ public class Semantic {
                             return ident_or_const;
                         }
                     } else {
-                        System.out.println("retorno.regra.contains(\"int\") \te\t");
                         for (int w = x; w < x1; w++) {
                             LexicalToken atual = tokens.get(w);
                             LexicalToken operador = tokens.get(w + 1);
@@ -986,6 +992,57 @@ public class Semantic {
                 }
             }
         }*/
+        return null;
+    }
+
+    /**
+     * O analisador sintático deixa passar se função foi declarada com retorno
+     * int/boolean e mas sem declarar a expressão 'return'. Ess método verifica
+     * se int/boolean: não tem return e lança erro caso seja não tenha expressão
+     * return. void: lança erro caso tenha return;
+     *
+     * @return
+     */
+    private LexicalToken checkIfFunctionHasReturn() {
+        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        for (int i = 0; i < tokens.size(); i++) {
+
+            if (tokens.get(i).type != 24) {
+                continue;
+            }
+
+            LexicalToken func = tokens.get(i);
+            LexicalToken tipo_retorno = tokens.get(i + 1);
+            LexicalToken identificador = tokens.get(i + 2);
+
+            if (tipo_retorno.regra.contains("void")) {
+                //continue;
+
+                for (int j = i + 1; j < tokens.size(); j++) {
+                    //não encontrar return ou chegar no final codigo fonte e n encontrar nada
+                    if (tokens.get(j).type == 24 || j + 1 == tokens.size()) {
+                        break;
+                    } else if (tokens.get(j).type == 20) {
+                        identificador.description = "void";
+                        identificador.regra = "but has expression 'return'";
+                        return identificador;
+                    }
+                }
+            } else {
+
+                for (int j = i + 1; j < tokens.size(); j++) {
+                    //não encontrar return ou chegar no final codigo fonte e n encontrar nada
+                    if (tokens.get(j).type == 24 || j + 1 == tokens.size()) {
+                        identificador.description = "int/boolean";
+                        identificador.regra = "but hasn't expression 'return'";
+                        return identificador;
+                    } else if (tokens.get(j).type == 20) {
+                        break;
+                    }
+                }
+            }
+        }
+
         return null;
     }
 }
