@@ -1,9 +1,10 @@
 package br.com.paulomatew.compilador.main;
 
-import br.com.paulomatew.compilador.analyzer.lexical.Lexical;
-import br.com.paulomatew.compilador.analyzer.semantic.Semantic;
-import br.com.paulomatew.compilador.analyzer.sintatic.Sintatic;
-import br.com.paulomatew.compilador.entities.LexicalToken;
+import br.com.paulomatew.compilador.core.IntermediateCodeGenerator;
+import br.com.paulomatew.compilador.core.Lexical;
+import br.com.paulomatew.compilador.core.Semantic;
+import br.com.paulomatew.compilador.core.Sintatic;
+import br.com.paulomatew.compilador.entities.Token;
 import br.com.paulomatew.compilador.exceptions.LexicalException;
 import br.com.paulomatew.compilador.exceptions.SemanticException;
 import br.com.paulomatew.compilador.exceptions.SintaticException;
@@ -24,6 +25,7 @@ public class Compilador {
     public Lexical analizadorLexico = null;
     public Semantic analizadorSemantico = null;
     public Sintatic analizadorSintatico = null;
+    public IntermediateCodeGenerator generator = null;
 
     public static ArrayList<String> RESERVED_WORDS_AND_OPERATORS = null;
     public static ArrayList<String> RESERVED_WORDS = null;
@@ -32,6 +34,7 @@ public class Compilador {
     public String sourceCode = null;
 
     public String errorConsole = "";
+    public String codigoIntermediario = "";
     public boolean erro = false;
 
     public static void main(String[] args) {
@@ -51,6 +54,7 @@ public class Compilador {
         analizadorLexico = new Lexical();
         analizadorSintatico = new Sintatic();
         analizadorSemantico = new Semantic();
+        generator = new IntermediateCodeGenerator();
 
         String[] t1 = new String[]{/*+3*/"main", "(", ")", "{", "}", ";", ",", "=", "+", "-"/*10*/, "*", "/", "void", "int", "boolean", "break", "continue", "return", "if", "else"/*20*/, "while", "function", "true", "false", "print", "<", ">", "<=", ">=", "=="/*30*/, "!=", "&&", "||", "call", "[", "]"};
         RESERVED_WORDS_AND_OPERATORS = new ArrayList(Arrays.asList(t1));
@@ -138,6 +142,8 @@ public class Compilador {
                 }
 
                 if (!erro) {
+                    codigoIntermediario = generator.init(analizadorLexico.tokenArray);
+
                     if (!errorConsole.isEmpty()) {
                         errorConsole += "\n";
                     }

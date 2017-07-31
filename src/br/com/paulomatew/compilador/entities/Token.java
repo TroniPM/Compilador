@@ -4,7 +4,7 @@ package br.com.paulomatew.compilador.entities;
  * Created by Paulo Mateus on 26/06/2017. For project Compiladores
  * (https://github.com/TroniPM/Compilador) Contact: <paulomatew@gmail.com>
  */
-public class LexicalToken extends Objeto {
+public class Token extends Objeto {
 
     public int type = -99;
     public String lexeme = null;
@@ -14,15 +14,15 @@ public class LexicalToken extends Objeto {
     public int position = 0;
     public String scope = null;
 
-    public LexicalToken() {
+    public Token() {
     }
 
-    public LexicalToken(int type, String lexeme) {
+    public Token(int type, String lexeme) {
         this.type = type;
         this.lexeme = lexeme;
     }
 
-    public LexicalToken(int type, String lexeme, String description) {
+    public Token(int type, String lexeme, String description) {
         this.type = type;
         this.lexeme = lexeme;
         this.description = description;

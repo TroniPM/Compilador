@@ -1,7 +1,7 @@
-package br.com.paulomatew.compilador.analyzer.semantic;
+package br.com.paulomatew.compilador.core;
 
 import br.com.paulomatew.compilador.entities.Escopo;
-import br.com.paulomatew.compilador.entities.LexicalToken;
+import br.com.paulomatew.compilador.entities.Token;
 import br.com.paulomatew.compilador.exceptions.SemanticException;
 import java.util.ArrayList;
 
@@ -11,18 +11,18 @@ import java.util.ArrayList;
  */
 public class Semantic {
 
-    private ArrayList<LexicalToken> tokens = null;
+    private ArrayList<Token> tokens = null;
     private ArrayList<Escopo> escopos = null;
-    private ArrayList<LexicalToken> funcoesDeclaracao = null;
-    private ArrayList<LexicalToken> funcoesChamada = null;
+    private ArrayList<Token> funcoesDeclaracao = null;
+    private ArrayList<Token> funcoesChamada = null;
 
-    public void init(ArrayList<LexicalToken> tokens, ArrayList<Escopo> escopos) throws SemanticException {
+    public void init(ArrayList<Token> tokens, ArrayList<Escopo> escopos) throws SemanticException {
         this.tokens = tokens;
         this.escopos = escopos;
         this.funcoesDeclaracao = new ArrayList<>();
         this.funcoesChamada = new ArrayList<>();
 
-        LexicalToken flag = checkVariableAlreadyDefinedInScope();
+        Token flag = checkVariableAlreadyDefinedInScope();
         if (flag != null) {
             throw new SemanticException("Variable already defined in method: '"
                     + flag.lexeme + "' at line " + flag.line + ", position " + flag.position
@@ -112,17 +112,17 @@ public class Semantic {
      *
      * @return
      */
-    private LexicalToken checkVariableAlreadyDefinedInScope() {
+    private Token checkVariableAlreadyDefinedInScope() {
         for (int i = 0; i < escopos.size(); i++) {
             String escopo = escopos.get(i).label;
             ArrayList<String> token = new ArrayList<>();
 
             for (int j = 0; j < tokens.size(); j++) {//apenas identificadores
-                LexicalToken atual = tokens.get(j);
+                Token atual = tokens.get(j);
                 if (atual.type != 1 || !atual.scope.equals(escopo)) {
                     continue;
                 }
-                LexicalToken anterior = tokens.get(j - 1);
+                Token anterior = tokens.get(j - 1);
                 if (anterior.type != 16 && anterior.type != 17) {
                     continue;
                 }
@@ -142,7 +142,7 @@ public class Semantic {
      *
      * @return
      */
-    private LexicalToken checkVariableWasDefinedInScopeBeforeUse() {
+    private Token checkVariableWasDefinedInScopeBeforeUse() {
         for (int i = 0; i < escopos.size(); i++) {
             Escopo escopo = escopos.get(i);
             ArrayList<String> token = new ArrayList<>();
@@ -150,11 +150,11 @@ public class Semantic {
             boolean erro = false;
 
             for (int j = 0; j < tokens.size(); j++) {//apenas identificadores
-                LexicalToken atual = tokens.get(j);
+                Token atual = tokens.get(j);
                 if (atual.type != 1 || !atual.scope.equals(escopo.label)) {
                     continue;
                 }
-                LexicalToken anterior = tokens.get(j - 1);
+                Token anterior = tokens.get(j - 1);
                 if (anterior.type == 15 || anterior.type == 16 || anterior.type == 17 || anterior.type == 36) {
                     //VOID, INT, BOOLEAN, CALL
                     continue;
@@ -177,14 +177,14 @@ public class Semantic {
      * @param escopo
      * @return
      */
-    private boolean checkVariableDefinedInScope(LexicalToken token, Escopo escopo) {
+    private boolean checkVariableDefinedInScope(Token token, Escopo escopo) {
         for (int i = 0; i < tokens.size(); i++) {
-            LexicalToken atual = tokens.get(i);
+            Token atual = tokens.get(i);
 
             if (atual.type == 1 && atual.scope.equals(escopo.label)
                     && atual.lexeme.equals(token.lexeme)) {
 
-                LexicalToken anterior = tokens.get(i - 1);
+                Token anterior = tokens.get(i - 1);
                 if ((anterior.type == 16 || anterior.type == 17)) {
                     //return true;
                     if (anterior.line < token.line) {
@@ -225,7 +225,7 @@ public class Semantic {
      * @param escopo
      * @return
      */
-    private boolean checkVariableDefinedInScopeTree(LexicalToken token, Escopo escopo) {
+    private boolean checkVariableDefinedInScopeTree(Token token, Escopo escopo) {
         if (checkVariableDefinedInScope(token, escopo)) {
             return true;
         }
@@ -242,19 +242,19 @@ public class Semantic {
      *
      * @return
      */
-    private LexicalToken checkIfIdentifierHasSameNameMethod() {
+    private Token checkIfIdentifierHasSameNameMethod() {
         boolean mesmoNome = false;
         for (int i = 0; i < escopos.size(); i++) {
             String escopo = escopos.get(i).label;
             ArrayList<String> token = new ArrayList<>();
 
             for (int j = 0; j < tokens.size(); j++) {//apenas identificadores
-                LexicalToken atual = tokens.get(j);
+                Token atual = tokens.get(j);
                 if (atual.type != 1 || !atual.scope.equals(escopo)) {
                     continue;
                 }
-                LexicalToken anterior1 = tokens.get(j - 1);
-                LexicalToken anterior2 = tokens.get(j - 2);
+                Token anterior1 = tokens.get(j - 1);
+                Token anterior2 = tokens.get(j - 2);
                 if (anterior2.type == 24 || anterior1.type != 16 && anterior1.type != 17) {
                     //int, boolean, function
                     continue;
@@ -262,7 +262,7 @@ public class Semantic {
 //aqui
                 for (int x = 0; x < tokens.size(); x++) {
                     if (tokens.get(x).type == 24) {
-                        LexicalToken identificadorFuncao = tokens.get(x + 2);
+                        Token identificadorFuncao = tokens.get(x + 2);
                         if (atual.lexeme.equals(identificadorFuncao.lexeme)) {
                             return atual;
                         }
@@ -279,15 +279,15 @@ public class Semantic {
      *
      * @return
      */
-    private LexicalToken checkIfMethodAlreadyDeclared() {
+    private Token checkIfMethodAlreadyDeclared() {
         for (int i = 0; i < escopos.size(); i++) {
             String escopo = escopos.get(i).label;
             for (int j = 0; j < tokens.size(); j++) {//apenas identificadores
-                LexicalToken atual = tokens.get(j);
+                Token atual = tokens.get(j);
                 if (atual.type != 1 || !atual.scope.equals(escopo)) {
                     continue;
                 }
-                LexicalToken anterior1 = tokens.get(j - 2);
+                Token anterior1 = tokens.get(j - 2);
                 if (anterior1.type != 24) {
                     //function
                     continue;
@@ -296,7 +296,7 @@ public class Semantic {
                 for (int x = 0; x < tokens.size(); x++) {
                     if (tokens.get(x).type == 24 && tokens.get(x + 2) != atual) {
 
-                        LexicalToken identificadorFuncao = tokens.get(x + 2);
+                        Token identificadorFuncao = tokens.get(x + 2);
                         if (atual.lexeme.equals(identificadorFuncao.lexeme)) {
                             return atual;
                         }
@@ -314,16 +314,16 @@ public class Semantic {
      *
      * @return
      */
-    private LexicalToken checkReturnTypeMethodsOld() {
+    private Token checkReturnTypeMethodsOld() {
         for (int i = 0; i < escopos.size(); i++) {
             Escopo escopo = escopos.get(i);
 
             for (int j = 0; j < tokens.size(); j++) {//apenas identificadores
-                LexicalToken ident = tokens.get(j);
+                Token ident = tokens.get(j);
                 if (ident.type != 1 || !ident.scope.equals(escopo.label)) {
                     continue;
                 }
-                LexicalToken funcao = tokens.get(j - 2);
+                Token funcao = tokens.get(j - 2);
                 if (funcao.type != 24) {
                     //function
                     continue;
@@ -331,7 +331,8 @@ public class Semantic {
 //aqui
                 funcoesDeclaracao.add(ident);
                 //ident.print();
-                LexicalToken retorno = null, pontoVirgula = null;
+                Token retorno = null;
+                Token pontoVirgula = null;
                 int x;
                 for (x = j; x < tokens.size(); x++) {
                     if (tokens.get(x).type == 20) {
@@ -354,8 +355,8 @@ public class Semantic {
                 }
 
                 for (int y = x + 1; y < x1; y++) {
-                    LexicalToken atual = tokens.get(y);
-                    LexicalToken anterior = tokens.get(y - 1);
+                    Token atual = tokens.get(y);
+                    Token anterior = tokens.get(y - 1);
 
                     if (ident.regra.equals("int")) {
                         if (atual.regra != null && (atual.regra.contains("exp_arit")
@@ -390,16 +391,16 @@ public class Semantic {
         return null;
     }
 
-    private LexicalToken checkReturnTypeMethodsNew() {
+    private Token checkReturnTypeMethodsNew() {
         for (int i = 0; i < escopos.size(); i++) {
             Escopo escopo = escopos.get(i);
 
             for (int j = 0; j < tokens.size(); j++) {//apenas identificadores
-                LexicalToken ident = tokens.get(j);
+                Token ident = tokens.get(j);
                 if (ident.type != 1 || !ident.scope.equals(escopo.label)) {
                     continue;
                 }
-                LexicalToken funcao = tokens.get(j - 2);
+                Token funcao = tokens.get(j - 2);
                 if (funcao.type != 24) {
                     //function
                     continue;
@@ -407,7 +408,8 @@ public class Semantic {
 //aqui
                 funcoesDeclaracao.add(ident);
                 //ident.print();
-                LexicalToken retorno = null, pontoVirgula = null;
+                Token retorno = null;
+                Token pontoVirgula = null;
                 int x;
                 for (x = j; x < tokens.size(); x++) {
                     if (tokens.get(x).type == 20) {
@@ -435,15 +437,15 @@ public class Semantic {
                 //aqui
                 if (retorno.regra.contains("boolean")) {
                     if (x1 - x == 2) {//só identificador
-                        LexicalToken ident_or_truefalse = tokens.get(x + 1);
+                        Token ident_or_truefalse = tokens.get(x + 1);
                         if (!ident_or_truefalse.regra.contains("boolean")) {
                             return ident_or_truefalse;
                         }
                     } else {
                         for (int w = x; w < x1; w++) {
-                            LexicalToken atual = tokens.get(w);
-                            LexicalToken operador = tokens.get(w + 1);
-                            LexicalToken proximo = tokens.get(w + 2);
+                            Token atual = tokens.get(w);
+                            Token operador = tokens.get(w + 1);
+                            Token proximo = tokens.get(w + 2);
                             //averiguar todos os itens "i" até o "j"
 
                             if (atual.type == 1) {//identificador
@@ -499,15 +501,15 @@ public class Semantic {
                     }
                 } else if (retorno.regra.contains("int")) {
                     if (x1 - x == 2) {//só identificador
-                        LexicalToken ident_or_const = tokens.get(x + 1);
+                        Token ident_or_const = tokens.get(x + 1);
                         if (!ident_or_const.regra.contains("int")) {
                             return ident_or_const;
                         }
                     } else {
                         for (int w = x; w < x1; w++) {
-                            LexicalToken atual = tokens.get(w);
-                            LexicalToken operador = tokens.get(w + 1);
-                            LexicalToken proximo = tokens.get(w + 2);
+                            Token atual = tokens.get(w);
+                            Token operador = tokens.get(w + 1);
+                            Token proximo = tokens.get(w + 2);
                             //averiguar todos os itens "i" até o "j"
 
                             if (atual.type == 1 || atual.type == 0) {//identificador
@@ -537,11 +539,11 @@ public class Semantic {
      *
      * @return
      */
-    private LexicalToken checkAtribs() {
+    private Token checkAtribs() {
         int i;
         for (i = 0; i < tokens.size(); i++) {
             if (tokens.get(i).type == 10) {//=
-                LexicalToken ident = tokens.get(i - 1);
+                Token ident = tokens.get(i - 1);
                 //LexicalToken atribuicao = tokens.get(i);
                 //LexicalToken pontoVirgula = null;
                 int j;
@@ -556,7 +558,7 @@ public class Semantic {
                     }
                 }
                 for (int x = i + 1; x < j; x++) {
-                    LexicalToken atual = tokens.get(x);
+                    Token atual = tokens.get(x);
 
                     if (ident.regra.equals("int")) {
                         if (atual.regra != null && (atual.regra.contains("exp_arit")
@@ -595,12 +597,12 @@ public class Semantic {
      *
      * @return
      */
-    private LexicalToken checkArgumentsNumber() {
+    private Token checkArgumentsNumber() {
         for (int i = 0; i < escopos.size(); i++) {
             Escopo escopo = escopos.get(i);
 
             for (int j = 0; j < tokens.size(); j++) {//apenas identificadores
-                LexicalToken declaracaofuncao = tokens.get(j);
+                Token declaracaofuncao = tokens.get(j);
                 if (declaracaofuncao.type != 1 || !declaracaofuncao.scope.equals(escopo.label)) {
                     continue;
                 }
@@ -609,7 +611,7 @@ public class Semantic {
                     continue;
                 }
 //aqui
-                LexicalToken pontoVirgula1 = null;
+                Token pontoVirgula1 = null;
                 int m;
                 for (m = j; j < tokens.size(); m++) {
                     if (tokens.get(m).type == 6) {
@@ -634,7 +636,7 @@ public class Semantic {
 
                 for (int x = 0; x < tokens.size(); x++) {
                     if (tokens.get(x).type == 36) {
-                        LexicalToken chamadaFuncao = tokens.get(x + 1);
+                        Token chamadaFuncao = tokens.get(x + 1);
                         if (chamadaFuncao.lexeme.equals(declaracaofuncao.lexeme)) {
                             int y;
                             for (y = x + 1; y < tokens.size(); y++) {
@@ -676,12 +678,12 @@ public class Semantic {
      *
      * @return
      */
-    private LexicalToken checkArgumentsType() {
+    private Token checkArgumentsType() {
         for (int i = 0; i < escopos.size(); i++) {
             Escopo escopo = escopos.get(i);
 
             for (int j = 0; j < tokens.size(); j++) {//apenas identificadores
-                LexicalToken declaracaofuncao = tokens.get(j);
+                Token declaracaofuncao = tokens.get(j);
                 if (declaracaofuncao.type != 1 || !declaracaofuncao.scope.equals(escopo.label)) {
                     continue;
                 }
@@ -698,7 +700,7 @@ public class Semantic {
                     }
                 }
 
-                ArrayList<LexicalToken> tiposDeclaracao = new ArrayList<>();
+                ArrayList<Token> tiposDeclaracao = new ArrayList<>();
                 for (int w = j + 1; w < m; w++) {
                     if (tokens.get(w).lexeme.contains("int") || tokens.get(w).lexeme.contains("boolean")) {
                         tiposDeclaracao.add(tokens.get(w));
@@ -711,7 +713,7 @@ public class Semantic {
 
                 for (int x = 0; x < tokens.size(); x++) {
                     if (tokens.get(x).type == 36) {
-                        LexicalToken chamadaFuncao = tokens.get(x + 1);
+                        Token chamadaFuncao = tokens.get(x + 1);
                         if (chamadaFuncao.lexeme.equals(declaracaofuncao.lexeme)) {
 //aqui2
                             funcoesChamada.add(chamadaFuncao);
@@ -726,9 +728,9 @@ public class Semantic {
                                 }
                             }
 //aqui3
-                            ArrayList<LexicalToken> tiposChamada = new ArrayList<>();
+                            ArrayList<Token> tiposChamada = new ArrayList<>();
                             for (int w1 = x + 2; w1 < m1; w1++) {
-                                LexicalToken t = tokens.get(w1);
+                                Token t = tokens.get(w1);
                                 if (t.regra == null
                                         || t.lexeme.equals(",")
                                         || t.lexeme.equals("(")
@@ -765,12 +767,12 @@ public class Semantic {
      *
      * @return
      */
-    private LexicalToken checkMethodWasDefined() {//TODO 7
+    private Token checkMethodWasDefined() {//TODO 7
         for (int i = 0; i < tokens.size(); i++) {
             boolean flag = true;
             if (tokens.get(i).type == 36) {
                 //tokens.get(i).print();
-                LexicalToken t = tokens.get(i + 1);
+                Token t = tokens.get(i + 1);
                 for (int j = 0; j < funcoesDeclaracao.size(); j++) {
                     //System.out.println(funcoes.get(j).lexeme);
                     if (t.lexeme.equals(funcoesDeclaracao.get(j).lexeme)) {
@@ -792,15 +794,15 @@ public class Semantic {
      *
      * @return
      */
-    private LexicalToken checkReturnFromMethodAndVariableAssigned() {
+    private Token checkReturnFromMethodAndVariableAssigned() {
         for (int i = 0; i < tokens.size(); i++) {
             //boolean flag = true;
             if (tokens.get(i).type == 36) {
                 if (tokens.get(i - 1).type != 10) {//chamar método sem atribuir a variável
                     continue;
                 }
-                LexicalToken identificadorFuncao = tokens.get(i + 1);
-                LexicalToken identificadorAtribuido = tokens.get(i - 2);
+                Token identificadorFuncao = tokens.get(i + 1);
+                Token identificadorAtribuido = tokens.get(i - 2);
 
                 if (!identificadorFuncao.regra.equals(identificadorAtribuido.regra)) {
                     return identificadorFuncao;
@@ -817,7 +819,7 @@ public class Semantic {
      *
      * @return
      */
-    private LexicalToken checkExpressionLogic() {
+    private Token checkExpressionLogic() {
         /*if (true) {
             return null;
         }*/
@@ -826,9 +828,9 @@ public class Semantic {
          */
         for (int i = 0; i < tokens.size(); i++) {
             if (tokens.get(i).type == 21 || tokens.get(i).type == 23) {
-                LexicalToken lexemaIF = tokens.get(i);
+                Token lexemaIF = tokens.get(i);
                 //lexemaIF.print();
-                LexicalToken fechaParentese = null;
+                Token fechaParentese = null;
                 int j;
                 for (j = i; j < tokens.size(); j++) {
                     if (tokens.get(j).type == 6) {// { 6, ; 8
@@ -838,16 +840,16 @@ public class Semantic {
                 }
 
                 if (j - i == 4) {//só identificador
-                    LexicalToken ident_or_truefalse = tokens.get(i + 2);
+                    Token ident_or_truefalse = tokens.get(i + 2);
                     if (!ident_or_truefalse.regra.contains("boolean")) {
                         return ident_or_truefalse;
                     }
                 } else {
 
                     for (int x = i; x < j; x++) {
-                        LexicalToken atual = tokens.get(x);
-                        LexicalToken operador = tokens.get(x + 1);
-                        LexicalToken proximo = tokens.get(x + 2);
+                        Token atual = tokens.get(x);
+                        Token operador = tokens.get(x + 1);
+                        Token proximo = tokens.get(x + 2);
                         //averiguar todos os itens "i" até o "j"
 
                         if (atual.type == 1) {//identificador
@@ -909,8 +911,8 @@ public class Semantic {
          */
         for (int i = 0; i < tokens.size(); i++) {//caso ATRIBUIÇÃO 10
             if (tokens.get(i).type == 10 && tokens.get(i).regra != null && tokens.get(i).regra.equals("atrib_exp_logic")) {
-                LexicalToken lexemaATRIBUICAO = tokens.get(i);
-                LexicalToken pontoVirgula = null;
+                Token lexemaATRIBUICAO = tokens.get(i);
+                Token pontoVirgula = null;
                 int j;
                 for (j = i; j < tokens.size(); j++) {
                     if (tokens.get(j).type == 8) {// { 6, ; 8
@@ -920,9 +922,9 @@ public class Semantic {
                 }
 
                 for (int x = i; x < j; x++) {
-                    LexicalToken atual = tokens.get(x);
-                    LexicalToken operador = tokens.get(x + 1);
-                    LexicalToken proximo = tokens.get(x + 2);
+                    Token atual = tokens.get(x);
+                    Token operador = tokens.get(x + 1);
+                    Token proximo = tokens.get(x + 2);
                     //averiguar todos os itens "i" até o "j"
 
                     if (atual.type == 1) {//identificador
@@ -1003,7 +1005,7 @@ public class Semantic {
      *
      * @return
      */
-    private LexicalToken checkIfFunctionHasReturn() {
+    private Token checkIfFunctionHasReturn() {
         //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         for (int i = 0; i < tokens.size(); i++) {
 
@@ -1011,9 +1013,9 @@ public class Semantic {
                 continue;
             }
 
-            LexicalToken func = tokens.get(i);
-            LexicalToken tipo_retorno = tokens.get(i + 1);
-            LexicalToken identificador = tokens.get(i + 2);
+            Token func = tokens.get(i);
+            Token tipo_retorno = tokens.get(i + 1);
+            Token identificador = tokens.get(i + 2);
 
             if (tipo_retorno.regra.contains("void")) {
                 //continue;

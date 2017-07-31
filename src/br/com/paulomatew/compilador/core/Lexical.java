@@ -1,7 +1,7 @@
-package br.com.paulomatew.compilador.analyzer.lexical;
+package br.com.paulomatew.compilador.core;
 
 import br.com.paulomatew.compilador.entities.Escopo;
-import br.com.paulomatew.compilador.entities.LexicalToken;
+import br.com.paulomatew.compilador.entities.Token;
 import br.com.paulomatew.compilador.exceptions.LexicalException;
 import br.com.paulomatew.compilador.main.Compilador;
 import java.util.ArrayList;
@@ -16,7 +16,7 @@ import org.nocrala.tools.texttablefmt.Table;
 public class Lexical {
 
     private String sourceCode = null;
-    public ArrayList<LexicalToken> tokenArray = null;
+    public ArrayList<Token> tokenArray = null;
     private ArrayList<String> escopos = null;
     //public Escopo arvoreEscopos = null;
 
@@ -46,7 +46,7 @@ public class Lexical {
         t.addCell("ESCOPO");
         t.addCell("REGRA");
         for (int i = 0; i < tokenArray.size(); i++) {
-            LexicalToken in = tokenArray.get(i);
+            Token in = tokenArray.get(i);
             t.addCell("" + (i + 1));
             t.addCell(Compilador.getToken(in.type));
             t.addCell(in.lexeme + "");
@@ -148,8 +148,8 @@ public class Lexical {
         return g;
     }
 
-    private ArrayList<LexicalToken> parser() throws LexicalException {
-        ArrayList<LexicalToken> arr = new ArrayList<>();
+    private ArrayList<Token> parser() throws LexicalException {
+        ArrayList<Token> arr = new ArrayList<>();
 
         String[] sourcePorLinha = sourceCode.split("\n");
 
@@ -182,7 +182,7 @@ public class Lexical {
                 for (int i = 0; i < Compilador.RESERVED_WORDS_AND_OPERATORS.size(); i++) {
                     if (s.equals(Compilador.RESERVED_WORDS_AND_OPERATORS.get(i))) {
 
-                        LexicalToken l = new LexicalToken();
+                        Token l = new Token();
                         l.type = i + 3;//correção de indice para ocultar os 3 primeiros
                         l.lexeme = s;
                         l.line = j1 + 1;
@@ -229,7 +229,7 @@ public class Lexical {
                 }
 
                 if (Character.isUpperCase(s.charAt(0))) {
-                    LexicalToken l = new LexicalToken();
+                    Token l = new Token();
                     l.type = 2;// "token desconhecido";
                     l.lexeme = s;
                     l.line = j1 + 1;
@@ -242,7 +242,7 @@ public class Lexical {
                 }
 
                 if (Character.isLowerCase(s.charAt(0))) {
-                    LexicalToken l = new LexicalToken();
+                    Token l = new Token();
                     l.type = 1;//"identificador";
                     l.lexeme = s;
                     l.line = j1 + 1;
@@ -260,7 +260,7 @@ public class Lexical {
                     /*TODO: Começa com digito mas tem LETRA (fazer forma de reconhecer
                     com notação 1.5E12) */
                     if (s.matches(".*[a-zA-Z]+.*")) {
-                        LexicalToken l = new LexicalToken();
+                        Token l = new Token();
                         l.type = 2;//"token desconhecido";
                         l.lexeme = s;
                         l.line = j1 + 1;
@@ -273,7 +273,7 @@ public class Lexical {
                         //continue;
                     } else {
 
-                        LexicalToken l = new LexicalToken();
+                        Token l = new Token();
                         l.type = 0;//"constante";
                         l.lexeme = s;
                         l.line = j1 + 1;
