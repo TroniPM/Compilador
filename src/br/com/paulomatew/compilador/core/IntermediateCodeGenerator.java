@@ -15,6 +15,7 @@ public class IntermediateCodeGenerator {
     private ArrayList<Token> tokens = null;
     private ArrayList<IntermediateCodeObject> lista = null;
     private ArrayList<Integer> labels = null;
+    private String prefixo_variavel = "VAR_";
 
     //operação arit: PRIORIDADE * / + -
     //operação logi: PRIORIDADE && ||
@@ -134,7 +135,6 @@ public class IntermediateCodeGenerator {
                 for (Token in : expressao) {
                     expression += in.lexeme + " ";
                 }
-
                 //System.out.println(">> " + expressao.size() + " " + !expression.contains("*") + " " + !expression.contains("/") + "\t" + expression);
                 if (!expression.contains("*") && !expression.contains("/") && !expression.contains("+") && expressao.get(j).type == 12) {// -
                     Token anterior = expressao.get(j - 1), depois = expressao.get(j + 1), operacao = expressao.get(j);
@@ -142,7 +142,7 @@ public class IntermediateCodeGenerator {
                     Token result = new Token();
 
                     int label = (labels.get(labels.size() - 1) + 1);
-                    result.lexeme = "A_" + label;// System.nanoTime();
+                    result.lexeme = prefixo_variavel + label;// System.nanoTime();
                     labels.add(label);
                     result.regra = anterior.regra;
                     result.type = anterior.type;
@@ -165,7 +165,7 @@ public class IntermediateCodeGenerator {
 
                     Token result = new Token();
                     int label = (labels.get(labels.size() - 1) + 1);
-                    result.lexeme = "A_" + label;// System.nanoTime();
+                    result.lexeme = prefixo_variavel + label;// System.nanoTime();
                     labels.add(label);
                     result.regra = anterior.regra;
                     result.type = anterior.type;
@@ -188,7 +188,7 @@ public class IntermediateCodeGenerator {
 
                     Token result = new Token();
                     int label = (labels.get(labels.size() - 1) + 1);
-                    result.lexeme = "A_" + label;// System.nanoTime();
+                    result.lexeme = prefixo_variavel + label;// System.nanoTime();
                     labels.add(label);
                     result.regra = anterior.regra;
                     result.type = anterior.type;
@@ -211,7 +211,7 @@ public class IntermediateCodeGenerator {
 
                     Token result = new Token();
                     int label = (labels.get(labels.size() - 1) + 1);
-                    result.lexeme = "A_" + label;// System.nanoTime();
+                    result.lexeme = prefixo_variavel + label;// System.nanoTime();
                     labels.add(label);
                     result.regra = anterior.regra;
                     result.type = anterior.type;
