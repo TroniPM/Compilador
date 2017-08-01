@@ -14,8 +14,24 @@ public class IntermediateCodeGenerator {
 
     public String init(ArrayList<Token> tokens) {
         this.tokens = tokens;
-        for (int i = 0; i < tokens.size(); i++) {
-            if (tokens.get(i).type == 21) {//if
+        int i;
+        for (i = 0; i < tokens.size(); i++) {
+            Token atual = tokens.get(i);
+            if (atual.type == 25 || atual.type == 26) {
+                //Se for declaração de variável,  ignoro
+                i += 2;
+                continue;
+            } else if (atual.type == 21) {//if
+                /*Token abreParentese = null;
+                int j;
+                for (j = i; j < tokens.size(); j++) {
+                    if (tokens.get(j).type == 6) {// { 6, ; 8
+                        abreParentese = tokens.get(j);
+                        break;
+                    }
+                }
+
+                if_(atual, i, abreParentese, j);*/
             } else if (tokens.get(i).type == 23) {//while
 
             } else if (tokens.get(i).type == 24) {//function
@@ -26,7 +42,7 @@ public class IntermediateCodeGenerator {
         return code;
     }
 
-    private String if_(Token inicio, Token abreParentese) {
+    private String if_(Token inicio, int inicioIndex, Token abreParentese, int abreParenteseIndex) {
 
         return null;
     }
