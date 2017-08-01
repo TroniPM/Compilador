@@ -5,6 +5,7 @@ import br.com.paulomatew.compilador.core.Lexical;
 import br.com.paulomatew.compilador.core.Semantic;
 import br.com.paulomatew.compilador.core.Sintatic;
 import br.com.paulomatew.compilador.entities.Token;
+import br.com.paulomatew.compilador.exceptions.IntermediateCodeGeneratorException;
 import br.com.paulomatew.compilador.exceptions.LexicalException;
 import br.com.paulomatew.compilador.exceptions.SemanticException;
 import br.com.paulomatew.compilador.exceptions.SintaticException;
@@ -142,7 +143,11 @@ public class Compilador {
                 }
 
                 if (!erro) {
-                    codigoIntermediario = generator.init(analizadorLexico.tokenArray);
+                    try {
+                        codigoIntermediario = generator.init(analizadorLexico.tokenArray);
+                    } catch (IntermediateCodeGeneratorException ex) {
+                        Logger.getLogger(Compilador.class.getName()).log(Level.SEVERE, null, ex);
+                    }
 
                     if (!errorConsole.isEmpty()) {
                         errorConsole += "\n";

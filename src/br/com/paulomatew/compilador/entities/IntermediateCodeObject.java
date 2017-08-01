@@ -6,18 +6,24 @@ package br.com.paulomatew.compilador.entities;
  */
 public class IntermediateCodeObject {
 
-    public int label = 0;
+    //public int label = 0;
     public String txt = "";
 
+    public String parte1 = "";
+    public String operacao1 = "";
+    public String parte2 = "";
+    public String operacao2 = "";
+    public String parte3 = "";
+    public String operacao3 = "";
+
     public String getData() {
-        return String.valueOf(label) + ": " + txt;
+        return (parte1 + " " + operacao1 + " " + parte2 + " " + operacao2 + " " + parte3 + " " + operacao3);
     }
 
     public void print() {
-        System.out.println(String.valueOf(label) + ": " + txt);
+        System.out.println(parte1 + " " + operacao1 + " " + parte2 + " " + operacao2 + " " + parte3 + " " + operacao3);
     }
 
     public IntermediateCodeObject() {
     }
-
 }
