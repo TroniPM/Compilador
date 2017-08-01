@@ -146,7 +146,15 @@ public class Compilador {
                     try {
                         codigoIntermediario = generator.init(analizadorLexico.tokenArray);
                     } catch (IntermediateCodeGeneratorException ex) {
-                        Logger.getLogger(Compilador.class.getName()).log(Level.SEVERE, null, ex);
+                        Logger.getLogger(Sintatic.class.getName()).log(Level.SEVERE, null, ex);
+
+                        StringWriter errors = new StringWriter();
+                        ex.printStackTrace(new PrintWriter(errors));
+
+                        errorConsole += "\n" + (errors.toString().split("\n")[0]).trim();
+                        //errorConsole = errorConsole.trim();
+
+                        erro = true;
                     }
 
                     if (!errorConsole.isEmpty()) {

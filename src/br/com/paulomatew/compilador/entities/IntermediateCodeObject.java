@@ -17,11 +17,11 @@ public class IntermediateCodeObject {
     public String operacao3 = "";
 
     public String getData() {
-        return (parte1 + " " + operacao1 + " " + parte2 + " " + operacao2 + " " + parte3 + " " + operacao3);
+        return (txt + "\t" + parte1 + " " + operacao1 + " " + parte2 + " " + operacao2 + " " + parte3 + " " + operacao3);
     }
 
     public void print() {
-        System.out.println(parte1 + " " + operacao1 + " " + parte2 + " " + operacao2 + " " + parte3 + " " + operacao3);
+        System.out.println(txt + "\t" + parte1 + " " + operacao1 + " " + parte2 + " " + operacao2 + " " + parte3 + " " + operacao3);
     }
 
     public IntermediateCodeObject() {

@@ -13,6 +13,22 @@ public class Token extends Objeto {
     public int line = 0;
     public int position = 0;
     public String scope = null;
+    public String other = null;
+
+    @Override
+    public Token clone() {
+        Token t = new Token();
+        t.type = type;
+        t.lexeme = lexeme;
+        t.description = description;
+        t.regra = regra;
+        t.line = line;
+        t.position = position;
+        t.scope = scope;
+        t.other = other;
+
+        return t;
+    }
 
     public Token() {
     }
@@ -26,6 +42,13 @@ public class Token extends Objeto {
         this.type = type;
         this.lexeme = lexeme;
         this.description = description;
+    }
+
+    public Token(int type, String lexeme, String description, String other) {
+        this.type = type;
+        this.lexeme = lexeme;
+        this.description = description;
+        this.other = other;
     }
 
     public void print() {

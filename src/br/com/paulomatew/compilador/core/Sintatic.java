@@ -16,6 +16,7 @@ public class Sintatic {
     private ArrayList<Objeto> stack = null;
     public String stackState = null;
     private int iteracao = 1;
+    private ArrayList<Integer> labels = null;
 
     public void init(ArrayList<Token> arr) throws SintaticException {
         /*if (arr == null || arr.isEmpty()) {
@@ -63,6 +64,8 @@ public class Sintatic {
 
     private void parserNew() throws SintaticException {
         stack = new ArrayList<>();
+        labels = new ArrayList<>();
+        labels.add(0);
 
         stackState = "";
         iteracao = 1;
@@ -89,6 +92,11 @@ public class Sintatic {
                             + " (expected: '" + o1.description + "').");
                 } else {
                     //throw new SintaticException("TOKEN DIFERENTE. COMPILADOR NÃO RECONHECE ESSA LINGUAGEM");
+                    //System.out.println(o1.other);
+                    if (o1.other != null) {
+                        //System.out.println(o1.other);
+                        tokensLexical.get(i).other = o1.other;
+                    }
                 }
 
             } else if (tokenDaPilha instanceof RegraProducao) {
@@ -241,11 +249,15 @@ public class Sintatic {
                             addToStack(new RegraProducao("oper_arit"));
                             addToStack(new Token(0, "<numero>", "constante"));
                         } else if (tokensLexical.get(i).type == 4) {//(
-                            tokensLexical.get(i).regra = "exp_arit";
+                            int label = (labels.get(labels.size() - 1) + 1);
+                            //, String.valueOf(label)
+                            labels.add(label);
+
+                            //tokensLexical.get(i).regra = ;
                             addToStack(new RegraProducao("oper_arit"));
-                            addToStack(new Token(5, ")", ")"));
+                            addToStack(new Token(5, ")", ")", "P" + String.valueOf(label)));
                             addToStack(new RegraProducao("exp_arit"));
-                            addToStack(new Token(4, "(", "("));
+                            addToStack(new Token(4, "(", "(", "P" + String.valueOf(label)));
                         }
                     } else if (o1.dontPrintException) {
                         System.out.println("exp_arit >> o1.dontPrintException");
@@ -296,12 +308,15 @@ public class Sintatic {
                             addToStack(new RegraProducao("oper_logic"));
                             addToStack(new Token(26, "false", "false"));
                         } else if (tokensLexical.get(i).type == 4) {//(
+                            int label = (labels.get(labels.size() - 1) + 1);
+                            //, String.valueOf(label)
+                            labels.add(label);
                             tokensLexical.get(i).regra = "exp_logic";
                             addToStack(new RegraProducao("exp_logic_cont"));
                             addToStack(new RegraProducao("oper_logic"));
-                            addToStack(new Token(5, ")", ")"));
+                            addToStack(new Token(5, ")", ")", "P" + String.valueOf(label)));
                             addToStack(new RegraProducao("exp_logic"));
-                            addToStack(new Token(4, "(", "("));
+                            addToStack(new Token(4, "(", "(", "P" + String.valueOf(label)));
                         } else {
                             //Evitar que seja passada uma condição vazia.
                             throw new SintaticException("Unexpected token '" + (tokensLexical.get(i).lexeme)
