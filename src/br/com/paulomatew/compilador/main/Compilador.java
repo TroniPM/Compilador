@@ -144,7 +144,7 @@ public class Compilador {
 
                 if (!erro) {
                     try {
-                        codigoIntermediario = generator.init(analizadorLexico.tokenArray);
+                        codigoIntermediario = IntermediateCodeGenerator.gerarCode(generator.init(analizadorLexico.tokenArray));
                     } catch (IntermediateCodeGeneratorException ex) {
                         Logger.getLogger(Sintatic.class.getName()).log(Level.SEVERE, null, ex);
 

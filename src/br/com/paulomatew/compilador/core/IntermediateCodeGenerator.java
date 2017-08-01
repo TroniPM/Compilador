@@ -12,24 +12,27 @@ import java.util.ArrayList;
 public class IntermediateCodeGenerator {
 
     private String code = "";
-    private ArrayList<Token> tokens = null;
-    private ArrayList<IntermediateCodeObject> lista = null;
+    //private ArrayList<Token> tokens = null;
+    //private ArrayList<IntermediateCodeObject> lista = null;
     private ArrayList<Integer> labels = null;
     private String prefixo_variavel = "VAR_";
 
+    public IntermediateCodeGenerator() {
+        labels = new ArrayList<>();
+        labels.add(0);
+    }
+
     //operação arit: PRIORIDADE * / + -
     //operação logi: PRIORIDADE && ||
-    public String init(ArrayList<Token> tokens1) throws IntermediateCodeGeneratorException {
-        this.tokens = new ArrayList<>();
+    public ArrayList<IntermediateCodeObject> init(ArrayList<Token> tokens1) throws IntermediateCodeGeneratorException {
+        ArrayList<Token> tokens = new ArrayList<>();
 
         for (Token in : tokens1) {
-            this.tokens.add(in.clone());
+            tokens.add(in.clone());
         }
         //this.tokens = tokens;
 
-        labels = new ArrayList<>();
-        labels.add(0);
-        lista = new ArrayList<>();
+        ArrayList<IntermediateCodeObject> lista = new ArrayList<>();
 
         int i;
         for (i = 0; i < tokens.size(); i++) {
@@ -53,7 +56,7 @@ public class IntermediateCodeGenerator {
                     //EXP_ARIT
                     int j;
                     for (j = i - 1; j < tokens.size(); j++) {
-                        if (tokens.get(j).type == 8) {
+                        if (tokens.get(j).type == 8) {//ponto e vírgula
                             break;
                         }
                     }
@@ -71,7 +74,7 @@ public class IntermediateCodeGenerator {
             }
         }
         //return
-        return gerarCode();
+        return lista;
     }
 
     private ArrayList<IntermediateCodeObject> exp_arit_atrib(ArrayList<Token> tokens, int inicioInt, int fimInt) throws IntermediateCodeGeneratorException {
@@ -237,7 +240,7 @@ public class IntermediateCodeGenerator {
         return null;
     }
 
-    public String gerarCode() {
+    public static String gerarCode(ArrayList<IntermediateCodeObject> lista) {
         String a = "";
         for (IntermediateCodeObject in : lista) {
             a += in.getData() + "\n";
