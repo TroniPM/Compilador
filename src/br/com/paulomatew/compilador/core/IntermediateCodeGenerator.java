@@ -68,6 +68,11 @@ public class IntermediateCodeGenerator {
                 } else if (tokens.get(i + 1).regra.contains("call_func")) {
                     //CALL_FUNCTION
                     /*TODO fazer*/
+                    int j;
+                    for (j = i - 1; j < tokens.size(); j++) {
+
+                    }
+                    lista.addAll(chamar_func_(tokens, i - 1, j));
                 } else {
                     throw new IntermediateCodeGeneratorException("Identificador depois do = não possui 'exp_logic, 'exp_arit' ou 'call_func'");
                 }
@@ -224,19 +229,59 @@ public class IntermediateCodeGenerator {
 
     }
 
-    private ArrayList<IntermediateCodeObject> if_(Token inicio, int inicioIndex, Token fim, int fimIndex) {
+    private ArrayList<IntermediateCodeObject> if_(ArrayList<Token> tokens, int inicioInt, int fimInt) {
         return null;
     }
 
-    private String while_(Token inicio, Token abreParentese) {
+    private ArrayList<IntermediateCodeObject> while_(ArrayList<Token> tokens, int inicioInt, int fimInt) {
         return null;
     }
 
-    private String function_(Token inicio, Token abreParentese) {
+    private ArrayList<IntermediateCodeObject> chamar_func_(ArrayList<Token> tokens, int inicioInt, int fimInt) {
+        //i = call IDENTIFICADOR (param1,...paramM){
+        /*
+        CASO:
+        I = call f();
+            7
+        I = call f(a);
+            8
+        I = call f(a, b, c);
+            N
+        
+        DEVE TER SAIDA:
+        param a
+        param b
+        param c
+        _t1 := call f,3
+        
+        
+         */
+        ArrayList<Token> exp_array = new ArrayList<>();
+        ArrayList<IntermediateCodeObject> array = new ArrayList<>();
+        String exp_str = "";
+        for (int j = inicioInt; j <= fimInt; j++) {
+            exp_str += tokens.get(j).lexeme + " ";
+            exp_array.add(tokens.get(j).clone());
+        }
+
+        int qtd = exp_str.length() - exp_str.replace(",", "").length();
+        if (qtd == 0) {
+            if (exp_array.size() == 7) {
+                qtd = 0;
+            } else if (exp_array.size() == 8) {
+                qtd = 1;
+            }
+
+        }
+
+        return array;
+    }
+
+    private ArrayList<IntermediateCodeObject> declarar_func_(ArrayList<Token> tokens, int inicioInt, int fimInt) {
         return null;
     }
 
-    private String exp_logic_(Token inicio, Token pontoVirgula) {
+    private ArrayList<IntermediateCodeObject> exp_logic_(ArrayList<Token> tokens, int inicioInt, int fimInt) {
         return null;
     }
 
