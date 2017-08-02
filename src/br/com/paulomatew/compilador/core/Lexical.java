@@ -200,6 +200,7 @@ public class Lexical {
                             for (int x = 0; x < escoposArvore.size(); x++) {
                                 if (escoposArvore.get(x).label.equals(escopoAtual)) {
                                     e.pai = escoposArvore.get(x);
+                                    escoposArvore.get(x).filhos.add(e);
                                     break;
                                 }
                             }

@@ -1,5 +1,6 @@
 package br.com.paulomatew.compilador.gui;
 
+import br.com.paulomatew.compilador.entities.Escopo;
 import static br.com.paulomatew.compilador.entities.OSValidator.isUnix;
 import br.com.paulomatew.compilador.main.Compilador;
 import com.sun.glass.events.KeyEvent;
@@ -226,6 +227,7 @@ public class JFramePrincipal extends javax.swing.JFrame {
         jButton4 = new javax.swing.JButton();
         jCircle = new javax.swing.JLabel();
         jButton5 = new javax.swing.JButton();
+        jButton6 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setPreferredSize(new java.awt.Dimension(860, 620));
@@ -311,6 +313,19 @@ public class JFramePrincipal extends javax.swing.JFrame {
             }
         });
 
+        jButton6.setText("Árvore de Escopos (F6)");
+        jButton6.setEnabled(false);
+        jButton6.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton6ActionPerformed(evt);
+            }
+        });
+        jButton6.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                jButton6KeyPressed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -325,6 +340,8 @@ public class JFramePrincipal extends javax.swing.JFrame {
                         .addComponent(jButton4)
                         .addGap(18, 18, 18)
                         .addComponent(jButton5)
+                        .addGap(18, 18, 18)
+                        .addComponent(jButton6)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jButton3))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
@@ -344,7 +361,8 @@ public class JFramePrincipal extends javax.swing.JFrame {
                     .addComponent(jButton2)
                     .addComponent(jButton3)
                     .addComponent(jButton4)
-                    .addComponent(jButton5))
+                    .addComponent(jButton5)
+                    .addComponent(jButton6))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 15, Short.MAX_VALUE)
                 .addComponent(jCircle, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -454,6 +472,33 @@ public class JFramePrincipal extends javax.swing.JFrame {
         atalhos(evt);
     }//GEN-LAST:event_jButton1KeyPressed
 
+    private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
+        if (compiler.analizadorLexico.escoposArvore == null) {
+            JOptionPane.showMessageDialog(this, "Nenhum código fonte compilado.", "Error", JOptionPane.ERROR_MESSAGE);
+        } else {
+            String a = "";
+            for (Escopo in : compiler.analizadorLexico.escoposArvore) {
+                a += in.getData();
+                //in.print();
+            }
+
+            JTextArea textArea = new JTextArea(a);
+
+            JScrollPane scrollPane = new JScrollPane(textArea);
+
+            textArea.setLineWrap(true);
+            textArea.setWrapStyleWord(true);
+            scrollPane.setPreferredSize(new Dimension(700, 500));
+            textArea.setEditable(false);
+            JOptionPane.showMessageDialog(null, scrollPane, "Árvore de Escopos",
+                    JOptionPane.INFORMATION_MESSAGE);
+        }
+    }//GEN-LAST:event_jButton6ActionPerformed
+
+    private void jButton6KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jButton6KeyPressed
+        atalhos(evt);
+    }//GEN-LAST:event_jButton6KeyPressed
+
     private void atalhos(java.awt.event.KeyEvent evt) {
         if (evt.getKeyCode() == java.awt.event.KeyEvent.VK_F5) {
             compilar();
@@ -465,6 +510,8 @@ public class JFramePrincipal extends javax.swing.JFrame {
             jButton4ActionPerformed(null);
         } else if (evt.getKeyCode() == java.awt.event.KeyEvent.VK_F1) {
             jButton2ActionPerformed(null);
+        } else if (evt.getKeyCode() == java.awt.event.KeyEvent.VK_F6) {
+            jButton6ActionPerformed(null);
         } else if (evt.getKeyCode() == java.awt.event.KeyEvent.VK_ESCAPE) {
             System.exit(0);
         }
@@ -474,6 +521,7 @@ public class JFramePrincipal extends javax.swing.JFrame {
         jButton2.setEnabled(true);
         jButton4.setEnabled(true);
         jButton5.setEnabled(true);
+        jButton6.setEnabled(true);
         //jProgressBar1.setValue(0);
         compiler.init(jTextPane1.getText());
         //jProgressBar1.setValue(100);
@@ -529,6 +577,7 @@ public class JFramePrincipal extends javax.swing.JFrame {
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
     private javax.swing.JButton jButton5;
+    private javax.swing.JButton jButton6;
     private javax.swing.JLabel jCircle;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextPane jTextPane1;

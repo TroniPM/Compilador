@@ -4,6 +4,7 @@ import br.com.paulomatew.compilador.core.IntermediateCodeGenerator;
 import br.com.paulomatew.compilador.core.Lexical;
 import br.com.paulomatew.compilador.core.Semantic;
 import br.com.paulomatew.compilador.core.Sintatic;
+import br.com.paulomatew.compilador.entities.Escopo;
 import br.com.paulomatew.compilador.entities.Token;
 import br.com.paulomatew.compilador.exceptions.IntermediateCodeGeneratorException;
 import br.com.paulomatew.compilador.exceptions.LexicalException;
@@ -130,6 +131,11 @@ public class Compilador {
             if (!erro) {
                 try {
                     analizadorSemantico.init(analizadorLexico.tokenArray, analizadorLexico.escoposArvore);
+                    
+                for (Escopo in : analizadorLexico.escoposArvore) {
+                    in.getData();
+                    in.print();
+                }
                 } catch (SemanticException ex) {
                     Logger.getLogger(Sintatic.class.getName()).log(Level.SEVERE, null, ex);
 
