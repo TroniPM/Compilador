@@ -131,11 +131,11 @@ public class Compilador {
             if (!erro) {
                 try {
                     analizadorSemantico.init(analizadorLexico.tokenArray, analizadorLexico.escoposArvore);
-                    
-                for (Escopo in : analizadorLexico.escoposArvore) {
+
+                    /*for (Escopo in : analizadorLexico.escoposArvore) {
                     in.getData();
                     in.print();
-                }
+                }*/
                 } catch (SemanticException ex) {
                     Logger.getLogger(Sintatic.class.getName()).log(Level.SEVERE, null, ex);
 

@@ -20,7 +20,7 @@ public class Lexical {
     private ArrayList<String> escopos = null;
     //public Escopo arvoreEscopos = null;
 
-    public ArrayList<Escopo> escoposArvore = null;
+    public static ArrayList<Escopo> escoposArvore = null;
 
     public void init(String sourceCode) throws LexicalException {
         /*if (sourceCode == null || sourceCode.isEmpty()) {
