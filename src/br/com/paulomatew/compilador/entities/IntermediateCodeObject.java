@@ -15,13 +15,15 @@ public class IntermediateCodeObject {
     public String operacao2 = "";
     public String parte3 = "";
     public String operacao3 = "";
+    public String parte4 = "";
+    public String operacao4 = "";
 
     public String getData() {
-        return (txt + "\t" + parte1 + " " + operacao1 + " " + parte2 + " " + operacao2 + " " + parte3 + " " + operacao3);
+        return (txt + "\t" + parte1 + " " + operacao1 + " " + parte2 + " " + operacao2 + " " + parte3 + " " + operacao3 + " " + parte4 + " " + operacao4);
     }
 
     public void print() {
-        System.out.println(txt + "\t" + parte1 + " " + operacao1 + " " + parte2 + " " + operacao2 + " " + parte3 + " " + operacao3);
+        System.out.println(txt + "\t" + parte1 + " " + operacao1 + " " + parte2 + " " + operacao2 + " " + parte3 + " " + operacao3 + " " + parte4 + " " + operacao4);
     }
 
     public IntermediateCodeObject() {

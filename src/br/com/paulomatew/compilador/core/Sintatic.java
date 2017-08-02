@@ -16,7 +16,8 @@ public class Sintatic {
     private ArrayList<Objeto> stack = null;
     public String stackState = null;
     private int iteracao = 1;
-    private ArrayList<Integer> labels = null;
+    private ArrayList<Integer> labels_parentese = null;
+    private ArrayList<Integer> labels_chaves = null;
 
     public void init(ArrayList<Token> arr) throws SintaticException {
         /*if (arr == null || arr.isEmpty()) {
@@ -64,8 +65,10 @@ public class Sintatic {
 
     private void parserNew() throws SintaticException {
         stack = new ArrayList<>();
-        labels = new ArrayList<>();
-        labels.add(0);
+        labels_parentese = new ArrayList<>();
+        labels_parentese.add(0);
+        labels_chaves = new ArrayList<>();
+        labels_chaves.add(0);
 
         stackState = "";
         iteracao = 1;
@@ -107,12 +110,20 @@ public class Sintatic {
                 if (o1.method.equals("programa")) {
                     //throw new SintaticException("CHAMOU PROGRAMA. NÃO DEVERIA");
                     if (programa(tokensLexical.get(i))) {
+                        int label = (labels_chaves.get(labels_chaves.size() - 1) + 1);
+                        //, "C" + String.valueOf(label)
+                        labels_chaves.add(label);
                         addToStack(new RegraProducao("declarar_func"));
-                        addToStack(new Token(7, "}", "}"));
+                        addToStack(new Token(7, "}", "}", "C" + String.valueOf(label)));
                         addToStack(new RegraProducao("escopo"));
-                        addToStack(new Token(6, "{", "{"));
-                        addToStack(new Token(5, ")", ")"));
-                        addToStack(new Token(4, "(", "("));
+                        addToStack(new Token(6, "{", "{", "C" + String.valueOf(label)));
+
+                        label = (labels_parentese.get(labels_parentese.size() - 1) + 1);
+                        //, "P" + String.valueOf(label)
+                        labels_parentese.add(label);
+
+                        addToStack(new Token(5, ")", ")", "P" + String.valueOf(label)));
+                        addToStack(new Token(4, "(", "(", "P" + String.valueOf(label)));
                         addToStack(new Token(3, "main", "main"));
 
                         //i++;
@@ -146,30 +157,49 @@ public class Sintatic {
 
                             //throw new SintaticException("FAZER REGRAS DE <atrib>");
                         } else if (tokensLexical.get(i).type == 27) {//Print
+                            int label = (labels_parentese.get(labels_parentese.size() - 1) + 1);
+                            //, "P" + String.valueOf(label)
+                            labels_parentese.add(label);
                             addToStack(new RegraProducao("escopo"));
                             addToStack(new Token(8, ";", ";"));
-                            addToStack(new Token(5, ")", "false, true, identificador, constante, )"));
+                            addToStack(new Token(5, ")", "false, true, identificador, constante, )", "P" + String.valueOf(label)));
                             addToStack(new RegraProducao("printar_sec"));
-                            addToStack(new Token(4, "(", "("));
+                            addToStack(new Token(4, "(", "(", "P" + String.valueOf(label)));
                             addToStack(new Token(27, "print", spe));
                         } else if (tokensLexical.get(i).type == 21) {//IF
+                            int label = (labels_chaves.get(labels_chaves.size() - 1) + 1);
+                            //, "C" + String.valueOf(label)
+                            labels_chaves.add(label);
                             addToStack(new RegraProducao("escopo"));
                             addToStack(new RegraProducao("bloco_else"));
-                            addToStack(new Token(7, "}", "}"));
+                            addToStack(new Token(7, "}", "}", "C" + String.valueOf(label)));
                             addToStack(new RegraProducao("escopo"));
-                            addToStack(new Token(6, "{", "{"));
-                            addToStack(new Token(5, ")", ")"));
+                            addToStack(new Token(6, "{", "{", "C" + String.valueOf(label)));
+
+                            label = (labels_parentese.get(labels_parentese.size() - 1) + 1);
+                            //, "P" + String.valueOf(label)
+                            labels_parentese.add(label);
+
+                            addToStack(new Token(5, ")", ")", "P" + String.valueOf(label)));
                             addToStack(new RegraProducao("exp_logic"));
-                            addToStack(new Token(4, "(", "("));
+                            addToStack(new Token(4, "(", "(", "P" + String.valueOf(label)));
                             addToStack(new Token(21, "if", spe));
                         } else if (tokensLexical.get(i).type == 23) {//WHILE
+                            int label = (labels_chaves.get(labels_chaves.size() - 1) + 1);
+                            //, "C" + String.valueOf(label)
+                            labels_chaves.add(label);
                             addToStack(new RegraProducao("escopo"));
-                            addToStack(new Token(7, "}", "}"));
+                            addToStack(new Token(7, "}", "}", "C" + String.valueOf(label)));
                             addToStack(new RegraProducao("escopo"));
-                            addToStack(new Token(6, "{", "{"));
-                            addToStack(new Token(5, ")", ")"));
+                            addToStack(new Token(6, "{", "{", "C" + String.valueOf(label)));
+
+                            label = (labels_parentese.get(labels_parentese.size() - 1) + 1);
+                            //, "P" + String.valueOf(label)
+                            labels_parentese.add(label);
+
+                            addToStack(new Token(5, ")", ")", "P" + String.valueOf(label)));
                             addToStack(new RegraProducao("exp_logic"));
-                            addToStack(new Token(4, "(", "("));
+                            addToStack(new Token(4, "(", "(", "P" + String.valueOf(label)));
                             addToStack(new Token(23, "while", spe));
                         } else if (tokensLexical.get(i).type == 36) {//CALL
                             addToStack(new RegraProducao("escopo"));
@@ -227,11 +257,15 @@ public class Sintatic {
                     }
                 } else if (o1.method.equals("chamar_func")) {
                     if (chamar_func(tokensLexical.get(i))) {
+                        int label = (labels_parentese.get(labels_parentese.size() - 1) + 1);
+                        //, "P" + String.valueOf(label)
+                        labels_parentese.add(label);
+
                         tokensLexical.get(i).regra = "call_func";
                         tokensLexical.get(i + 1).regra = "func_iden";
-                        addToStack(new Token(5, ")", ")"));
+                        addToStack(new Token(5, ")", ")", "P" + String.valueOf(label)));
                         addToStack(new RegraProducao("lista_arg"));
-                        addToStack(new Token(4, "(", "("));
+                        addToStack(new Token(4, "(", "(", "P" + String.valueOf(label)));
                         addToStack(new Token(1, "<identificador>", "identificador"));
                         addToStack(new Token(36, "call", "call"));
                     } else {
@@ -249,9 +283,9 @@ public class Sintatic {
                             addToStack(new RegraProducao("oper_arit"));
                             addToStack(new Token(0, "<numero>", "constante"));
                         } else if (tokensLexical.get(i).type == 4) {//(
-                            int label = (labels.get(labels.size() - 1) + 1);
-                            //, String.valueOf(label)
-                            labels.add(label);
+                            int label = (labels_parentese.get(labels_parentese.size() - 1) + 1);
+                            //, "C" + String.valueOf(label)
+                            labels_parentese.add(label);
 
                             //tokensLexical.get(i).regra = ;
                             addToStack(new RegraProducao("oper_arit"));
@@ -308,9 +342,9 @@ public class Sintatic {
                             addToStack(new RegraProducao("oper_logic"));
                             addToStack(new Token(26, "false", "false"));
                         } else if (tokensLexical.get(i).type == 4) {//(
-                            int label = (labels.get(labels.size() - 1) + 1);
+                            int label = (labels_parentese.get(labels_parentese.size() - 1) + 1);
                             //, String.valueOf(label)
-                            labels.add(label);
+                            labels_parentese.add(label);
                             tokensLexical.get(i).regra = "exp_logic";
                             addToStack(new RegraProducao("exp_logic_cont"));
                             addToStack(new RegraProducao("oper_logic"));
@@ -406,9 +440,12 @@ public class Sintatic {
                 } else if (o1.method.equals("bloco_else")) {
                     //PODE GERAR VAZIO
                     if (bloco_else(tokensLexical.get(i))) {
-                        addToStack(new Token(7, "}", "}"));
+                        int label = (labels_chaves.get(labels_chaves.size() - 1) + 1);
+                        //, "C" + String.valueOf(label)
+                        labels_chaves.add(label);
+                        addToStack(new Token(7, "}", "}", "C" + String.valueOf(label)));
                         addToStack(new RegraProducao("escopo"));
-                        addToStack(new Token(6, "{", "{"));
+                        addToStack(new Token(6, "{", "{", "C" + String.valueOf(label)));
                         addToStack(new Token(22, "else", "else"));
 
                     }
@@ -470,14 +507,23 @@ public class Sintatic {
                 } else if (o1.method.equals("declarar_func")) {
                     //PODE GERAR VAZIO
                     if (declarar_func(tokensLexical.get(i))) {
+                        int label = (labels_chaves.get(labels_chaves.size() - 1) + 1);
+                        //, "C" + String.valueOf(label)
+                        labels_chaves.add(label);
+
                         addToStack(new RegraProducao("declarar_func"));
-                        addToStack(new Token(7, "}", "}"));
+                        addToStack(new Token(7, "}", "}", "C" + String.valueOf(label)));
                         addToStack(new RegraProducao("retorno_func"));
                         addToStack(new RegraProducao("escopo"));
-                        addToStack(new Token(6, "{", "{"));
-                        addToStack(new Token(5, ")", ")"));
+                        addToStack(new Token(6, "{", "{", "C" + String.valueOf(label)));
+
+                        label = (labels_parentese.get(labels_parentese.size() - 1) + 1);
+                        //, "P" + String.valueOf(label)
+                        labels_parentese.add(label);
+
+                        addToStack(new Token(5, ")", ")", "P" + String.valueOf(label)));
                         addToStack(new RegraProducao("lista_param"));
-                        addToStack(new Token(4, "(", "("));
+                        addToStack(new Token(4, "(", "(", "P" + String.valueOf(label)));
                         addToStack(new Token(1, "<identificador>", "identificador"));
                         addToStack(new RegraProducao("func_tipo"));
                         addToStack(new Token(24, "function", "function"));
