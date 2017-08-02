@@ -25,11 +25,9 @@ public class IntermediateCodeGenerator {
         return init(tokens);
     }
 
-    //operação arit: PRIORIDADE * / + -
-    //operação logi: PRIORIDADE && ||
     /**
-     * TODO list: IF/ELSE, WHILE, DECLARAÇÃO DA FUNÇÃO, ATRIBUIR EXPR_BOOLEANA
-     * JA FEITO: ATRIBUIR EXPR_ARITMETICA, CHAMADA DE FUNÇÃO
+     * TODO list: IF/ELSE, WHILE, DECLARAÇÃO DA FUNÇÃO; JA FEITO: ATRIBUIR
+     * EXPR_ARITMETICA, CHAMADA DE FUNÇÃO, ATRIBUIR EXPR_BOOLEANA
      *
      * @param tokens1
      * @return
@@ -63,10 +61,27 @@ public class IntermediateCodeGenerator {
                 /*TODO fazer*/
             } else if (atual.type == 10) {//ATRIB
                 if (tokens.get(i + 1).regra.contains("exp_logic")) {
-                    //EXP_LOGIC
-                    /*TODO fazer*/
+                    /**
+                     * EXP_LOGIC
+                     */
+                    int j;
+                    for (j = i - 1; j < tokens.size(); j++) {
+                        if (tokens.get(j).type == 8) {//ponto e vírgula
+                            break;
+                        }
+                    }
+                    ArrayList<IntermediateCodeObject> exp_arr = exp_logic_atrib(tokens, i - 1, j);
+                    if (exp_arr.size() > 0) {
+                        exp_arr.get(exp_arr.size() - 1).parte1 = tokens.get(i - 1).lexeme;
+                    }
+                    lista.addAll(exp_arr);
+                    /*for (IntermediateCodeObject in : exp_arr) {
+                        in.print();
+                    }*/
                 } else if (tokens.get(i + 1).regra.contains("exp_arit")) {
-                    //EXP_ARIT
+                    /**
+                     * EXP_ARIT
+                     */
                     int j;
                     for (j = i - 1; j < tokens.size(); j++) {
                         if (tokens.get(j).type == 8) {//ponto e vírgula
@@ -78,23 +93,29 @@ public class IntermediateCodeGenerator {
                         exp_arr.get(exp_arr.size() - 1).parte1 = tokens.get(i - 1).lexeme;
                     }
                     lista.addAll(exp_arr);
-                    /*for (IntermediateCodeObject in : exp_arit_atrib) {
-                    in.print();
-                    }*/
+
                 } else if (tokens.get(i + 1).regra.contains("call_func")) {
-                    //CALL_FUNCTION
+                    /**
+                     * CALL_FUNCTION
+                     */
                     int j;
                     for (j = i - 1; j < tokens.size(); j++) {
                         if (tokens.get(j).type == 8) {//ponto e vírgula
                             break;
                         }
                     }
-                    lista.addAll(chamar_func_(tokens, i - 1, j));
+                    ArrayList<IntermediateCodeObject> exp_arr = chamar_func_(tokens, i - 1, j);
+                    if (exp_arr.size() > 0) {
+                        exp_arr.get(exp_arr.size() - 1).parte1 = tokens.get(i - 1).lexeme;
+                    }
+                    lista.addAll(exp_arr);
                 } else {
                     throw new IntermediateCodeGeneratorException("Identificador depois do = não possui 'exp_logic, 'exp_arit' ou 'call_func'");
                 }
             } else if (atual.type == 36) {//call
-                //CALL_FUNCTION
+                /**
+                 * CALL_FUNCTION
+                 */
                 int j;
                 for (j = i; j < tokens.size(); j++) {
                     if (tokens.get(j).type == 8) {//ponto e vírgula
@@ -109,6 +130,15 @@ public class IntermediateCodeGenerator {
         return lista;
     }
 
+    /**
+     * Prioridades: (), *, /, +, -
+     *
+     * @param tokens
+     * @param inicioInt
+     * @param fimInt
+     * @return
+     * @throws IntermediateCodeGeneratorException
+     */
     private ArrayList<IntermediateCodeObject> exp_arit_atrib(ArrayList<Token> tokens, int inicioInt, int fimInt) throws IntermediateCodeGeneratorException {
         ArrayList<Token> exp_array = new ArrayList<>();
         ArrayList<IntermediateCodeObject> array = new ArrayList<>();
@@ -118,6 +148,17 @@ public class IntermediateCodeGenerator {
         for (int j = inicioInt; j <= fimInt; j++) {
             tokens.get(j).wasMapped = true;
             exp_array.add(tokens.get(j).clone());
+        }
+
+        //i = 20/id;
+        if (exp_array.size() == 4) {
+            IntermediateCodeObject ico = new IntermediateCodeObject();
+            ico.parte1 = exp_array.get(0).lexeme;
+            ico.operacao1 = KEY_ATRIBUICAO;
+            ico.parte2 = exp_array.get(2).lexeme;
+            array.add(ico);
+
+            return array;
         }
 
         for (int j = 0; j < exp_array.size(); j++) {
@@ -248,14 +289,6 @@ public class IntermediateCodeGenerator {
 
     }
 
-    private ArrayList<IntermediateCodeObject> if_(ArrayList<Token> tokens, int inicioInt, int fimInt) {
-        return null;
-    }
-
-    private ArrayList<IntermediateCodeObject> while_(ArrayList<Token> tokens, int inicioInt, int fimInt) {
-        return null;
-    }
-
     private ArrayList<IntermediateCodeObject> chamar_func_(ArrayList<Token> tokens, int inicioInt, int fimInt) {
         //i = call IDENTIFICADOR (param1,...paramM){
         /*
@@ -339,11 +372,173 @@ public class IntermediateCodeGenerator {
         return array;
     }
 
-    private ArrayList<IntermediateCodeObject> declarar_func_(ArrayList<Token> tokens, int inicioInt, int fimInt) {
+    /**
+     * PRIORIDADES: () <, >, <=, >=, ==, !=, &&, ||
+     *
+     * @param tokens
+     * @param inicioInt
+     * @param fimInt
+     * @return
+     */
+    private ArrayList<IntermediateCodeObject> exp_logic_atrib(ArrayList<Token> tokens, int inicioInt, int fimInt) {
+        ArrayList<Token> exp_array = new ArrayList<>();
+        ArrayList<IntermediateCodeObject> array = new ArrayList<>();
+
+        String exp_str = null;
+
+        for (int j = inicioInt; j <= fimInt; j++) {
+            tokens.get(j).wasMapped = true;
+            exp_array.add(tokens.get(j).clone());
+        }
+
+        //i = false;
+        if (exp_array.size() == 4) {
+            IntermediateCodeObject ico = new IntermediateCodeObject();
+            ico.parte1 = exp_array.get(0).lexeme;
+            ico.operacao1 = KEY_ATRIBUICAO;
+            ico.parte2 = exp_array.get(2).lexeme;
+            array.add(ico);
+
+            return array;
+        }
+
+        for (int j = 0; j < exp_array.size(); j++) {
+            exp_str = "";
+            for (Token in : exp_array) {
+                exp_str += in.lexeme + " ";
+            }
+            //System.out.println(exp_str);
+
+            if (exp_str.contains("(")) {// ( tem prioridade de resolução
+                int x2 = 0, x1 = 0;
+                for (x2 = 0; x2 < exp_array.size(); x2++) {
+                    if (exp_array.get(x2).type == 5) {
+                        //acha o primeiro fecha parenteses
+                        for (x1 = 0; x1 < x2; x1++) {
+                            if (exp_array.get(x1).other != null && exp_array.get(x1).other.equals(exp_array.get(x2).other)) {
+                                //acha abre parenteses correspondente ao primeiro fecha parenteses
+                                break;
+                            }
+                        }
+                        break;
+                    }
+
+                }
+                ArrayList<IntermediateCodeObject> lista = exp_logic_atrib(exp_array, x1 + 1, x2 - 1);//+1 para ignorar os próprios parênteses
+
+                //concatenar arrays (intermediateobject)
+                array.addAll(lista);
+                //substituir valores de expressão[x] até expressao[x1] pelo por lista[ultima posição].parte1
+                IntermediateCodeObject o = lista.get(lista.size() - 1);
+                Token t = new Token(0, o.parte1);
+                exp_array.set(x1, t);
+
+                ArrayList<Token> dummyArray = new ArrayList<>();
+                for (int w = x1 + 1; w <= x2; w++) {
+                    dummyArray.add(exp_array.get(w));
+                }
+
+                exp_array.removeAll(dummyArray);
+                j = 0;
+                continue;
+
+            } else if (exp_array.get(j).type >= 28 && exp_array.get(j).type <= 33) {
+                //"<", ">", "<="/*30*/, ">=", "==", "!=", "&&", "||"/*35*/
+                Token anterior = exp_array.get(j - 1), depois = exp_array.get(j + 1), operacao = exp_array.get(j);
+
+                Token result = new Token();
+                result.lexeme = getVarRandomName();// System.nanoTime();
+                result.regra = anterior.regra;
+                result.type = 1;
+
+                IntermediateCodeObject ico = new IntermediateCodeObject();
+                ico.parte1 = result.lexeme;
+                ico.operacao1 = KEY_ATRIBUICAO;
+                ico.parte2 = anterior.lexeme;
+                ico.operacao2 = operacao.lexeme;
+                ico.parte3 = depois.lexeme;
+                array.add(ico);
+
+                exp_array.set(j - 1, result);
+                exp_array.remove(operacao);
+                exp_array.remove(depois);
+                j = 0;
+                continue;
+            } else if (!exp_str.contains("<")
+                    && !exp_str.contains(">")
+                    && !exp_str.contains("<=")
+                    && !exp_str.contains(">=")
+                    && !exp_str.contains("==")
+                    && !exp_str.contains("!=")
+                    && exp_array.get(j).type >= 34) {//&&
+                //"<", ">", "<="/*30*/, ">=", "==", "!=", "&&", "||"/*35*/
+                Token anterior = exp_array.get(j - 1), depois = exp_array.get(j + 1), operacao = exp_array.get(j);
+
+                Token result = new Token();
+                result.lexeme = getVarRandomName();// System.nanoTime();
+                result.regra = anterior.regra;
+                result.type = 1;
+
+                IntermediateCodeObject ico = new IntermediateCodeObject();
+                ico.parte1 = result.lexeme;
+                ico.operacao1 = KEY_ATRIBUICAO;
+                ico.parte2 = anterior.lexeme;
+                ico.operacao2 = operacao.lexeme;
+                ico.parte3 = depois.lexeme;
+                array.add(ico);
+
+                exp_array.set(j - 1, result);
+                exp_array.remove(operacao);
+                exp_array.remove(depois);
+                j = 0;
+                continue;
+            } else if (!exp_str.contains("<")
+                    && !exp_str.contains(">")
+                    && !exp_str.contains("<=")
+                    && !exp_str.contains(">=")
+                    && !exp_str.contains("==")
+                    && !exp_str.contains("!=")
+                    && exp_array.get(j).type >= 35) {// ||
+                //"<", ">", "<="/*30*/, ">=", "==", "!=", "&&", "||"/*35*/
+                Token anterior = exp_array.get(j - 1), depois = exp_array.get(j + 1), operacao = exp_array.get(j);
+
+                Token result = new Token();
+                result.lexeme = getVarRandomName();// System.nanoTime();
+                result.regra = anterior.regra;
+                result.type = 1;
+
+                IntermediateCodeObject ico = new IntermediateCodeObject();
+                ico.parte1 = result.lexeme;
+                ico.operacao1 = KEY_ATRIBUICAO;
+                ico.parte2 = anterior.lexeme;
+                ico.operacao2 = operacao.lexeme;
+                ico.parte3 = depois.lexeme;
+                array.add(ico);
+
+                exp_array.set(j - 1, result);
+                exp_array.remove(operacao);
+                exp_array.remove(depois);
+                j = 0;
+                continue;
+            }
+        }
+
+        System.out.println("--------------------------------------");
+        for (IntermediateCodeObject in : array) {
+            in.print();
+        }
+        return array;
+    }
+
+    private ArrayList<IntermediateCodeObject> if_(ArrayList<Token> tokens, int inicioInt, int fimInt) {
         return null;
     }
 
-    private ArrayList<IntermediateCodeObject> exp_logic_(ArrayList<Token> tokens, int inicioInt, int fimInt) {
+    private ArrayList<IntermediateCodeObject> while_(ArrayList<Token> tokens, int inicioInt, int fimInt) {
+        return null;
+    }
+
+    private ArrayList<IntermediateCodeObject> declarar_func_(ArrayList<Token> tokens, int inicioInt, int fimInt) {
         return null;
     }
 
