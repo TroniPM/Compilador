@@ -15,6 +15,8 @@ public class Token extends Objeto {
     public String scope = null;
     public String other = null;
 
+    public boolean wasMapped = false;
+
     @Override
     public Token clone() {
         Token t = new Token();

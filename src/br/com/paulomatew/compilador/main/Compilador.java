@@ -57,7 +57,7 @@ public class Compilador {
         analizadorSemantico = new Semantic();
         generator = new IntermediateCodeGenerator();
 
-        String[] t1 = new String[]{/*+3*/"main", "(", ")", "{", "}", ";", ",", "=", "+", "-"/*10*/, "*", "/", "void", "int", "boolean", "break", "continue", "return", "if", "else"/*20*/, "while", "function", "true", "false", "print", "<", ">", "<=", ">=", "=="/*30*/, "!=", "&&", "||", "call", "[", "]"};
+        String[] t1 = new String[]{/*+3*/"main", "(", ")"/*5*/, "{", "}", ";", ",", "="/*10*/, "+", "-", "*", "/", "void"/*15*/, "int", "boolean", "break", "continue", "return"/*20*/, "if", "else", "while", "function", "true"/*25*/, "false", "print", "<", ">", "<="/*30*/, ">=", "==", "!=", "&&", "||"/*35*/, "call", "[", "]"};
         RESERVED_WORDS_AND_OPERATORS = new ArrayList(Arrays.asList(t1));
 
         //utilizar esses indices para o LexicalObject type no array do analisador lexico
@@ -144,7 +144,7 @@ public class Compilador {
 
                 if (!erro) {
                     try {
-                        codigoIntermediario = IntermediateCodeGenerator.gerarCode(generator.init(analizadorLexico.tokenArray));
+                        codigoIntermediario = IntermediateCodeGenerator.gerarCode(generator.parser(analizadorLexico.tokenArray));
                     } catch (IntermediateCodeGeneratorException ex) {
                         Logger.getLogger(Sintatic.class.getName()).log(Level.SEVERE, null, ex);
 
