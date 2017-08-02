@@ -236,7 +236,7 @@ public class JFramePrincipal extends javax.swing.JFrame {
         });
 
         jTextPane1.setFont(fontBasica);
-        jTextPane1.setText("#main(){\n#    int i;\n#    int j;\n#    boolean flag;\n#\n#    print(1);\n#    print(true);\n#    print(false);\n#    print(i);\n#    print();\n#    \n#    call somar(1, 1);\n#    call somar(i, i);\n#    call somar(true, true);\n#    call somar(false, false);\n#    call somar(1, j);\n#    call somar(j, 1);\n#    call somar(true, i);\n#    call somar(i, false, 2, mateus, 2, true);\n#    call somar();\n#    \n#    break;\n#    continue;\n#    \n#    i = 1024;\n#    i = matt;\n#    i = true;\n#    i = [1024 + matt];\n#    i = [(j + matt) * 2048];\n#\n#    if(matt == true){\n#    } else{\n#        int antony;\n#        antony = [(matt * 1024) / 2];\n#    }\n#    if((matt == true && 1 != 2) || flag == true){\n#    }\n#\n#    while(true){\n#        break;\n#    }\n#\n#    if(m == true){\n#        int i;\n#        int j;\n#        i = 30;\n#        j = [i * 50];\n#    } else{\n#        int antony;\n#        antony = [(m * 1024) / 2];\n#    }\n#\n#   n = 35;\n#   m = call aeee1(n, flag, 1, true);\n#   flag = call aeee2(flag, n, true, 1);\n#}\n#function int aeee(int flag1, boolean flag2){\n#    return [flag1+2];\n#}\n#function boolean aeee2(int flag1, boolean flag2){\n#    return (flag2 == 1) && true !=flag2;\n#}\n#function void aeee2(int flag1, boolean flag2){\n#}\n\n#main(){\n#    int m;\n#    int n;\n#    boolean flag;\n#    boolean flag2;\n#    n = [1024 + m];\n#    n = [(n + m) * 2048/4];\n#    flag =  true == false && false == false;\n#\n    #if ((flag2 == true && true != false && flag2 == flag) || 1 == 2 || m > 25 || m > n){}\n    #while ((flag2 == true && true != false && flag2 == flag) || 1 == 2 || m > 25 || m > n){}\n#    flag2 =  ((flag2 == true && true != false && flag2 == flag) || 1 == 2 || m > 25 || m > n);\n#\n#}\n#function int aeee1(int flag1, boolean flag2, int flag3, boolean flag4){\n#    return [flag1+2];\n#}\n#function boolean aeee2(boolean flag1, int flag2, boolean flag3, int flag4){\n#    return (flag2 == 1) && true !=flag1;\n#}\n#function boolean aeee4(boolean flag1){\n#    return flag1;\n#}\n#function void aeee3(){\n#    int j;\n#    j = 25;\n#}\nmain(){\n\tboolean flag;\n\tif((flag==true) && true==true){\n\t\tint i;\n\t\tboolean j;\n\t\tj = true;\n\t\tj = j != j;\n\t\tj = true!=false && (true==true || false==false);\n\t\ti = 20;\n\t\ti = [((2+2)/9)+1*(3+3)-1];\n\n\t\t#i = [2-2];\n\t\t#i = [2*2];\n\t\t#i = [2/2];\n\t\tcall f();\n\t\ti = call m(i,22);\n\t} else {\n\t\tint j;\n\t\tj = 1500;\n\t}\n}\n\nfunction int m(int a, int b){return 1;}\nfunction boolean f(){return false;}");
+        jTextPane1.setText("#main(){\n#    int i;\n#    int j;\n#    boolean flag;\n#\n#    print(1);\n#    print(true);\n#    print(false);\n#    print(i);\n#    print();\n#    \n#    call somar(1, 1);\n#    call somar(i, i);\n#    call somar(true, true);\n#    call somar(false, false);\n#    call somar(1, j);\n#    call somar(j, 1);\n#    call somar(true, i);\n#    call somar(i, false, 2, mateus, 2, true);\n#    call somar();\n#    \n#    break;\n#    continue;\n#    \n#    i = 1024;\n#    i = matt;\n#    i = true;\n#    i = [1024 + matt];\n#    i = [(j + matt) * 2048];\n#\n#    if(matt == true){\n#    } else{\n#        int antony;\n#        antony = [(matt * 1024) / 2];\n#    }\n#    if((matt == true && 1 != 2) || flag == true){\n#    }\n#\n#    while(true){\n#        break;\n#    }\n#\n#    if(m == true){\n#        int i;\n#        int j;\n#        i = 30;\n#        j = [i * 50];\n#    } else{\n#        int antony;\n#        antony = [(m * 1024) / 2];\n#    }\n#\n#   n = 35;\n#   m = call aeee1(n, flag, 1, true);\n#   flag = call aeee2(flag, n, true, 1);\n#}\n#function int aeee(int flag1, boolean flag2){\n#    return [flag1+2];\n#}\n#function boolean aeee2(int flag1, boolean flag2){\n#    return (flag2 == 1) && true !=flag2;\n#}\n#function void aeee2(int flag1, boolean flag2){\n#}\n\n#main(){\n#    int m;\n#    int n;\n#    boolean flag;\n#    boolean flag2;\n#    n = [1024 + m];\n#    n = [(n + m) * 2048/4];\n#    flag =  true == false && false == false;\n#\n    #if ((flag2 == true && true != false && flag2 == flag) || 1 == 2 || m > 25 || m > n){}\n    #while ((flag2 == true && true != false && flag2 == flag) || 1 == 2 || m > 25 || m > n){}\n#    flag2 =  ((flag2 == true && true != false && flag2 == flag) || 1 == 2 || m > 25 || m > n);\n#\n#}\n#function int aeee1(int flag1, boolean flag2, int flag3, boolean flag4){\n#    return [flag1+2];\n#}\n#function boolean aeee2(boolean flag1, int flag2, boolean flag3, int flag4){\n#    return (flag2 == 1) && true !=flag1;\n#}\n#function boolean aeee4(boolean flag1){\n#    return flag1;\n#}\n#function void aeee3(){\n#    int j;\n#    j = 25;\n#}\nmain(){\n\tboolean flag;\n\tif((flag==true) && true==true){\n\t\tint i;\n\t\tboolean j;\n\t\tj = true;\n\t\tj = j != j;\n\t\tj = true!=false && (true==true || false==false);\n\t\ti = 20;\n\t\ti = [((2+2)/9)+1*(3+3)-1];\n\n\t\t#i = [2-2];\n\t\t#i = [2*2];\n\t\t#i = [2/2];\n\t\tcall f();\n\t\ti = call m(i,22);\n\n\t\tif (true){}\n\t\tif (false){} else{}\n\t} else {\n\t\tint j;\n\t\tj = 1500;\n\t}\n}\n\nfunction int m(int a, int b){return 1;}\nfunction boolean f(){return false;}");
         jTextPane1.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 jTextPane1KeyPressed(evt);
@@ -251,8 +251,13 @@ public class JFramePrincipal extends javax.swing.JFrame {
                 jButton1ActionPerformed(evt);
             }
         });
+        jButton1.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                jButton1KeyPressed(evt);
+            }
+        });
 
-        jButton2.setText("Lista de Tokens");
+        jButton2.setText("Lista de Tokens (F1)");
         jButton2.setEnabled(false);
         jButton2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -265,7 +270,7 @@ public class JFramePrincipal extends javax.swing.JFrame {
             }
         });
 
-        jButton3.setText("Console");
+        jButton3.setText("Console (F4)");
         jButton3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton3ActionPerformed(evt);
@@ -277,7 +282,7 @@ public class JFramePrincipal extends javax.swing.JFrame {
             }
         });
 
-        jButton4.setText("Estado da Pilha");
+        jButton4.setText("Estado da Pilha (F2)");
         jButton4.setEnabled(false);
         jButton4.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -293,7 +298,7 @@ public class JFramePrincipal extends javax.swing.JFrame {
         jCircle.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jCircle.setPreferredSize(new java.awt.Dimension(93, 20));
 
-        jButton5.setText("Código 3 endereços");
+        jButton5.setText("Código 3 endereços (F3)");
         jButton5.setEnabled(false);
         jButton5.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -404,48 +409,64 @@ public class JFramePrincipal extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton4ActionPerformed
 
     private void jTextPane1KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextPane1KeyPressed
-        if (evt.getKeyCode() == java.awt.event.KeyEvent.VK_ESCAPE) {
-            System.exit(0);
-        } else if (evt.getKeyCode() == java.awt.event.KeyEvent.VK_F5) {
-            compilar();
-        }
+        atalhos(evt);
     }//GEN-LAST:event_jTextPane1KeyPressed
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
-        JTextArea textArea = new JTextArea(compiler.codigoIntermediario);
-        JScrollPane scrollPane = new JScrollPane(textArea);
 
-        textArea.setLineWrap(true);
-        textArea.setWrapStyleWord(true);
-        scrollPane.setPreferredSize(new Dimension(700, 500));
-        textArea.setEditable(false);
-        JOptionPane.showMessageDialog(null, scrollPane, "Código intermediário",
-                JOptionPane.INFORMATION_MESSAGE);
+        if (compiler.codigoIntermediario == null || compiler.codigoIntermediario.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Nenhum código fonte compilado.", "Error", JOptionPane.ERROR_MESSAGE);
+        } else {
+            JTextArea textArea = new JTextArea(compiler.codigoIntermediario);
+
+            JScrollPane scrollPane = new JScrollPane(textArea);
+
+            textArea.setLineWrap(true);
+            textArea.setWrapStyleWord(true);
+            scrollPane.setPreferredSize(new Dimension(700, 500));
+            textArea.setEditable(false);
+            JOptionPane.showMessageDialog(null, scrollPane, "Código intermediário",
+                    JOptionPane.INFORMATION_MESSAGE);
+        }
     }//GEN-LAST:event_jButton5ActionPerformed
 
     private void formKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_formKeyPressed
-        f5(evt);
+        atalhos(evt);
     }//GEN-LAST:event_formKeyPressed
 
     private void jButton3KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jButton3KeyPressed
-        f5(evt);
+        atalhos(evt);
     }//GEN-LAST:event_jButton3KeyPressed
 
     private void jButton2KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jButton2KeyPressed
-        f5(evt);
+        atalhos(evt);
     }//GEN-LAST:event_jButton2KeyPressed
 
     private void jButton4KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jButton4KeyPressed
-        f5(evt);
+        atalhos(evt);
     }//GEN-LAST:event_jButton4KeyPressed
 
     private void jButton5KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jButton5KeyPressed
-        f5(evt);
+        atalhos(evt);
     }//GEN-LAST:event_jButton5KeyPressed
 
-    private void f5(java.awt.event.KeyEvent evt) {
+    private void jButton1KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jButton1KeyPressed
+        atalhos(evt);
+    }//GEN-LAST:event_jButton1KeyPressed
+
+    private void atalhos(java.awt.event.KeyEvent evt) {
         if (evt.getKeyCode() == java.awt.event.KeyEvent.VK_F5) {
             compilar();
+        } else if (evt.getKeyCode() == java.awt.event.KeyEvent.VK_F4) {
+            jButton3ActionPerformed(null);
+        } else if (evt.getKeyCode() == java.awt.event.KeyEvent.VK_F3) {
+            jButton5ActionPerformed(null);
+        } else if (evt.getKeyCode() == java.awt.event.KeyEvent.VK_F2) {
+            jButton4ActionPerformed(null);
+        } else if (evt.getKeyCode() == java.awt.event.KeyEvent.VK_F1) {
+            jButton2ActionPerformed(null);
+        } else if (evt.getKeyCode() == java.awt.event.KeyEvent.VK_ESCAPE) {
+            System.exit(0);
         }
     }
 

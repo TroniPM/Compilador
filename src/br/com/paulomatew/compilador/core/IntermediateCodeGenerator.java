@@ -54,6 +54,37 @@ public class IntermediateCodeGenerator {
                 continue;
             } else if (atual.type == 21) {//if
                 /*TODO fazer*/
+                /**
+                 * IF
+                 */
+                int j;
+                for (j = i; j < tokens.size(); j++) {
+                    if (tokens.get(j).type == 6) {//abre chaves
+                        break;
+                    }
+                }
+                ArrayList<IntermediateCodeObject> exp_arr = exp_logic_atrib(tokens, i + 2, j - 2);//ignoro os parenteses
+                /*if (exp_arr.size() > 0) {
+                    exp_arr.get(exp_arr.size() - 1).parte1 = tokens.get(i - 1).lexeme;
+                }*/
+                //excluo o caso de quando if(true)
+                if (exp_arr.size() == 1) {
+                    if (exp_arr.get(0).operacao1 != null && !exp_arr.get(0).operacao1.isEmpty()) {
+                        lista.addAll(exp_arr);
+                    }
+                } else {
+                    lista.addAll(exp_arr);
+                }
+                /*for (IntermediateCodeObject in : exp_arr) {
+                    in.print();
+                }*/
+                IntermediateCodeObject ico = new IntermediateCodeObject();
+                ico.parte1 = "if";
+                ico.operacao1 = exp_arr.get(exp_arr.size() - 1).parte1;
+                ico.parte2 = "then";
+                ico.operacao2 = "goto";
+                ico.parte3 = "****";
+                lista.add(ico);
             } else if (atual.type == 23) {//while
                 /*TODO fazer*/
  /*FAZER verificação de break; e continue;*/
@@ -393,10 +424,30 @@ public class IntermediateCodeGenerator {
 
         //i = false;
         if (exp_array.size() == 4) {
+            /*for (Token in : exp_array) {
+                exp_str += in.lexeme + " ";
+            }
+            System.out.println(exp_str);*/
+
             IntermediateCodeObject ico = new IntermediateCodeObject();
             ico.parte1 = exp_array.get(0).lexeme;
             ico.operacao1 = KEY_ATRIBUICAO;
             ico.parte2 = exp_array.get(2).lexeme;
+            array.add(ico);
+
+            return array;
+        } else if (exp_array.size() == 1) {//i(false){;
+            System.out.println("------------------1-----------------");
+            /*for (Token in : exp_array) {
+                exp_str += in.lexeme + " ";
+            }*/
+            exp_array.get(0).print();
+            //System.out.println(exp_str);
+
+            IntermediateCodeObject ico = new IntermediateCodeObject();
+            ico.parte1 = exp_array.get(0).lexeme;
+            /*ico.operacao1 = KEY_ATRIBUICAO;
+            ico.parte2 = exp_array.get(2).lexeme;*/
             array.add(ico);
 
             return array;
@@ -424,11 +475,18 @@ public class IntermediateCodeGenerator {
                     }
 
                 }
+                //exp_array.get(x1 + 1).print();
+                //exp_array.get(x2 - 1).print();
                 ArrayList<IntermediateCodeObject> lista = exp_logic_atrib(exp_array, x1 + 1, x2 - 1);//+1 para ignorar os próprios parênteses
 
                 //concatenar arrays (intermediateobject)
                 array.addAll(lista);
                 //substituir valores de expressão[x] até expressao[x1] pelo por lista[ultima posição].parte1
+                /*System.out.println("----------LISTA-----------");
+                for (IntermediateCodeObject in : lista) {
+                    in.print();
+                }*/
+
                 IntermediateCodeObject o = lista.get(lista.size() - 1);
                 Token t = new Token(0, o.parte1);
                 exp_array.set(x1, t);
@@ -523,10 +581,10 @@ public class IntermediateCodeGenerator {
             }
         }
 
-        System.out.println("--------------------------------------");
+        /*System.out.println("--------------------------------------");
         for (IntermediateCodeObject in : array) {
             in.print();
-        }
+        }*/
         return array;
     }
 

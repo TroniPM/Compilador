@@ -18,6 +18,8 @@ public class Sintatic {
     private int iteracao = 1;
     private ArrayList<Integer> labels_parentese = null;
     private ArrayList<Integer> labels_chaves = null;
+    private ArrayList<Integer> labels_if = null;
+    private ArrayList<Integer> labels_if_atual = null;
 
     public void init(ArrayList<Token> arr) throws SintaticException {
         /*if (arr == null || arr.isEmpty()) {
@@ -69,6 +71,10 @@ public class Sintatic {
         labels_parentese.add(0);
         labels_chaves = new ArrayList<>();
         labels_chaves.add(0);
+        labels_if = new ArrayList<>();
+        labels_if.add(0);
+        labels_if_atual = new ArrayList<>();
+        labels_if_atual.add(0);
 
         stackState = "";
         iteracao = 1;
@@ -183,7 +189,13 @@ public class Sintatic {
                             addToStack(new Token(5, ")", ")", "P" + String.valueOf(label)));
                             addToStack(new RegraProducao("exp_logic"));
                             addToStack(new Token(4, "(", "(", "P" + String.valueOf(label)));
-                            addToStack(new Token(21, "if", spe));
+
+                            label = (labels_if.get(labels_if.size() - 1) + 1);
+                            //, "I" + String.valueOf(label)
+                            labels_if.add(label);
+                            labels_if_atual.add(label);
+
+                            addToStack(new Token(21, "if", spe, "I" + String.valueOf(label)));
                         } else if (tokensLexical.get(i).type == 23) {//WHILE
                             int label = (labels_chaves.get(labels_chaves.size() - 1) + 1);
                             //, "C" + String.valueOf(label)
@@ -446,7 +458,10 @@ public class Sintatic {
                         addToStack(new Token(7, "}", "}", "C" + String.valueOf(label)));
                         addToStack(new RegraProducao("escopo"));
                         addToStack(new Token(6, "{", "{", "C" + String.valueOf(label)));
-                        addToStack(new Token(22, "else", "else"));
+
+                        label = labels_if_atual.get(labels_if_atual.size() - 1);
+                        labels_if_atual.remove(label);
+                        addToStack(new Token(22, "else", "else", "I" + String.valueOf(label)));
 
                     }
                     /*QUANDO PALAVRA GERA VAZIO NÃO PODE GERAR EXCEPTION 
