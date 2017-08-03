@@ -99,14 +99,12 @@ public class Sintatic {
                     throw new SintaticException("Unexpected token '" + (tokensLexical.get(i).lexeme)
                             + "' at line " + tokensLexical.get(i).line + ", position " + tokensLexical.get(i).position
                             + " (expected: '" + o1.description + "').");
-                } else {
-                    //throw new SintaticException("TOKEN DIFERENTE. COMPILADOR NÃO RECONHECE ESSA LINGUAGEM");
-                    //System.out.println(o1.other);
-                    if (o1.other != null) {
+                } else //throw new SintaticException("TOKEN DIFERENTE. COMPILADOR NÃO RECONHECE ESSA LINGUAGEM");
+                //System.out.println(o1.other);
+                 if (o1.other != null) {
                         //System.out.println(o1.other);
                         tokensLexical.get(i).other = o1.other;
                     }
-                }
 
             } else if (tokenDaPilha instanceof RegraProducao) {
                 RegraProducao o1 = (RegraProducao) tokenDaPilha;
@@ -460,9 +458,12 @@ public class Sintatic {
                         addToStack(new Token(6, "{", "{", "C" + String.valueOf(label)));
 
                         label = labels_if_atual.get(labels_if_atual.size() - 1);
-                        labels_if_atual.remove(label);
+                        labels_if_atual.remove(labels_if_atual.size() - 1);
                         addToStack(new Token(22, "else", "else", "I" + String.valueOf(label)));
 
+                    } else {
+                        //quando não tiver bloco if, removo o if de ifs atuais
+                        labels_if_atual.remove(labels_if_atual.size() - 1);
                     }
                     /*QUANDO PALAVRA GERA VAZIO NÃO PODE GERAR EXCEPTION 
                         (PQ VAI CHAMAR O PRÓXIMO DA PILHA*/

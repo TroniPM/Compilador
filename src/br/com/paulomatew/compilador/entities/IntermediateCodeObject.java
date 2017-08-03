@@ -28,4 +28,14 @@ public class IntermediateCodeObject {
 
     public IntermediateCodeObject() {
     }
+
+    public IntermediateCodeObject(String txt) {
+        this.txt = txt;
+    }
+
+    public IntermediateCodeObject(String parte1, String operacao1) {
+        this.parte1 = parte1;
+        this.operacao1 = operacao1;
+    }
+
 }

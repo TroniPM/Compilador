@@ -18,11 +18,15 @@ public class Lexical {
     private String sourceCode = null;
     public ArrayList<Token> tokenArray = null;
     private ArrayList<String> escopos = null;
+
+    private ArrayList<Integer> labels_escopo = null;
     //public Escopo arvoreEscopos = null;
 
     public static ArrayList<Escopo> escoposArvore = null;
 
     public void init(String sourceCode) throws LexicalException {
+        labels_escopo = new ArrayList<>();
+        labels_escopo.add(0);
         /*if (sourceCode == null || sourceCode.isEmpty()) {
             throw new LexicalException("Nenhum código fonte informado.");
         }*/
@@ -138,7 +142,7 @@ public class Lexical {
         //return msg.trim().replaceAll(" +", " ");
     }
 
-    private int getRandomNumberScope() {
+    /*private int getRandomNumberScope() {
         Random gerador = new Random();
         int g = gerador.nextInt();
 
@@ -148,18 +152,24 @@ public class Lexical {
         //escopos.add(g);
 
         return g;
-    }
-
+    }*/
     private ArrayList<Token> parser() throws LexicalException {
         ArrayList<Token> arr = new ArrayList<>();
 
         String[] sourcePorLinha = sourceCode.split("\n");
 
-        String escopoAtual = "0";
+        int label = (labels_escopo.get(labels_escopo.size() - 1) + 1);
+        labels_escopo.add(label);
+
+        //nextEscopo = "E_" + label;
+        String escopoAtual = "E_" + label;
         ArrayList<String> escoposAtivos = new ArrayList<>();
         escoposAtivos.add(escopoAtual);
         escoposArvore.add(new Escopo(escopoAtual));
-        String nextEscopo = getRandomNumberScope() + "";
+
+        label = (labels_escopo.get(labels_escopo.size() - 1) + 1);
+        labels_escopo.add(label);
+        String nextEscopo = "E_" + label;
         boolean escopoDeIdentificadorEmMetodo = false;
         /*escopoDeIdentificadorEmMetodo faz com q identificadores q estejam na
         declaração de uma função estejam no escopo da função, e não no escopo
@@ -210,7 +220,11 @@ public class Lexical {
                             escopoAtual = nextEscopo;
                             escoposAtivos.add(escopoAtual);
                             escopos.add(escopoAtual);
-                            nextEscopo = getRandomNumberScope() + "";
+
+                            label = (labels_escopo.get(labels_escopo.size() - 1) + 1);
+                            labels_escopo.add(label);
+
+                            nextEscopo = "E_" + label;
 
                             escopoDeIdentificadorEmMetodo = false;
                         } else if (i == 4) {//ESCOPO ATUAL ENCERRADO
