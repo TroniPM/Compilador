@@ -13,4 +13,8 @@ public class GotoLabel {
 
     public String label = null, scope = null;
 
+    public void print() {
+        System.out.println("LABEL: " + label);
+        System.out.println("SCOPE: " + scope);
+    }
 }
