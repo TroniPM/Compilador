@@ -14,20 +14,13 @@ import java.util.ArrayList;
 public class IntermediateCodeGenerator {
 
     private String code = "";
-    //private ArrayList<Token> tokens = null;
-    //private ArrayList<IntermediateCodeObject> lista = null;
     private ArrayList<Integer> labels_var = null;
     private ArrayList<Integer> labels_goto = null;
-    private String prefixo_variavel = "VAR_";
-    private String prefixo_goto = "L_";
-    private String KEY_ATRIBUICAO = ":=";
-    //private ArrayList<GotoLabel> forceCurrentLabel = null;
-    //private String forceCurrentTokenThisLabel = null;
-    //private String forceCurrentLabel = null;
-    //private String escopo = null;
+    private final String prefixo_variavel = "VAR_";
+    private final String prefixo_goto = "L_";
+    private final String KEY_ATRIBUICAO = ":=";
 
     public ArrayList<IntermediateCodeObject> parser(ArrayList<Token> tokens) throws IntermediateCodeGeneratorException {
-        //forceCurrentLabel = new ArrayList<>();
         labels_var = new ArrayList<>();
         labels_var.add(0);
         labels_goto = new ArrayList<>();
@@ -48,9 +41,7 @@ public class IntermediateCodeGenerator {
         ArrayList<IntermediateCodeObject> lista = new ArrayList<>();
 
         int i;
-        for (i = 0;
-                i < tokens.size();
-                i++) {
+        for (i = 0; i < tokens.size(); i++) {
             Token atual = tokens.get(i);
             if (atual.wasMapped) {
                 continue;
@@ -164,6 +155,55 @@ public class IntermediateCodeGenerator {
             } else if (atual.type == 23) {//while
                 /*TODO fazer*/
  /*FAZER verificação de break; e continue;*/
+                atual.wasMapped = true;
+                int j;
+                for (j = i; j < tokens.size(); j++) {
+                    if (tokens.get(j).type == 6) {//abre chaves
+                        break;
+                    }
+                }
+
+                ArrayList<IntermediateCodeObject> exp_arr = exp_logic_atrib(tokens, i + 2, j - 2);//ignoro os parenteses
+
+                //excluo o caso de quando if(true)
+                if (exp_arr.size() == 1) {
+                    if (exp_arr.get(0).operacao1 != null && !exp_arr.get(0).operacao1.isEmpty()) {
+                        lista.addAll(exp_arr);
+                    }
+                } else {
+                    lista.addAll(exp_arr);
+                }
+
+                int indice1 = j + 1, indice2 = 0;
+                for (int x = indice1; x < tokens.size(); x++) {
+                    if (tokens.get(x).other != null && tokens.get(x).other.equals(tokens.get(j).other)) {
+                        indice2 = x - 1;
+                        break;
+                    }
+                }
+
+                ArrayList<Token> arr1 = new ArrayList<>();
+                for (int x = indice1; x <= indice2; x++) {
+                    arr1.add(tokens.get(x));
+                }
+
+                ArrayList<IntermediateCodeObject> arr = init(arr1);
+
+                String label_do_while = getLabelGotoRandomName();
+                String label_de_fora = getLabelGotoRandomName();
+
+                IntermediateCodeObject ico = new IntermediateCodeObject();
+                ico.txt = label_do_while;
+                ico.parte1 = "if";
+                ico.operacao1 = "NOT(" + exp_arr.get(exp_arr.size() - 1).parte1 + ")";
+                ico.parte2 = "then";
+                ico.operacao2 = "goto";
+                ico.parte3 = label_de_fora;
+                lista.add(ico);
+                lista.addAll(arr);
+                lista.add(new IntermediateCodeObject("goto", label_do_while));
+                lista.add(new IntermediateCodeObject(label_de_fora));
+
             } else if (atual.type == 24) {//function
                 /*TODO fazer*/
             } else if (atual.type == 10) {//ATRIB
@@ -179,34 +219,12 @@ public class IntermediateCodeGenerator {
                     }
                     ArrayList<IntermediateCodeObject> exp_arr = exp_logic_atrib(tokens, i - 1, j);
                     if (exp_arr.size() > 0) {
+                        /*atribuir última variável ao identificador definido, caso
+                        não faça isso, a atribuição vai para uma variável temporária*/
                         exp_arr.get(exp_arr.size() - 1).parte1 = tokens.get(i - 1).lexeme;
-                        //if (forceCurrentLabel.size() > 0) {
-                        /*int id = fazParteDaArvore(atual.scope);
-                        if (id == -1) {
-                        } else if (id == 0) {
-                            IntermediateCodeObject iob = new IntermediateCodeObject();
-                            GotoLabel gto = forceCurrentLabel.get(forceCurrentLabel.size() - 1);
-                            iob.txt = gto.label;
-
-                            //debug
-                            //iob.operacao4 = atual.scope;
-                            forceCurrentLabel.remove(gto);
-                            lista.add(iob);
-                        } else if (id == 1) {
-                            GotoLabel gto = forceCurrentLabel.get(forceCurrentLabel.size() - 1);
-                            exp_arr.get(0).txt = gto.label;
-                            forceCurrentLabel.remove(gto);
-                        }*/
-                        //}
-                        /*if (forceCurrentTokenThisLabel != null) {
-                            exp_arr.get(0).txt = forceCurrentTokenThisLabel;
-                            forceCurrentTokenThisLabel = null;
-                        }*/
                     }
                     lista.addAll(exp_arr);
-                    /*for (IntermediateCodeObject in : exp_arr) {
-                        in.print();
-                    }*/
+
                 } else if (tokens.get(i + 1).regra.contains("exp_arit")) {
                     /**
                      * EXP_ARIT
@@ -219,29 +237,10 @@ public class IntermediateCodeGenerator {
                     }
                     ArrayList<IntermediateCodeObject> exp_arr = exp_arit_atrib(tokens, i - 1, j);
                     if (exp_arr.size() > 0) {
+                        /*atribuir última variável ao identificador definido, caso
+                        não faça isso, a atribuição vai para uma variável temporária*/
                         exp_arr.get(exp_arr.size() - 1).parte1 = tokens.get(i - 1).lexeme;
-                        //if (forceCurrentLabel.size() > 0) {
 
-                        /*int id = fazParteDaArvore(atual.scope);if (id == -1) {
-                        } else if (id == 0) {
-                            IntermediateCodeObject iob = new IntermediateCodeObject();
-                            GotoLabel gto = forceCurrentLabel.get(forceCurrentLabel.size() - 1);
-                            iob.txt = gto.label;
-
-                            //debug
-                            //iob.operacao4 = atual.scope;
-                            forceCurrentLabel.remove(gto);
-                            lista.add(iob);
-                        } else if (id == 1) {
-                            GotoLabel gto = forceCurrentLabel.get(forceCurrentLabel.size() - 1);
-                            exp_arr.get(0).txt = gto.label;
-                            forceCurrentLabel.remove(gto);
-                        }*/
-                        //}
-                        /*if (forceCurrentTokenThisLabel != null) {
-                            exp_arr.get(0).txt = forceCurrentTokenThisLabel;
-                            forceCurrentTokenThisLabel = null;
-                        }*/
                     }
                     lista.addAll(exp_arr);
 
@@ -257,29 +256,9 @@ public class IntermediateCodeGenerator {
                     }
                     ArrayList<IntermediateCodeObject> exp_arr = chamar_func_(tokens, i - 1, j);
                     if (exp_arr.size() > 0) {
+                        /*atribuir última variável ao identificador definido, caso
+                        não faça isso, a atribuição vai para uma variável temporária*/
                         exp_arr.get(exp_arr.size() - 1).parte1 = tokens.get(i - 1).lexeme;
-                        //if (forceCurrentLabel.size() > 0) {
-                        /*int id = fazParteDaArvore(atual.scope);
-                        if (id == -1) {
-                        } else if (id == 0) {
-                            IntermediateCodeObject iob = new IntermediateCodeObject();
-                            GotoLabel gto = forceCurrentLabel.get(forceCurrentLabel.size() - 1);
-                            iob.txt = gto.label;
-
-                            //debug
-                            //iob.operacao4 = atual.scope;
-                            forceCurrentLabel.remove(gto);
-                            lista.add(iob);
-                        } else if (id == 1) {
-                            GotoLabel gto = forceCurrentLabel.get(forceCurrentLabel.size() - 1);
-                            exp_arr.get(0).txt = gto.label;
-                            forceCurrentLabel.remove(gto);
-                        }*/
-                        //}
-                        /*if (forceCurrentTokenThisLabel != null) {
-                            exp_arr.get(0).txt = forceCurrentTokenThisLabel;
-                            forceCurrentTokenThisLabel = null;
-                        }*/
                     }
                     lista.addAll(exp_arr);
                 } else {
@@ -296,31 +275,6 @@ public class IntermediateCodeGenerator {
                     }
                 }
                 ArrayList<IntermediateCodeObject> exp_arr = chamar_func_(tokens, i, j);
-
-                if (exp_arr.size() > 0) {
-                    //if (forceCurrentLabel.size() > 0) {
-                    /*int id = fazParteDaArvore(atual.scope);
-                    if (id == -1) {
-                    } else if (id == 0) {
-                        IntermediateCodeObject iob = new IntermediateCodeObject();
-                        GotoLabel gto = forceCurrentLabel.get(forceCurrentLabel.size() - 1);
-                        iob.txt = gto.label;
-
-                        //debug
-                        //iob.operacao4 = atual.scope;
-                        forceCurrentLabel.remove(gto);
-                        lista.add(iob);
-                    } else if (id == 1) {
-                        GotoLabel gto = forceCurrentLabel.get(forceCurrentLabel.size() - 1);
-                        exp_arr.get(0).txt = gto.label;
-                        forceCurrentLabel.remove(gto);
-                    }*/
-                    //}
-                    /*if (forceCurrentTokenThisLabel != null) {
-                        exp_arr.get(0).txt = forceCurrentTokenThisLabel;
-                        forceCurrentTokenThisLabel = null;
-                    }*/
-                }
 
                 lista.addAll(exp_arr);
             }
@@ -770,51 +724,6 @@ public class IntermediateCodeGenerator {
         return array;
     }
 
-    /**
-     *
-     * @param escopoAtual
-     * @return -1 não faz parte da árvore, 0 não existe labels a atribuir, 1 faz
-     * parte da árvore
-     */
-    /*private int fazParteDaArvore(String escopoAtual) {
-        System.out.println("fazParteDaArvore() " + escopoAtual + "\tforceCurrentLabel.size: " + forceCurrentLabel.size());
-        Escopo escopo = null;
-        GotoLabel gto = null;
-        if (forceCurrentLabel.size() == 0) {
-            return -1;
-        } else {
-            gto = forceCurrentLabel.get(forceCurrentLabel.size() - 1);
-        }
-
-        for (int i = 0; i < Lexical.escoposArvore.size(); i++) {
-            if (Lexical.escoposArvore.get(i).label.equals(gto.scope)) {
-                escopo = Lexical.escoposArvore.get(i);
-                break;
-            }
-        }
-        //}
-
-        while (true) {
-            System.out.println("fazParteDaArvore() escopoAtual(" + escopoAtual + ") escopoOBJETO(" + (escopo == null ? "null" : escopo.label) + ") escopo.pai(" + (escopo == null ? "null" : escopo.pai) + ")");
-            if (escopo == null ) {
-                //System.out.println("NÃO ACHOU");
-                return -1;
-            } else if (escopo.pai == null) {
-                System.out.println("PAI É NULL");
-                return 0;
-            } else if (escopoAtual.equals(escopo.label)) {//caso escopo igual
-
-                //System.out.println("ACHOU: escopo");
-                return 1;
-            }
-             else if (escopo.pai.label.equals(escopoAtual)) {//Caso escopos superiores
-                System.out.println("ACHOU: escopo.pai:");
-                return 1;
-            }
-            escopo = escopo.pai;
-        }
-
-    }*/
     private String getVarRandomName() {
         int label = (labels_var.get(labels_var.size() - 1) + 1);
         labels_var.add(label);
