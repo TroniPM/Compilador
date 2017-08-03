@@ -32,8 +32,8 @@ public class IntermediateCodeGenerator {
     }
 
     /**
-     * TODO list: IF/ELSE, WHILE, DECLARAÇÃO DA FUNÇÃO; JA FEITO: ATRIBUIR
-     * EXPR_ARITMETICA, CHAMADA DE FUNÇÃO, ATRIBUIR EXPR_BOOLEANA
+     * TODO list: DECLARAÇÃO DA FUNÇÃO; JA FEITO: ATRIBUIR EXPR_ARITMETICA,
+     * CHAMADA DE FUNÇÃO, ATRIBUIR EXPR_BOOLEANA, IF/ELSE, WHILE/BREAK;CONTINUE
      *
      * @param tokens1
      * @return
@@ -69,8 +69,6 @@ public class IntermediateCodeGenerator {
                 continue;
             } else if (atual.type == 21) {//if
                 atual.wasMapped = true;
-
-                /*TODO fazer*/
                 /**
                  * IF
                  */
@@ -170,8 +168,6 @@ public class IntermediateCodeGenerator {
                 }
 
             } else if (atual.type == 23) {//while
-                /*TODO fazer*/
- /*FAZER verificação de break; e continue;*/
                 atual.wasMapped = true;
                 pilha_while.add(atual);
                 int j;
