@@ -16,11 +16,13 @@ public class IntermediateCodeGenerator {
     private String code = "";
     private ArrayList<Integer> labels_var = null;
     private ArrayList<Integer> labels_goto = null;
+    private ArrayList<Token> pilha_while = null;
     private final String prefixo_variavel = "VAR_";
     private final String prefixo_goto = "L_";
     private final String KEY_ATRIBUICAO = ":=";
 
     public ArrayList<IntermediateCodeObject> parser(ArrayList<Token> tokens) throws IntermediateCodeGeneratorException {
+        pilha_while = new ArrayList<>();
         labels_var = new ArrayList<>();
         labels_var.add(0);
         labels_goto = new ArrayList<>();
@@ -47,7 +49,22 @@ public class IntermediateCodeGenerator {
                 continue;
             }
             if (atual.type == 25 || atual.type == 26) {
+                atual.wasMapped = true;
                 //Se for declaração de variável, ignoro
+                i += 2;
+                continue;
+            } else if (atual.type == 18) {//"break", "continue"
+                atual.wasMapped = true;
+                if (pilha_while.size() > 0) {
+                    lista.add(new IntermediateCodeObject("goto", pilha_while.get(pilha_while.size() - 1).description2));
+                }
+                i += 2;
+                continue;
+            } else if (atual.type == 18) {//"continue"
+                atual.wasMapped = true;
+                if (pilha_while.size() > 0) {
+                    lista.add(new IntermediateCodeObject("goto", pilha_while.get(pilha_while.size() - 1).description1));
+                }
                 i += 2;
                 continue;
             } else if (atual.type == 21) {//if
@@ -156,6 +173,7 @@ public class IntermediateCodeGenerator {
                 /*TODO fazer*/
  /*FAZER verificação de break; e continue;*/
                 atual.wasMapped = true;
+                pilha_while.add(atual);
                 int j;
                 for (j = i; j < tokens.size(); j++) {
                     if (tokens.get(j).type == 6) {//abre chaves
@@ -182,16 +200,11 @@ public class IntermediateCodeGenerator {
                     }
                 }
 
-                ArrayList<Token> arr1 = new ArrayList<>();
-                for (int x = indice1; x <= indice2; x++) {
-                    arr1.add(tokens.get(x));
-                }
-
-                ArrayList<IntermediateCodeObject> arr = init(arr1);
-
                 String label_do_while = getLabelGotoRandomName();
                 String label_de_fora = getLabelGotoRandomName();
 
+                atual.description1 = label_do_while;//Para CONTINUE/BREAK utilizar
+                atual.description2 = label_de_fora;//Para CONTINUE/BREAK utilizar
                 IntermediateCodeObject ico = new IntermediateCodeObject();
                 ico.txt = label_do_while;
                 ico.parte1 = "if";
@@ -200,10 +213,19 @@ public class IntermediateCodeGenerator {
                 ico.operacao2 = "goto";
                 ico.parte3 = label_de_fora;
                 lista.add(ico);
+
+                ArrayList<Token> arr1 = new ArrayList<>();
+                for (int x = indice1; x <= indice2; x++) {
+                    arr1.add(tokens.get(x));
+                }
+
+                ArrayList<IntermediateCodeObject> arr = init(arr1);
+
                 lista.addAll(arr);
                 lista.add(new IntermediateCodeObject("goto", label_do_while));
                 lista.add(new IntermediateCodeObject(label_de_fora));
 
+                pilha_while.remove(atual);
             } else if (atual.type == 24) {//function
                 /*TODO fazer*/
             } else if (atual.type == 10) {//ATRIB

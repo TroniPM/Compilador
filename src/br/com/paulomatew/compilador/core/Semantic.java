@@ -59,7 +59,7 @@ public class Semantic {
 
         flag = checkIfFunctionHasReturn();
         if (flag != null) {
-            throw new SemanticException("Method was declared with return type " + flag.description + ", " + flag.regra + ": '"
+            throw new SemanticException("Method was declared with return type " + flag.description1 + ", " + flag.regra + ": '"
                     + flag.lexeme + "' at line " + flag.line + ", position " + flag.position
                     + ", scope " + flag.scope);
         }
@@ -1025,7 +1025,7 @@ public class Semantic {
                     if (tokens.get(j).type == 24 || j + 1 == tokens.size()) {
                         break;
                     } else if (tokens.get(j).type == 20) {
-                        identificador.description = "void";
+                        identificador.description1 = "void";
                         identificador.regra = "but has expression 'return'";
                         return identificador;
                     }
@@ -1035,7 +1035,7 @@ public class Semantic {
                 for (int j = i + 1; j < tokens.size(); j++) {
                     //não encontrar return ou chegar no final codigo fonte e n encontrar nada
                     if (tokens.get(j).type == 24 || j + 1 == tokens.size()) {
-                        identificador.description = "int/boolean";
+                        identificador.description1 = "int/boolean";
                         identificador.regra = "but hasn't expression 'return'";
                         return identificador;
                     } else if (tokens.get(j).type == 20) {

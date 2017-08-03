@@ -8,7 +8,8 @@ public class Token extends Objeto {
 
     public int type = -99;
     public String lexeme = null;
-    public String description = null;
+    public String description1 = null;
+    public String description2 = null;
     public String regra = null;
     public int line = 0;
     public int position = 0;
@@ -22,7 +23,8 @@ public class Token extends Objeto {
         Token t = new Token();
         t.type = type;
         t.lexeme = lexeme;
-        t.description = description;
+        t.description1 = description1;
+        t.description2 = description2;
         t.regra = regra;
         t.line = line;
         t.position = position;
@@ -43,20 +45,20 @@ public class Token extends Objeto {
     public Token(int type, String lexeme, String description) {
         this.type = type;
         this.lexeme = lexeme;
-        this.description = description;
+        this.description1 = description;
     }
 
     public Token(int type, String lexeme, String description, String other) {
         this.type = type;
         this.lexeme = lexeme;
-        this.description = description;
+        this.description1 = description;
         this.other = other;
     }
 
     public void print() {
         System.out.println("TOKEN: " + type);
         System.out.println("LEXEMA: " + lexeme);
-        System.out.println("DESCRIÇÃO: " + description);
+        System.out.println("DESCRIÇÃO: " + description1);
         System.out.println("LINHA: " + line);
         System.out.println("POSIÇÃO: " + position);
         System.out.println("ESCOPO: " + scope);
@@ -68,7 +70,7 @@ public class Token extends Objeto {
         String a = "";
         a += ("\nTOKEN: " + type);
         a += ("\nLEXEMA: " + lexeme);
-        a += ("\nDESCRIÇÃO: " + description);
+        a += ("\nDESCRIÇÃO: " + description1);
         a += ("\nLINHA: " + line);
         a += ("\nPOSIÇÃO: " + position);
         a += ("\nESCOPO: " + scope);

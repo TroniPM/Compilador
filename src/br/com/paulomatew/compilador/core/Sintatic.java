@@ -98,7 +98,7 @@ public class Sintatic {
                     //token.print();
                     throw new SintaticException("Unexpected token '" + (tokensLexical.get(i).lexeme)
                             + "' at line " + tokensLexical.get(i).line + ", position " + tokensLexical.get(i).position
-                            + " (expected: '" + o1.description + "').");
+                            + " (expected: '" + o1.description1 + "').");
                 } else //throw new SintaticException("TOKEN DIFERENTE. COMPILADOR NÃO RECONHECE ESSA LINGUAGEM");
                 //System.out.println(o1.other);
                  if (o1.other != null) {
@@ -666,7 +666,7 @@ public class Sintatic {
 
                 if (tokensLexical.get(i) instanceof Token) {
                     throw new SintaticException("Unexpected token '" + (tokensLexical.get(i).lexeme)
-                            + "' at line " + tokensLexical.get(i).line + " (expected: '" + tokensLexical.get(i).description + "').");
+                            + "' at line " + tokensLexical.get(i).line + " (expected: '" + tokensLexical.get(i).description1 + "').");
                 } else {
                     throw new SintaticException("Pilha foi lida mas o código fonte ainda não acabou.");
                 }
