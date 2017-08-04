@@ -39,7 +39,7 @@ public class Compilador {
     public String codigoIntermediario = "";
     public boolean erro = false;
 
-    public static void main(String[] args) {
+    /*public static void main(String[] args) {
         Compilador c = new Compilador();
         //c.creating();
 
@@ -50,8 +50,7 @@ public class Compilador {
             }
             System.out.println("");
         }
-    }
-
+    }*/
     private void creating() {
         analizadorLexico = new Lexical();
         analizadorSintatico = new Sintatic();

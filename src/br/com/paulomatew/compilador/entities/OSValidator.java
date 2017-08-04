@@ -9,7 +9,7 @@ public class OSValidator {
 
     private static String OS = System.getProperty("os.name").toLowerCase();
 
-    public static void main(String[] args) {
+    /*public static void main(String[] args) {
 
         System.out.println(OS);
 
@@ -24,8 +24,7 @@ public class OSValidator {
         } else {
             System.out.println("Your OS is not support!!");
         }
-    }
-
+    }*/
     public static boolean isWindows() {
         return (OS.contains("win"));
     }

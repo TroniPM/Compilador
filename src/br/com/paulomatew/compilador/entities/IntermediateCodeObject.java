@@ -18,6 +18,8 @@ public class IntermediateCodeObject {
     public String parte4 = "";
     public String operacao4 = "";
 
+    public boolean isLabel = false;
+
     public String getData() {
         return (txt + "\t" + parte1 + " " + operacao1 + " " + parte2 + " " + operacao2 + " " + parte3 + " " + operacao3 + " " + parte4 + " " + operacao4);
     }
@@ -31,6 +33,7 @@ public class IntermediateCodeObject {
 
     public IntermediateCodeObject(String txt) {
         this.txt = txt;
+        isLabel = true;
     }
 
     public IntermediateCodeObject(String parte1, String operacao1) {

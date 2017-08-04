@@ -28,7 +28,11 @@ public class IntermediateCodeGenerator {
         labels_goto = new ArrayList<>();
         labels_goto.add(0);
 
-        return init(tokens);
+        ArrayList<IntermediateCodeObject> array = init(tokens);
+
+        ArrayList<IntermediateCodeObject> realList = removeUnnecessaryLabels(array);
+
+        return realList;
     }
 
     /**
@@ -789,5 +793,33 @@ public class IntermediateCodeGenerator {
         }
 
         return a;
+    }
+
+    private ArrayList<IntermediateCodeObject> removeUnnecessaryLabels(ArrayList<IntermediateCodeObject> array) {
+        for (int i = 0; i < array.size(); i++) {
+            IntermediateCodeObject anterior = array.get(i);
+            IntermediateCodeObject proximo = null;
+            if (i + 1 == array.size()) {
+                break;
+            } else {
+                proximo = array.get(i + 1);
+            }
+
+            if (anterior.isLabel && proximo.isLabel) {
+                for (int j = 0; j < array.size(); j++) {
+                    if (array.get(j).txt.equals(proximo.txt)) {
+                        array.get(j).txt = anterior.txt;
+                    }
+                    if (array.get(j).operacao1.equals(proximo.txt)) {
+                        array.get(j).operacao1 = anterior.txt;
+                    }
+                    if (array.get(j).parte3.equals(proximo.txt)) {
+                        array.get(j).parte3 = anterior.txt;
+                    }
+                }
+                array.remove(proximo);
+            }
+        }
+        return array;
     }
 }
