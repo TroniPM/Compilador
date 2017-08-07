@@ -29,6 +29,8 @@ public class IntermediateCodeGenerator {
         labels_goto = new ArrayList<>();
         labels_goto.add(0);
 
+        firstFunction = true;
+
         ArrayList<IntermediateCodeObject> array = init(tokens);
 
         ArrayList<IntermediateCodeObject> realList = removeUnnecessaryLabels(array);
@@ -242,14 +244,6 @@ public class IntermediateCodeGenerator {
                 pilha_while.remove(atual);
             } else if (atual.type == 24) {//function
                 atual.wasMapped = true;
-                if (firstFunction) {//apenas espaçamento
-                    lista.add(new IntermediateCodeObject("", ""));
-                    lista.add(new IntermediateCodeObject("", ""));
-                    lista.add(new IntermediateCodeObject("", ""));
-                    lista.add(new IntermediateCodeObject("", ""));
-                    lista.add(new IntermediateCodeObject("", ""));
-                    firstFunction = false;
-                }
 
                 int qtd = 0;
                 int j, indice1 = 0, indice2 = 0;
@@ -334,6 +328,15 @@ public class IntermediateCodeGenerator {
                 params += ")";
                 ico.operacao2 = params;
 
+                if (firstFunction) {//apenas espaçamento
+                    System.out.println(">>>>>>>>>>>>>>>>> " + ico.operacao1);
+                    lista.add(new IntermediateCodeObject("", ""));
+                    lista.add(new IntermediateCodeObject("", ""));
+                    lista.add(new IntermediateCodeObject("", ""));
+                    lista.add(new IntermediateCodeObject("", ""));
+                    lista.add(new IntermediateCodeObject("", ""));
+                    firstFunction = false;
+                }
                 lista.add(ico);
                 lista.addAll(exp_arr);
                 if (exp_return != null) {
