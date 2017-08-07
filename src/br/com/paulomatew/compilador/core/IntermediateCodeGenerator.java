@@ -20,6 +20,7 @@ public class IntermediateCodeGenerator {
     private final String prefixo_variavel = "VAR_";
     private final String prefixo_goto = "L_";
     private final String KEY_ATRIBUICAO = ":=";
+    private boolean firstFunction = true;//dar espaçamento das demais instruções
 
     public ArrayList<IntermediateCodeObject> parser(ArrayList<Token> tokens) throws IntermediateCodeGeneratorException {
         pilha_while = new ArrayList<>();
@@ -222,8 +223,11 @@ public class IntermediateCodeGenerator {
                 ArrayList<IntermediateCodeObject> arr = init(arr1);
 
                 lista.addAll(arr);
-                
-                //Reatualizo variáveis de condição
+
+                /*Reatualizo variáveis de condição, antes do goto final, para 
+                que qnd seja feita a verificação, as variáveis da condição
+                estejam atualizadas.
+                 */
                 if (exp_arr.size() == 1) {
                     if (exp_arr.get(0).operacao1 != null && !exp_arr.get(0).operacao1.isEmpty()) {
                         lista.addAll(exp_arr);
@@ -231,11 +235,68 @@ public class IntermediateCodeGenerator {
                 } else {
                     lista.addAll(exp_arr);
                 }
+
                 lista.add(new IntermediateCodeObject("goto", label_do_while));
                 lista.add(new IntermediateCodeObject(label_de_fora));
 
                 pilha_while.remove(atual);
             } else if (atual.type == 24) {//function
+                atual.wasMapped = true;
+                if (firstFunction) {//apenas espaçamento
+                    lista.add(new IntermediateCodeObject("", ""));
+                    lista.add(new IntermediateCodeObject("", ""));
+                    lista.add(new IntermediateCodeObject("", ""));
+                    lista.add(new IntermediateCodeObject("", ""));
+                    lista.add(new IntermediateCodeObject("", ""));
+                    firstFunction = false;
+                }
+
+                int qtd = 0;
+                int j, indice1 = 0, indice2 = 0;
+                ArrayList<Token> parametros = new ArrayList<>();
+                for (j = i; j < tokens.size(); j++) {
+                    if (tokens.get(j).type == 6) {//abre chaves
+                        indice1 = j + 1;
+                        break;
+                    } else if (tokens.get(j - 1).type != 24 && (tokens.get(j).type == 16 || tokens.get(j).type == 17)) {
+                        parametros.add(tokens.get(j + 1));
+                    }
+                }
+
+                for (int x = indice1; x < tokens.size(); x++) {
+                    if (tokens.get(x).other != null && tokens.get(x).other.equals(tokens.get(j).other)) {
+                        //fecha aspas correspondente
+                        indice2 = x - 1;
+                        break;
+                    }
+                }
+                //obter parâmetros
+
+                ArrayList<Token> arr = new ArrayList<>();
+                for (int x = indice1; x <= indice2; x++) {
+                    arr.add(tokens.get(x));
+                }
+
+                ArrayList<IntermediateCodeObject> exp_arr = init(arr);
+
+                IntermediateCodeObject ico = new IntermediateCodeObject();
+                ico.parte1 = "function";
+                ico.operacao1 = tokens.get(i + 2).lexeme;
+                ico.parte2 = "params";
+                String params = "(";
+                for (int x = 0; x < parametros.size(); x++) {
+                    params += parametros.get(x).lexeme;
+                    if (x + 1 < parametros.size()) {
+                        params += ", ";
+                    }
+                }
+                params += ")";
+                ico.operacao2 = params;
+
+                lista.add(ico);
+                lista.addAll(exp_arr);
+                lista.add(new IntermediateCodeObject("goto", "back"));
+
                 /*TODO fazer*/
             } else if (atual.type == 10) {//ATRIB
                 if (tokens.get(i + 1).regra.contains("exp_logic")) {

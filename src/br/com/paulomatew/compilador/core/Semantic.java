@@ -187,7 +187,8 @@ public class Semantic {
                 Token anterior = tokens.get(i - 1);
                 if ((anterior.type == 16 || anterior.type == 17)) {
                     //return true;
-                    if (anterior.line < token.line) {
+                    if (anterior.line < token.line
+                            || (anterior.line == token.line && anterior.position < token.position)) {
 
                         /**
                          * Expressão lógica tem um tratamento específico,
