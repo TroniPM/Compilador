@@ -263,15 +263,56 @@ public class IntermediateCodeGenerator {
                     }
                 }
 
+                //obtendo return
+                Token retorno = null;
+                ArrayList<Token> returnExpression = new ArrayList<>();
+                int retordoIdex = 0;
                 for (int x = indice1; x < tokens.size(); x++) {
                     if (tokens.get(x).other != null && tokens.get(x).other.equals(tokens.get(j).other)) {
                         //fecha aspas correspondente
                         indice2 = x - 1;
                         break;
+                    } else if (tokens.get(x).type == 20) {
+                        retorno = tokens.get(x);
+                        Token var = new Token();
+                        var.lexeme = "returnVar";
+                        var.type = 1;
+                        var.regra = retorno.regra;
+                        returnExpression.add(var);
+
+                        Token var1 = new Token();
+                        var1.lexeme = "=";
+                        var1.type = 10;
+                        var1.regra = "atrib";
+                        returnExpression.add(var1);
+
+                        retordoIdex = x;
+
+                        for (int xx = x + 1; x < tokens.size(); xx++) {
+                            if (tokens.get(xx).type == 8) {
+                                returnExpression.add(tokens.get(xx));
+                                break;
+                            }
+                            returnExpression.add(tokens.get(xx));
+                        }
                     }
                 }
-                //obter parâmetros
+                ArrayList<IntermediateCodeObject> exp_return = null;
+                if (retorno != null) {
+                    if (retorno.regra.equals("int")) { //return int
+                        exp_return = exp_arit_atrib(returnExpression, 0, returnExpression.size() - 1);
+                    } else { //return boolean
+                        exp_return = exp_logic_atrib(returnExpression, 0, returnExpression.size() - 1);
+                    }
 
+                    if (exp_return.size() > 0) {
+                        /*atribuir última variável ao identificador definido, caso
+                        não faça isso, a atribuição vai para uma variável temporária*/
+                        exp_return.get(exp_return.size() - 1).parte1 = returnExpression.get(0).lexeme;
+                    }
+                }
+
+                //obter parâmetros
                 ArrayList<Token> arr = new ArrayList<>();
                 for (int x = indice1; x <= indice2; x++) {
                     arr.add(tokens.get(x));
@@ -295,9 +336,15 @@ public class IntermediateCodeGenerator {
 
                 lista.add(ico);
                 lista.addAll(exp_arr);
-                lista.add(new IntermediateCodeObject("goto", "back"));
-
-                /*TODO fazer*/
+                if (exp_return != null) {
+                    lista.addAll(exp_return);
+                }
+                IntermediateCodeObject aa11 = new IntermediateCodeObject("goto", "back");
+                if (returnExpression != null && returnExpression.size() >= 1) {
+                    aa11.parte2 = "(" + returnExpression.get(0).lexeme + ")";
+                }
+                lista.add(aa11);
+                lista.add(new IntermediateCodeObject("", ""));
             } else if (atual.type == 10) {//ATRIB
                 if (tokens.get(i + 1).regra.contains("exp_logic")) {
                     /**
