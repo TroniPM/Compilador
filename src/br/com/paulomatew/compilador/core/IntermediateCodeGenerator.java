@@ -222,6 +222,15 @@ public class IntermediateCodeGenerator {
                 ArrayList<IntermediateCodeObject> arr = init(arr1);
 
                 lista.addAll(arr);
+                
+                //Reatualizo variáveis de condição
+                if (exp_arr.size() == 1) {
+                    if (exp_arr.get(0).operacao1 != null && !exp_arr.get(0).operacao1.isEmpty()) {
+                        lista.addAll(exp_arr);
+                    }
+                } else {
+                    lista.addAll(exp_arr);
+                }
                 lista.add(new IntermediateCodeObject("goto", label_do_while));
                 lista.add(new IntermediateCodeObject(label_de_fora));
 
