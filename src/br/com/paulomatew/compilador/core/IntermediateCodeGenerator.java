@@ -20,6 +20,7 @@ public class IntermediateCodeGenerator {
     private final String prefixo_variavel = "VAR_";
     private final String prefixo_goto = "L_";
     private final String KEY_ATRIBUICAO = ":=";
+    private final String KEY_VARIABLE_RETURN = "VAR_RETURN";
     private boolean firstFunction = true;//dar espaçamento das demais instruções
 
     public ArrayList<IntermediateCodeObject> parser(ArrayList<Token> tokens) throws IntermediateCodeGeneratorException {
@@ -269,7 +270,7 @@ public class IntermediateCodeGenerator {
                     } else if (tokens.get(x).type == 20) {
                         retorno = tokens.get(x);
                         Token var = new Token();
-                        var.lexeme = "returnVar";
+                        var.lexeme = KEY_VARIABLE_RETURN;
                         var.type = 1;
                         var.regra = retorno.regra;
                         returnExpression.add(var);
@@ -329,7 +330,7 @@ public class IntermediateCodeGenerator {
                 ico.operacao2 = params;
 
                 if (firstFunction) {//apenas espaçamento
-                    System.out.println(">>>>>>>>>>>>>>>>> " + ico.operacao1);
+                    //System.out.println(">>>>>>>>>>>>>>>>> " + ico.operacao1);
                     lista.add(new IntermediateCodeObject("", ""));
                     lista.add(new IntermediateCodeObject("", ""));
                     lista.add(new IntermediateCodeObject("", ""));
