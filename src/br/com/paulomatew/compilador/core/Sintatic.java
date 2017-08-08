@@ -112,10 +112,9 @@ public class Sintatic {
                 saveStackState(o1.method);
 
                 if (o1.method.equals("programa")) {
-                    //throw new SintaticException("CHAMOU PROGRAMA. NÃO DEVERIA");
                     if (programa(tokensLexical.get(i))) {
                         int label = (labels_chaves.get(labels_chaves.size() - 1) + 1);
-                        //, "C" + String.valueOf(label)
+
                         labels_chaves.add(label);
                         addToStack(new RegraProducao("declarar_func"));
                         addToStack(new Token(7, "}", "}", "C" + String.valueOf(label)));
@@ -123,14 +122,12 @@ public class Sintatic {
                         addToStack(new Token(6, "{", "{", "C" + String.valueOf(label)));
 
                         label = (labels_parentese.get(labels_parentese.size() - 1) + 1);
-                        //, "P" + String.valueOf(label)
                         labels_parentese.add(label);
 
                         addToStack(new Token(5, ")", ")", "P" + String.valueOf(label)));
                         addToStack(new Token(4, "(", "(", "P" + String.valueOf(label)));
                         addToStack(new Token(3, "main", "main"));
 
-                        //i++;
                     } else {
                         throw new SintaticException("Unexpected token '" + (tokensLexical.get(i).lexeme)
                                 + "' at line " + tokensLexical.get(i).line + " (expected: 'main').");

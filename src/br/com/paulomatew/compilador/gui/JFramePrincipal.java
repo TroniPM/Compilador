@@ -391,7 +391,7 @@ public class JFramePrincipal extends javax.swing.JFrame {
 
             textArea.setLineWrap(true);
             textArea.setWrapStyleWord(true);
-            scrollPane.setPreferredSize(new Dimension(1000, 500));
+            scrollPane.setPreferredSize(new Dimension(750, 500));
             textArea.setEditable(false);
             JOptionPane.showMessageDialog(null, scrollPane, "Lista de Tokens",
                     JOptionPane.INFORMATION_MESSAGE);
@@ -443,7 +443,7 @@ public class JFramePrincipal extends javax.swing.JFrame {
 
             textArea.setLineWrap(true);
             textArea.setWrapStyleWord(true);
-            scrollPane.setPreferredSize(new Dimension(700, 500));
+            scrollPane.setPreferredSize(new Dimension(500, 500));
             textArea.setEditable(false);
             JOptionPane.showMessageDialog(null, scrollPane, "Código intermediário",
                     JOptionPane.INFORMATION_MESSAGE);

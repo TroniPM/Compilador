@@ -1,7 +1,6 @@
 package br.com.paulomatew.compilador.core;
 
 import br.com.paulomatew.compilador.entities.Escopo;
-import br.com.paulomatew.compilador.entities.GotoLabel;
 import br.com.paulomatew.compilador.entities.IntermediateCodeObject;
 import br.com.paulomatew.compilador.entities.Token;
 import br.com.paulomatew.compilador.exceptions.IntermediateCodeGeneratorException;
